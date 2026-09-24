@@ -1,3 +1,8 @@
 .env
 .env.*
 !.env.example
+data/
+artifacts/
+results/
+*.parquet
+__pycache__/
