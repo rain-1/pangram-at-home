@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import os
 from pathlib import Path
@@ -94,12 +95,22 @@ def fit_embedding(texts: list[str], labels: np.ndarray, root: Path):
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home")))
-    parser.add_argument("--train-tier", choices=["tiny", "small", "medium", "large"], default="medium")
+    parser.add_argument("--dataset", choices=["editlens", "pmc", "paper", "mixed"], default="editlens")
+    parser.add_argument("--train-tier", default="medium")
     parser.add_argument("--model", choices=["char", "word", "embedding"], default="char")
+    parser.add_argument("--audit-acl", action="store_true", help="Report FPR on pre-2023 ACL human abstracts")
     args = parser.parse_args()
     root = args.root
-    data = root / "data" / "editlens_pyramid_v1"
+    folder = {
+        "editlens": "editlens_pyramid_v1",
+        "pmc": "pmc_pyramid_v1",
+        "paper": "paper_pyramid_v1",
+        "mixed": "mixed_pyramid_v1",
+    }[args.dataset]
+    data = root / "data" / folder
     manifest = json.loads((data / "manifest.json").read_text())
+    if args.train_tier not in manifest["splits"]["train"]:
+        raise SystemExit(f"Unknown train tier {args.train_tier}; choose from {list(manifest['splits']['train'])}")
     train_texts, train_labels, _ = load(data / f"train_{args.train_tier}.parquet")
     if args.model == "embedding":
         predict = fit_embedding(train_texts, train_labels, root)
@@ -112,12 +123,12 @@ def main() -> None:
         "model": args.model,
         "train_tier": args.train_tier,
         "train_rows": len(train_labels),
-        "dataset": manifest["dataset"],
-        "revision": manifest["revision"],
+        "dataset": manifest.get("dataset", manifest.get("source")),
+        "revision": manifest.get("revision"),
         "target_val_fpr": 0.02,
         "val": metrics(val_scores, val_labels, threshold),
     }
-    for split in ["test", "test_enron"]:
+    for split in (["test", "test_enron"] if args.dataset == "editlens" else ["test"]):
         texts, labels, sources = load(data / f"{split}_full.parquet")
         scores = predict(texts)
         result[split] = metrics(scores, labels, threshold)
@@ -127,7 +138,26 @@ def main() -> None:
             for source in sorted(set(sources))
             if len(set(labels[np.asarray(sources) == source])) == 2
         }
-    path = root / "results" / f"baseline_{args.model}_{args.train_tier}.json"
+    if args.audit_acl:
+        acl_path = root / "data" / "acl_abstracts_v1" / "documents.jsonl.gz"
+        with gzip.open(acl_path, "rt", encoding="utf-8") as file:
+            acl = [json.loads(line) for line in file]
+        acl = [row for row in acl if 100 <= len(row["abstract"].split()) <= 350]
+        acl_scores = predict([row["abstract"] for row in acl])
+        predicted = acl_scores >= threshold
+        result["acl_human_audit"] = {
+            "rows": len(acl),
+            "false_positives": int(predicted.sum()),
+            "fpr": float(predicted.mean()),
+            "by_year": {
+                str(year): {
+                    "rows": sum(row["year"] == year for row in acl),
+                    "fpr": float(predicted[np.asarray([row["year"] == year for row in acl])].mean()),
+                }
+                for year in sorted({row["year"] for row in acl})
+            },
+        }
+    path = root / "results" / f"baseline_{args.dataset}_{args.model}_{args.train_tier}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))

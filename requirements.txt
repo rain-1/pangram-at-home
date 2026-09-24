@@ -1,0 +1,13 @@
+requests>=2.32
+lxml>=5.2
+pyarrow>=20
+numpy>=1.26,<3
+scikit-learn>=1.5
+python-dotenv>=1
+huggingface_hub>=0.34
+torch>=2.5
+transformers>=4.50
+sentence-transformers>=3
+peft>=0.17
+bitsandbytes>=0.45
+safetensors>=0.5

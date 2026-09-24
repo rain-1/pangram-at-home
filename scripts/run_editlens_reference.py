@@ -6,6 +6,8 @@ Reference models and benchmark are CC BY-NC-SA; scores are research diagnostics.
 from __future__ import annotations
 
 import argparse
+import gzip
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -96,27 +98,48 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home")))
     parser.add_argument("--model", choices=["roberta", "llama"], required=True)
+    parser.add_argument("--dataset", choices=["editlens", "pmc", "paper", "mixed"], default="editlens")
     parser.add_argument("--tier", choices=["small", "full"], default="small")
     parser.add_argument("--batch-size", type=int, default=0)
+    parser.add_argument("--audit-acl-limit", type=int, default=0)
     args = parser.parse_args()
     if not torch.cuda.is_available():
         raise SystemExit("CUDA is required")
     tokenizer, model = load_model(args.root, args.model)
     batch_size = args.batch_size or (16 if args.model == "roberta" else 4)
-    data = args.root / "data" / "editlens_pyramid_v1"
+    folder = {
+        "editlens": "editlens_pyramid_v1",
+        "pmc": "pmc_pyramid_v1",
+        "paper": "paper_pyramid_v1",
+        "mixed": "mixed_pyramid_v1",
+    }[args.dataset]
+    data = args.root / "data" / folder
     val_text, val_label = load(data / f"val_{args.tier}.parquet")
     val_scores = score(val_text, tokenizer, model, batch_size)
     threshold = threshold_for_fpr(val_scores, val_label, 0.02)
     result = {
-        "model": args.model, "tier": args.tier,
+        "model": args.model, "tier": args.tier, "dataset": args.dataset,
         "target_val_fpr": 0.02,
         "val": metrics(val_scores, val_label, threshold),
     }
-    for split in ["test", "test_enron"]:
+    for split in (["test", "test_enron"] if args.dataset == "editlens" else ["test"]):
         test_text, test_label = load(data / f"{split}_{args.tier}.parquet")
         test_scores = score(test_text, tokenizer, model, batch_size)
         result[split] = metrics(test_scores, test_label, threshold)
-    out = args.root / "results" / f"reference_{args.model}_{args.tier}.json"
+    if args.audit_acl_limit:
+        acl_path = args.root / "data" / "acl_abstracts_v1" / "documents.jsonl.gz"
+        with gzip.open(acl_path, "rt", encoding="utf-8") as file:
+            acl = [json.loads(line) for line in file]
+        acl = [row for row in acl if 100 <= len(row["abstract"].split()) <= 350]
+        acl.sort(key=lambda row: hashlib.sha256(("acl-audit-v1:" + row["source_id"]).encode()).digest())
+        acl = acl[:args.audit_acl_limit]
+        acl_scores = score([row["abstract"] for row in acl], tokenizer, model, batch_size)
+        result["acl_human_audit"] = {
+            "rows": len(acl),
+            "false_positives": int((acl_scores >= threshold).sum()),
+            "fpr": float((acl_scores >= threshold).mean()),
+        }
+    out = args.root / "results" / f"reference_{args.dataset}_{args.model}_{args.tier}.json"
     out.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
 
