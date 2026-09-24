@@ -161,7 +161,8 @@ def main() -> None:
         doc_ids = set()
         for offset in range(0, len(ids), 40):
             chunk = ids[offset:offset + 40]
-            raw_path = raw / f"{year}_{offset:04d}.xml.gz"
+            chunk_hash = hashlib.sha256(",".join(chunk).encode()).hexdigest()[:12]
+            raw_path = raw / f"{year}_{offset:04d}_{chunk_hash}.xml.gz"
             if raw_path.exists():
                 payload = gzip.decompress(raw_path.read_bytes())
             else:

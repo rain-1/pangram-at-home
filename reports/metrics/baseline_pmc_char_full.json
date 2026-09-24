@@ -1,0 +1,60 @@
+{
+  "model": "char",
+  "train_tier": "full",
+  "train_rows": 616,
+  "dataset": "pmc_pilot_v1 + Qwen/Qwen2.5-0.5B-Instruct",
+  "revision": null,
+  "target_val_fpr": 0.02,
+  "val": {
+    "rows": 174,
+    "human": 87,
+    "ai": 87,
+    "threshold": 0.4492403910228265,
+    "fpr": 0.011494252873563218,
+    "tpr": 1.0,
+    "precision": 0.9886363636363636,
+    "roc_auc": 1.0,
+    "average_precision": 1.0,
+    "tp": 87,
+    "fp": 1,
+    "tn": 86,
+    "fn": 0
+  },
+  "test": {
+    "rows": 174,
+    "human": 87,
+    "ai": 87,
+    "threshold": 0.4492403910228265,
+    "fpr": 0.0,
+    "tpr": 0.9655172413793104,
+    "precision": 1.0,
+    "roc_auc": 0.9980182322631788,
+    "average_precision": 0.9981362748619773,
+    "tp": 84,
+    "fp": 0,
+    "tn": 87,
+    "fn": 3,
+    "by_source": {
+      "pmc_oa": {
+        "rows": 174,
+        "human": 87,
+        "ai": 87,
+        "threshold": 0.4492403910228265,
+        "fpr": 0.0,
+        "tpr": 0.9655172413793104,
+        "precision": 1.0,
+        "roc_auc": 0.9980182322631788,
+        "average_precision": 0.9981362748619773,
+        "tp": 84,
+        "fp": 0,
+        "tn": 87,
+        "fn": 3
+      }
+    }
+  },
+  "pmc_body_human_audit": {
+    "rows": 261,
+    "false_positives": 7,
+    "fpr": 0.02681992337164751
+  }
+}

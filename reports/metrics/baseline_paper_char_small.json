@@ -1,0 +1,70 @@
+{
+  "model": "char",
+  "train_tier": "small",
+  "train_rows": 400,
+  "dataset": "official PMC OA JATS + ACL Anthology XML, locally generated AI",
+  "revision": null,
+  "target_val_fpr": 0.02,
+  "val": {
+    "rows": 436,
+    "human": 218,
+    "ai": 218,
+    "threshold": 0.43245572767754925,
+    "fpr": 0.01834862385321101,
+    "tpr": 0.9908256880733946,
+    "precision": 0.9818181818181818,
+    "roc_auc": 0.99936874000505,
+    "average_precision": 0.9993699412253355,
+    "tp": 216,
+    "fp": 4,
+    "tn": 214,
+    "fn": 2
+  },
+  "test": {
+    "rows": 442,
+    "human": 221,
+    "ai": 221,
+    "threshold": 0.43245572767754925,
+    "fpr": 0.027149321266968326,
+    "tpr": 0.9864253393665159,
+    "precision": 0.9732142857142857,
+    "roc_auc": 0.9988738969308573,
+    "average_precision": 0.9989360690749367,
+    "tp": 218,
+    "fp": 6,
+    "tn": 215,
+    "fn": 3,
+    "by_source": {
+      "acl_anthology": {
+        "rows": 268,
+        "human": 134,
+        "ai": 134,
+        "threshold": 0.43245572767754925,
+        "fpr": 0.0,
+        "tpr": 0.9925373134328358,
+        "precision": 1.0,
+        "roc_auc": 0.9996658498552016,
+        "average_precision": 0.999680170575693,
+        "tp": 133,
+        "fp": 0,
+        "tn": 134,
+        "fn": 1
+      },
+      "pmc_oa": {
+        "rows": 174,
+        "human": 87,
+        "ai": 87,
+        "threshold": 0.43245572767754925,
+        "fpr": 0.06896551724137931,
+        "tpr": 0.9770114942528736,
+        "precision": 0.9340659340659341,
+        "roc_auc": 0.9966970537719646,
+        "average_precision": 0.9969887317897026,
+        "tp": 85,
+        "fp": 6,
+        "tn": 81,
+        "fn": 2
+      }
+    }
+  }
+}

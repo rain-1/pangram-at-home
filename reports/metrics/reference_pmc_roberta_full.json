@@ -1,0 +1,41 @@
+{
+  "model": "roberta",
+  "tier": "full",
+  "dataset": "pmc",
+  "target_val_fpr": 0.02,
+  "val": {
+    "rows": 174,
+    "human": 87,
+    "ai": 87,
+    "threshold": 0.3310771584510804,
+    "fpr": 0.011494252873563218,
+    "tpr": 0.9655172413793104,
+    "precision": 0.9882352941176471,
+    "roc_auc": 0.9933941075439292,
+    "average_precision": 0.9949172454476063,
+    "tp": 84,
+    "fp": 1,
+    "tn": 86,
+    "fn": 3
+  },
+  "test": {
+    "rows": 174,
+    "human": 87,
+    "ai": 87,
+    "threshold": 0.3310771584510804,
+    "fpr": 0.011494252873563218,
+    "tpr": 0.9195402298850575,
+    "precision": 0.9876543209876543,
+    "roc_auc": 0.9972255251684502,
+    "average_precision": 0.9972547281274955,
+    "tp": 80,
+    "fp": 1,
+    "tn": 86,
+    "fn": 7
+  },
+  "pmc_body_human_audit": {
+    "rows": 261,
+    "false_positives": 2,
+    "fpr": 0.007662835249042145
+  }
+}

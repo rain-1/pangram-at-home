@@ -1,0 +1,51 @@
+{
+  "model": "llama",
+  "tier": "small",
+  "dataset": "editlens",
+  "target_val_fpr": 0.02,
+  "val": {
+    "rows": 800,
+    "human": 400,
+    "ai": 400,
+    "threshold": 0.13199542462825778,
+    "fpr": 0.02,
+    "tpr": 1.0,
+    "precision": 0.9803921568627451,
+    "roc_auc": 1.0,
+    "average_precision": 1.0,
+    "tp": 400,
+    "fp": 8,
+    "tn": 392,
+    "fn": 0
+  },
+  "test": {
+    "rows": 1000,
+    "human": 500,
+    "ai": 500,
+    "threshold": 0.13199542462825778,
+    "fpr": 0.036,
+    "tpr": 1.0,
+    "precision": 0.9652509652509652,
+    "roc_auc": 1.0,
+    "average_precision": 1.0,
+    "tp": 500,
+    "fp": 18,
+    "tn": 482,
+    "fn": 0
+  },
+  "test_enron": {
+    "rows": 1000,
+    "human": 500,
+    "ai": 500,
+    "threshold": 0.13199542462825778,
+    "fpr": 0.01,
+    "tpr": 1.0,
+    "precision": 0.9900990099009901,
+    "roc_auc": 1.0,
+    "average_precision": 1.0,
+    "tp": 500,
+    "fp": 5,
+    "tn": 495,
+    "fn": 0
+  }
+}

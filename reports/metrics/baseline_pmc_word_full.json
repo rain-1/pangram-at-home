@@ -1,0 +1,55 @@
+{
+  "model": "word",
+  "train_tier": "full",
+  "train_rows": 616,
+  "dataset": "pmc_pilot_v1 + Qwen/Qwen2.5-0.5B-Instruct",
+  "revision": null,
+  "target_val_fpr": 0.02,
+  "val": {
+    "rows": 174,
+    "human": 87,
+    "ai": 87,
+    "threshold": 0.44402007178796904,
+    "fpr": 0.011494252873563218,
+    "tpr": 1.0,
+    "precision": 0.9886363636363636,
+    "roc_auc": 1.0,
+    "average_precision": 1.0,
+    "tp": 87,
+    "fp": 1,
+    "tn": 86,
+    "fn": 0
+  },
+  "test": {
+    "rows": 174,
+    "human": 87,
+    "ai": 87,
+    "threshold": 0.44402007178796904,
+    "fpr": 0.022988505747126436,
+    "tpr": 0.9770114942528736,
+    "precision": 0.9770114942528736,
+    "roc_auc": 0.9976218787158145,
+    "average_precision": 0.9977883743670873,
+    "tp": 85,
+    "fp": 2,
+    "tn": 85,
+    "fn": 2,
+    "by_source": {
+      "pmc_oa": {
+        "rows": 174,
+        "human": 87,
+        "ai": 87,
+        "threshold": 0.44402007178796904,
+        "fpr": 0.022988505747126436,
+        "tpr": 0.9770114942528736,
+        "precision": 0.9770114942528736,
+        "roc_auc": 0.9976218787158145,
+        "average_precision": 0.9977883743670873,
+        "tp": 85,
+        "fp": 2,
+        "tn": 85,
+        "fn": 2
+      }
+    }
+  }
+}

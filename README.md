@@ -1,6 +1,6 @@
 # Pangram at home: first data and baseline run
 
-This repository builds a reproducible **research pilot** for human versus AI text detection. Text, model weights, and predictions live outside Git at `/mnt/f/pangram-at-home` by default. [The source shortlist](notes/datasets.md) explains provenance and rights decisions.
+This repository builds a reproducible **research pilot** for human versus AI text detection. Text, model weights, and predictions live outside Git at `/mnt/f/pangram-at-home` by default. [The source shortlist](notes/datasets.md) explains provenance and rights decisions; [the first run report](reports/first-data-and-baselines.md) gives counts and results.
 
 ## Current corpora
 
@@ -30,9 +30,14 @@ python scripts/generate_paper_ai.py --source acl --model smollm --limit 800
 python scripts/build_pmc_pyramid.py
 python scripts/build_paper_pyramid.py
 python scripts/build_mixed_pyramid.py
+python scripts/build_pmc_body_audit.py
+python scripts/generate_paper_ai.py --source pmc --model smollm --paper-test-only
+python scripts/generate_paper_ai.py --source acl --model qwen --paper-test-only
+python scripts/build_cross_model_test.py
+for name in editlens pmc paper mixed cross; do python scripts/verify_splits.py "$name"; done
 ```
 
-Generation appends JSONL and resumes by source ID. The paper and mixed manifests record source counts, rejected samples, exact parquet hashes, generator revisions, and split sizes. Whole papers stay in one split; the paper test also holds out journals or venues. Each binary split is 50% human and 50% AI; the mixed splits target 35% papers within each label. Small tiers are prefixes of larger tiers.
+Generation appends JSONL and resumes by source ID. The [frozen manifests](manifests) record source counts, rejected samples, exact parquet hashes, generator revisions, and split sizes. Whole papers stay in one split; the paper test also holds out journals or venues. Each binary split is 50% human and 50% AI; the mixed splits target 35% papers within each label. Small tiers are prefixes of larger tiers.
 
 Run n-gram and embedding baselines, then the two Pangram reference checkpoints:
 
@@ -44,8 +49,8 @@ python scripts/run_editlens_reference.py --dataset paper --model roberta --tier 
 python scripts/run_editlens_reference.py --dataset paper --model llama --tier full
 ```
 
-The baseline scripts select a threshold on **validation humans** for at most 2% empirical false positives, then report test false-positive rate, true-positive rate, precision, ROC AUC, and counts. The target is a calibration rule, not a guarantee on new domains. For the independent ACL human-only check, use `--audit-acl` with `run_baselines.py --dataset editlens`; reference inference supports `--audit-acl-limit 1000`.
+The baseline scripts select a threshold on **validation humans** for at most 2% empirical false positives, then report test false-positive rate, true-positive rate, precision, ROC AUC, and counts. The target is a calibration rule, not a guarantee on new domains. Use `--audit-acl`, `--audit-pmc-body`, or `--cross-test` with the relevant data set to run the extra checks.
 
-## Early diagnostic
+## First result
 
-On the EditLens general-text test, a character n-gram logistic baseline trained on 20,000 balanced rows reached 98.9% AI recall at 1.95% false positives. On its separate Enron test, recall fell to 75.9% at 0.39% false positives. Most concerning for our paper goal, the same threshold falsely flagged 64.8% of 18,287 ACL human abstracts. These figures are diagnostic results from the noncommercial EditLens research set; the balanced PMC + ACL paper benchmark provides the next, more relevant comparison.
+On the balanced paper test, the EditLens RoBERTa reference detected 203/221 AI abstracts with 2/221 human false positives. On the 35%-paper mixed test it detected 617/631 AI texts with 8/631 human false positives. The mixed character n-gram baseline detected 601/631 AI texts with 13/631 human false positives, including **8/87 PMC abstracts**. See [the report](reports/first-data-and-baselines.md) for all models, source breakdowns, the swapped-generator test, and the large human-only audit.
