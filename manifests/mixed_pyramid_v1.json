@@ -1,0 +1,121 @@
+{
+  "source": "paper_pyramid_v1 + editlens_pyramid_v1",
+  "input_manifests_sha256": {
+    "paper": "24d161aa9db225fce1163ea7e4dc972e1c633a8e2203b3815b54f4f8babf2f87",
+    "editlens": "0e6710dd134abf733f88f8f8ed27d7f664165e05db7223409c53595f8a576916"
+  },
+  "license": "local noncommercial research; EditLens CC BY-NC-SA 4.0",
+  "paper_share_target": 0.35,
+  "label_map": {
+    "human": 0,
+    "ai": 1
+  },
+  "splits": {
+    "train": {
+      "tiny": {
+        "path": "train_tiny.parquet",
+        "pairs": 100,
+        "rows": 200,
+        "human": 100,
+        "ai": 100,
+        "paper_pairs": 35,
+        "general_pairs": 65,
+        "sha256": "3743198fbb11a43eb54dd719196533ec7930b91ce97f8b78f74e552a080d6741"
+      },
+      "small": {
+        "path": "train_small.parquet",
+        "pairs": 500,
+        "rows": 1000,
+        "human": 500,
+        "ai": 500,
+        "paper_pairs": 175,
+        "general_pairs": 325,
+        "sha256": "12af4b46f66f236bda335c1a980723e82a7b7be29ee5969742886079d618fe56"
+      },
+      "medium": {
+        "path": "train_medium.parquet",
+        "pairs": 1500,
+        "rows": 3000,
+        "human": 1500,
+        "ai": 1500,
+        "paper_pairs": 525,
+        "general_pairs": 975,
+        "sha256": "5a83ac715a26a85515c0f1a689bf833061c9e3bf467ef17dcd27692ad2932ea3"
+      },
+      "full": {
+        "path": "train_full.parquet",
+        "pairs": 2202,
+        "rows": 4404,
+        "human": 2202,
+        "ai": 2202,
+        "paper_pairs": 771,
+        "general_pairs": 1431,
+        "sha256": "8be94a477e0906b274461bd70548479f88c91b99d7ed7b3bb01623589f958039"
+      }
+    },
+    "val": {
+      "tiny": {
+        "path": "val_tiny.parquet",
+        "pairs": 100,
+        "rows": 200,
+        "human": 100,
+        "ai": 100,
+        "paper_pairs": 35,
+        "general_pairs": 65,
+        "sha256": "51da62cbdae68342c1531f9c11b6f66807d9c5b4997500e10675f15d7e74424f"
+      },
+      "small": {
+        "path": "val_small.parquet",
+        "pairs": 500,
+        "rows": 1000,
+        "human": 500,
+        "ai": 500,
+        "paper_pairs": 175,
+        "general_pairs": 325,
+        "sha256": "ae0d5c4f08a2c47531fdf7b07e67b98ddf9a2213af240553cf5f1417dc7f8fbf"
+      },
+      "full": {
+        "path": "val_full.parquet",
+        "pairs": 622,
+        "rows": 1244,
+        "human": 622,
+        "ai": 622,
+        "paper_pairs": 218,
+        "general_pairs": 404,
+        "sha256": "c947e0e1d2555eb7aa066231761773b849eb36376f4ce938fd78b8c3e8972169"
+      }
+    },
+    "test": {
+      "tiny": {
+        "path": "test_tiny.parquet",
+        "pairs": 100,
+        "rows": 200,
+        "human": 100,
+        "ai": 100,
+        "paper_pairs": 35,
+        "general_pairs": 65,
+        "sha256": "0cd2254b6229184a161ad4a50bb145e12c25aebc8f1118322590a2b319c2b0fe"
+      },
+      "small": {
+        "path": "test_small.parquet",
+        "pairs": 500,
+        "rows": 1000,
+        "human": 500,
+        "ai": 500,
+        "paper_pairs": 175,
+        "general_pairs": 325,
+        "sha256": "3881e1d47795bcdfa16993efe77e11df57a0939ce065db2517c8295cff151c44"
+      },
+      "full": {
+        "path": "test_full.parquet",
+        "pairs": 631,
+        "rows": 1262,
+        "human": 631,
+        "ai": 631,
+        "paper_pairs": 221,
+        "general_pairs": 410,
+        "sha256": "bf157c36c818833e9caf4424b3057a05b35ef05c69e010a26dac738d299171ea"
+      }
+    }
+  }
+}

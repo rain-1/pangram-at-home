@@ -15,6 +15,7 @@ FOLDERS = {
     "pmc": "pmc_pyramid_v1",
     "paper": "paper_pyramid_v1",
     "mixed": "mixed_pyramid_v1",
+    "cross": "paper_cross_model_test_v1",
 }
 
 
@@ -22,9 +23,25 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("dataset", choices=list(FOLDERS))
     parser.add_argument("--root", type=Path, default=Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home")))
+    parser.add_argument("--frozen-dir", type=Path, default=Path("manifests"))
     args = parser.parse_args()
     data = args.root / "data" / FOLDERS[args.dataset]
     manifest = json.loads((data / "manifest.json").read_text())
+    frozen = args.frozen_dir / f"{FOLDERS[args.dataset]}.json"
+    if frozen.exists():
+        assert manifest == json.loads(frozen.read_text()), f"Manifest differs from frozen {frozen}"
+    if args.dataset == "cross":
+        path = data / "test.parquet"
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == manifest["test_sha256"]
+        rows = pq.read_table(path).to_pylist()
+        assert len(rows) == manifest["rows"]
+        groups = {}
+        for row in rows:
+            groups.setdefault(row["source_id"], set()).add(row["label"])
+        assert len(groups) == manifest["pairs"]
+        assert all(labels == {0, 1} for labels in groups.values())
+        print(json.dumps({"dataset": "cross", "passed": True, "pairs": len(groups)}, indent=2))
+        return
     full_groups = {}
     full_hashes = {}
     full_venues = {}

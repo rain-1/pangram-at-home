@@ -11,6 +11,7 @@ import re
 from pathlib import Path
 
 import torch
+import pyarrow.parquet as pq
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 MODELS = {
@@ -42,6 +43,7 @@ def main() -> None:
     parser.add_argument("--model", choices=list(MODELS), default="qwen")
     parser.add_argument("--limit", type=int, default=0, help="For a small smoke run; 0 means all eligible papers")
     parser.add_argument("--batch-size", type=int, default=8)
+    parser.add_argument("--paper-test-only", action="store_true", help="Generate only IDs in the frozen combined paper test")
     args = parser.parse_args()
     source_dir = args.root / "data" / ("pmc_pilot_v1" if args.source == "pmc" else "acl_abstracts_v1")
     input_path = source_dir / "documents.jsonl.gz"
@@ -62,6 +64,13 @@ def main() -> None:
                 diverse.append(doc)
                 by_venue[venue] = by_venue.get(venue, 0) + 1
         docs = diverse
+    if args.paper_test_only:
+        test_path = args.root / "data" / "paper_pyramid_v1" / "test_full.parquet"
+        test_ids = {
+            row["source_id"] for row in pq.read_table(test_path, columns=["source", "source_id"]).to_pylist()
+            if row["source"] == ("pmc_oa" if args.source == "pmc" else "acl_anthology")
+        }
+        docs = [doc for doc in docs if doc["source_id"] in test_ids]
     if args.limit:
         docs = docs[:args.limit]
     done = set()
@@ -73,7 +82,7 @@ def main() -> None:
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
-    model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.bfloat16).to("cuda").eval()
+    model = AutoModelForCausalLM.from_pretrained(model_path, dtype=torch.bfloat16).to("cuda").eval()
     for offset in range(0, len(docs), args.batch_size):
         batch = docs[offset:offset + args.batch_size]
         prompts = [

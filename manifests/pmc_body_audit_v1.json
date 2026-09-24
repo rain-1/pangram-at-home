@@ -1,0 +1,8 @@
+{
+  "source": "pmc_pilot_v1; papers in pmc_pyramid_v1/test_full only",
+  "rows": 261,
+  "papers": 87,
+  "rights": "per-item CC BY 4.0",
+  "parquet_sha256": "52a903ea0f5ebb9f8e1ef204a1ed9d9d2b860eead8ec4cd77d46c3fbb390ddbe",
+  "test_pyramid_sha256": "1ec22b674594df8565f68b404d48927cdc91ffc967efb5467c3089edabf396b6"
+}

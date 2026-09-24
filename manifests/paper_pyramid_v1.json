@@ -1,0 +1,422 @@
+{
+  "source": "official PMC OA JATS + ACL Anthology XML, locally generated AI",
+  "inputs_sha256": {
+    "pmc_documents": "06419cbb1c029337ff717e209e55c85b69513e9eaf2a73c68ec060bac735b1eb",
+    "pmc_generation": "8978edcdf36f2fb18afd97ece33322f1d536497d2696b45e23d0e5394bccf6d6",
+    "acl_documents": "54ffa492caee004fefd548858a834b42c019df52dced723af5f06acba8744587",
+    "acl_generation": "38e0427b0d4e4feea78c2946d0c18cb3f0c92474134d66c22f3480da0b448546"
+  },
+  "human_cutoff": "2022-12-31",
+  "rights": "CC BY 4.0 verified per PMC article / ACL 2016+ publisher policy",
+  "generator_revisions": {
+    "Qwen/Qwen2.5-0.5B-Instruct": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "HuggingFaceTB/SmolLM2-1.7B-Instruct": "31b70e2e869a7173562077fd711b654946d38674"
+  },
+  "label_map": {
+    "human": 0,
+    "ai": 1
+  },
+  "rejections": {
+    "pmc": {
+      "length": 124,
+      "journal_cap": 98
+    },
+    "acl": {
+      "length": 73
+    }
+  },
+  "test_venues": [
+    [
+      "acl_anthology",
+      "autosimtrans"
+    ],
+    [
+      "acl_anthology",
+      "bionlp"
+    ],
+    [
+      "acl_anthology",
+      "calcs"
+    ],
+    [
+      "acl_anthology",
+      "dravidianlangtech"
+    ],
+    [
+      "acl_anthology",
+      "econlp"
+    ],
+    [
+      "acl_anthology",
+      "figlang"
+    ],
+    [
+      "acl_anthology",
+      "gebnlp"
+    ],
+    [
+      "acl_anthology",
+      "gem"
+    ],
+    [
+      "acl_anthology",
+      "gwc"
+    ],
+    [
+      "acl_anthology",
+      "gwll"
+    ],
+    [
+      "acl_anthology",
+      "insights"
+    ],
+    [
+      "acl_anthology",
+      "iwcs"
+    ],
+    [
+      "acl_anthology",
+      "iwslt"
+    ],
+    [
+      "acl_anthology",
+      "law"
+    ],
+    [
+      "acl_anthology",
+      "ltedi"
+    ],
+    [
+      "acl_anthology",
+      "maiworkshop"
+    ],
+    [
+      "acl_anthology",
+      "mia"
+    ],
+    [
+      "acl_anthology",
+      "mmtlrl"
+    ],
+    [
+      "acl_anthology",
+      "mrqa"
+    ],
+    [
+      "acl_anthology",
+      "nl4xai"
+    ],
+    [
+      "acl_anthology",
+      "nlp4if"
+    ],
+    [
+      "acl_anthology",
+      "osact"
+    ],
+    [
+      "acl_anthology",
+      "pam"
+    ],
+    [
+      "acl_anthology",
+      "pandl"
+    ],
+    [
+      "acl_anthology",
+      "privatenlp"
+    ],
+    [
+      "acl_anthology",
+      "semspace"
+    ],
+    [
+      "acl_anthology",
+      "sigmorphon"
+    ],
+    [
+      "acl_anthology",
+      "sltat"
+    ],
+    [
+      "acl_anthology",
+      "sustainlp"
+    ],
+    [
+      "acl_anthology",
+      "tsar"
+    ],
+    [
+      "acl_anthology",
+      "umios"
+    ],
+    [
+      "acl_anthology",
+      "wanlp"
+    ],
+    [
+      "acl_anthology",
+      "wassa"
+    ],
+    [
+      "acl_anthology",
+      "wmt"
+    ],
+    [
+      "acl_anthology",
+      "wnu"
+    ],
+    [
+      "acl_anthology",
+      "wordplay"
+    ],
+    [
+      "pmc_oa",
+      "Archives of Iranian medicine"
+    ],
+    [
+      "pmc_oa",
+      "Asian Journal of Urology"
+    ],
+    [
+      "pmc_oa",
+      "Bio-protocol"
+    ],
+    [
+      "pmc_oa",
+      "Communication & Sport"
+    ],
+    [
+      "pmc_oa",
+      "Current Protocols in Microbiology"
+    ],
+    [
+      "pmc_oa",
+      "Environmental Science and Pollution Research International"
+    ],
+    [
+      "pmc_oa",
+      "Food analytical methods"
+    ],
+    [
+      "pmc_oa",
+      "Forensic Sciences Research"
+    ],
+    [
+      "pmc_oa",
+      "Frontiers in Microbiology"
+    ],
+    [
+      "pmc_oa",
+      "Galen Medical Journal"
+    ],
+    [
+      "pmc_oa",
+      "Harvard data science review"
+    ],
+    [
+      "pmc_oa",
+      "IEEE transactions on radiation and plasma medical sciences"
+    ],
+    [
+      "pmc_oa",
+      "Information Retrieval"
+    ],
+    [
+      "pmc_oa",
+      "Journal of Abdominal Wall Surgery"
+    ],
+    [
+      "pmc_oa",
+      "Journal of Applied Oral Science"
+    ],
+    [
+      "pmc_oa",
+      "Journal of Health Monitoring"
+    ],
+    [
+      "pmc_oa",
+      "Journal of Inherited Metabolic Disease"
+    ],
+    [
+      "pmc_oa",
+      "Journal of high energy physics : JHEP"
+    ],
+    [
+      "pmc_oa",
+      "Journal of translational science"
+    ],
+    [
+      "pmc_oa",
+      "Life sciences"
+    ],
+    [
+      "pmc_oa",
+      "Medizinische Klinik, Intensivmedizin Und Notfallmedizin"
+    ],
+    [
+      "pmc_oa",
+      "Neurobiology of aging"
+    ],
+    [
+      "pmc_oa",
+      "Personality & Social Psychology Bulletin"
+    ],
+    [
+      "pmc_oa",
+      "Public Health Reviews"
+    ],
+    [
+      "pmc_oa",
+      "Review of Philosophy and Psychology"
+    ],
+    [
+      "pmc_oa",
+      "Scandinavian Journal of Immunology"
+    ],
+    [
+      "pmc_oa",
+      "Scandinavian Journal of Public Health"
+    ],
+    [
+      "pmc_oa",
+      "Science and Engineering Ethics"
+    ],
+    [
+      "pmc_oa",
+      "Unfallchirurgie (Heidelberg, Germany)"
+    ],
+    [
+      "pmc_oa",
+      "Urban Affairs Review (Thousand Oaks, Calif.)"
+    ]
+  ],
+  "splits": {
+    "train": {
+      "tiny": {
+        "path": "train_tiny.parquet",
+        "pairs": 50,
+        "rows": 100,
+        "human": 50,
+        "ai": 50,
+        "by_source": {
+          "acl_anthology": 33,
+          "pmc_oa": 17
+        },
+        "sha256": "677ce8c09713f01f85411103faa3b76e1ff334b85f2430368d3821d7ce6cefd2"
+      },
+      "small": {
+        "path": "train_small.parquet",
+        "pairs": 200,
+        "rows": 400,
+        "human": 200,
+        "ai": 200,
+        "by_source": {
+          "acl_anthology": 125,
+          "pmc_oa": 75
+        },
+        "sha256": "39b392bb87d9d61117e78d9ef20558914db6120959d60d1368af913aea2f570d"
+      },
+      "medium": {
+        "path": "train_medium.parquet",
+        "pairs": 500,
+        "rows": 1000,
+        "human": 500,
+        "ai": 500,
+        "by_source": {
+          "acl_anthology": 300,
+          "pmc_oa": 200
+        },
+        "sha256": "dbc13f2892d917d49811a09c7791e5df4931860012f833cfb1cb574278ff482a"
+      },
+      "full": {
+        "path": "train_full.parquet",
+        "pairs": 771,
+        "rows": 1542,
+        "human": 771,
+        "ai": 771,
+        "by_source": {
+          "acl_anthology": 462,
+          "pmc_oa": 309
+        },
+        "sha256": "d5081602228b5784c79026e87b3539b911b2b32a2149b8d25757eece8e24a708"
+      }
+    },
+    "val": {
+      "tiny": {
+        "path": "val_tiny.parquet",
+        "pairs": 50,
+        "rows": 100,
+        "human": 50,
+        "ai": 50,
+        "by_source": {
+          "acl_anthology": 30,
+          "pmc_oa": 20
+        },
+        "sha256": "371ce0004cc86c120623c911c0cc7afdd900185bef839e975508913f48906d14"
+      },
+      "small": {
+        "path": "val_small.parquet",
+        "pairs": 100,
+        "rows": 200,
+        "human": 100,
+        "ai": 100,
+        "by_source": {
+          "acl_anthology": 59,
+          "pmc_oa": 41
+        },
+        "sha256": "0dec263158ba3512517762db992c3510a632a2ba051e14b06bd62faf6000f886"
+      },
+      "full": {
+        "path": "val_full.parquet",
+        "pairs": 218,
+        "rows": 436,
+        "human": 218,
+        "ai": 218,
+        "by_source": {
+          "acl_anthology": 131,
+          "pmc_oa": 87
+        },
+        "sha256": "80c139cfd2b6c368d40522332320188d5def3e8be6937802b4154162bd94ab45"
+      }
+    },
+    "test": {
+      "tiny": {
+        "path": "test_tiny.parquet",
+        "pairs": 50,
+        "rows": 100,
+        "human": 50,
+        "ai": 50,
+        "by_source": {
+          "acl_anthology": 33,
+          "pmc_oa": 17
+        },
+        "sha256": "b3bf88f567126bafed9e4241b9c588e34d0ef7c53625bbda228778f6cb79f3c3"
+      },
+      "small": {
+        "path": "test_small.parquet",
+        "pairs": 100,
+        "rows": 200,
+        "human": 100,
+        "ai": 100,
+        "by_source": {
+          "acl_anthology": 54,
+          "pmc_oa": 46
+        },
+        "sha256": "2f48227f0dbd6c6667f7e6cd00e8f304b268112e4713a7ba200f3bb9bdfc1b89"
+      },
+      "full": {
+        "path": "test_full.parquet",
+        "pairs": 221,
+        "rows": 442,
+        "human": 221,
+        "ai": 221,
+        "by_source": {
+          "acl_anthology": 134,
+          "pmc_oa": 87
+        },
+        "sha256": "920f2e41eeda144322697e166990594ab810e6333e199ece5dce26653d53dbeb"
+      }
+    }
+  }
+}

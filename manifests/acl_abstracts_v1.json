@@ -1,0 +1,20 @@
+{
+  "source": "https://github.com/acl-org/acl-anthology.git",
+  "revision": "e4d087a11bc06b4600281bba45c40f3ab7a41bbe",
+  "years": [
+    2016,
+    2022
+  ],
+  "count": 20214,
+  "by_year": {
+    "2016": 259,
+    "2017": 85,
+    "2018": 202,
+    "2019": 169,
+    "2020": 6126,
+    "2021": 5600,
+    "2022": 7773
+  },
+  "license_evidence_url": "https://aclanthology.org/faq/copyright/",
+  "documents_sha256": "54ffa492caee004fefd548858a834b42c019df52dced723af5f06acba8744587"
+}

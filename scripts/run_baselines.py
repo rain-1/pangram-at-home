@@ -1,4 +1,4 @@
-"""Train simple binary detectors on the frozen EditLens research pyramid."""
+"""Train simple binary detectors on the frozen data pyramids."""
 
 from __future__ import annotations
 
@@ -99,6 +99,8 @@ def main() -> None:
     parser.add_argument("--train-tier", default="medium")
     parser.add_argument("--model", choices=["char", "word", "embedding"], default="char")
     parser.add_argument("--audit-acl", action="store_true", help="Report FPR on pre-2023 ACL human abstracts")
+    parser.add_argument("--audit-pmc-body", action="store_true", help="Report FPR on held-out PMC full-text chunks")
+    parser.add_argument("--cross-test", action="store_true", help="Score paper test with held-out generator swaps")
     args = parser.parse_args()
     root = args.root
     folder = {
@@ -143,6 +145,18 @@ def main() -> None:
         with gzip.open(acl_path, "rt", encoding="utf-8") as file:
             acl = [json.loads(line) for line in file]
         acl = [row for row in acl if 100 <= len(row["abstract"].split()) <= 350]
+        if args.dataset in {"paper", "mixed"}:
+            used_ids = set()
+            paper_dir = root / "data" / "paper_pyramid_v1"
+            for split in ["train", "val", "test"]:
+                used_ids.update(
+                    row["source_id"] for row in pq.read_table(
+                        paper_dir / f"{split}_full.parquet",
+                        columns=["source", "source_id"],
+                    ).to_pylist()
+                    if row["source"] == "acl_anthology"
+                )
+            acl = [row for row in acl if row["source_id"] not in used_ids]
         acl_scores = predict([row["abstract"] for row in acl])
         predicted = acl_scores >= threshold
         result["acl_human_audit"] = {
@@ -156,6 +170,27 @@ def main() -> None:
                 }
                 for year in sorted({row["year"] for row in acl})
             },
+        }
+    if args.audit_pmc_body:
+        if args.dataset not in {"editlens", "pmc"}:
+            raise SystemExit("PMC body audit is only work-disjoint from editlens/pmc training")
+        body = pq.read_table(root / "data" / "pmc_body_audit_v1" / "human_test.parquet", columns=["text"]).to_pydict()["text"]
+        body_scores = predict(body)
+        result["pmc_body_human_audit"] = {
+            "rows": len(body),
+            "false_positives": int((body_scores >= threshold).sum()),
+            "fpr": float((body_scores >= threshold).mean()),
+        }
+    if args.cross_test:
+        if args.dataset != "paper":
+            raise SystemExit("--cross-test requires --dataset paper")
+        texts, labels, sources = load(root / "data" / "paper_cross_model_test_v1" / "test.parquet")
+        scores = predict(texts)
+        result["cross_model_test"] = metrics(scores, labels, threshold)
+        result["cross_model_test"]["by_source"] = {
+            source: metrics(scores[np.asarray(sources) == source],
+                            labels[np.asarray(sources) == source], threshold)
+            for source in sorted(set(sources))
         }
     path = root / "results" / f"baseline_{args.dataset}_{args.model}_{args.train_tier}.json"
     path.parent.mkdir(parents=True, exist_ok=True)

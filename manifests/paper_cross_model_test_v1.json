@@ -1,0 +1,13 @@
+{
+  "source": "paper_pyramid_v1/test_full with Qwen/SmolLM generators swapped",
+  "purpose": "generator shift evaluation only; human works already occur in standard paper test",
+  "pairs": 182,
+  "rows": 364,
+  "rejected_for_length": 39,
+  "test_sha256": "9f05ae8a68abd320598103fd3aacdc3b736bad863074b50fda3d155d9d91b04e",
+  "standard_test_sha256": "920f2e41eeda144322697e166990594ab810e6333e199ece5dce26653d53dbeb",
+  "generation_sha256": {
+    "generated_smollm.jsonl:pmc_pilot_v1": "df3813183992b59c788d19c6e8d134a2d97dcd4cc4d476e4ef4c5a7b8e4bbdfc",
+    "generated_qwen.jsonl:acl_abstracts_v1": "1f2dc679afd87386d3eb0aa29d63d565788ad37ed05e44042af22aee5f3ad6b6"
+  }
+}

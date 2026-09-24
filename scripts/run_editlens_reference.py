@@ -90,8 +90,8 @@ def score(texts: list[str], tokenizer, model, batch_size: int) -> np.ndarray:
 
 
 def load(path: Path):
-    data = pq.read_table(path, columns=["text", "label"]).to_pydict()
-    return data["text"], np.asarray(data["label"], dtype=int)
+    data = pq.read_table(path, columns=["text", "label", "source"]).to_pydict()
+    return data["text"], np.asarray(data["label"], dtype=int), np.asarray(data["source"])
 
 
 def main() -> None:
@@ -102,6 +102,8 @@ def main() -> None:
     parser.add_argument("--tier", choices=["small", "full"], default="small")
     parser.add_argument("--batch-size", type=int, default=0)
     parser.add_argument("--audit-acl-limit", type=int, default=0)
+    parser.add_argument("--audit-pmc-body", action="store_true")
+    parser.add_argument("--cross-test", action="store_true")
     args = parser.parse_args()
     if not torch.cuda.is_available():
         raise SystemExit("CUDA is required")
@@ -114,7 +116,7 @@ def main() -> None:
         "mixed": "mixed_pyramid_v1",
     }[args.dataset]
     data = args.root / "data" / folder
-    val_text, val_label = load(data / f"val_{args.tier}.parquet")
+    val_text, val_label, _ = load(data / f"val_{args.tier}.parquet")
     val_scores = score(val_text, tokenizer, model, batch_size)
     threshold = threshold_for_fpr(val_scores, val_label, 0.02)
     result = {
@@ -123,9 +125,14 @@ def main() -> None:
         "val": metrics(val_scores, val_label, threshold),
     }
     for split in (["test", "test_enron"] if args.dataset == "editlens" else ["test"]):
-        test_text, test_label = load(data / f"{split}_{args.tier}.parquet")
+        test_text, test_label, sources = load(data / f"{split}_{args.tier}.parquet")
         test_scores = score(test_text, tokenizer, model, batch_size)
         result[split] = metrics(test_scores, test_label, threshold)
+        result[split]["by_source"] = {
+            source: metrics(test_scores[sources == source], test_label[sources == source], threshold)
+            for source in sorted(set(sources))
+            if len(set(test_label[sources == source])) == 2
+        }
     if args.audit_acl_limit:
         acl_path = args.root / "data" / "acl_abstracts_v1" / "documents.jsonl.gz"
         with gzip.open(acl_path, "rt", encoding="utf-8") as file:
@@ -138,6 +145,26 @@ def main() -> None:
             "rows": len(acl),
             "false_positives": int((acl_scores >= threshold).sum()),
             "fpr": float((acl_scores >= threshold).mean()),
+        }
+    if args.audit_pmc_body:
+        if args.dataset not in {"editlens", "pmc"}:
+            raise SystemExit("PMC body audit is only work-disjoint from editlens/pmc training")
+        body = pq.read_table(args.root / "data" / "pmc_body_audit_v1" / "human_test.parquet", columns=["text"]).to_pydict()["text"]
+        body_scores = score(body, tokenizer, model, batch_size)
+        result["pmc_body_human_audit"] = {
+            "rows": len(body),
+            "false_positives": int((body_scores >= threshold).sum()),
+            "fpr": float((body_scores >= threshold).mean()),
+        }
+    if args.cross_test:
+        if args.dataset != "paper":
+            raise SystemExit("--cross-test requires --dataset paper")
+        texts, labels, sources = load(args.root / "data" / "paper_cross_model_test_v1" / "test.parquet")
+        scores = score(texts, tokenizer, model, batch_size)
+        result["cross_model_test"] = metrics(scores, labels, threshold)
+        result["cross_model_test"]["by_source"] = {
+            source: metrics(scores[sources == source], labels[sources == source], threshold)
+            for source in sorted(set(sources))
         }
     out = args.root / "results" / f"reference_{args.dataset}_{args.model}_{args.tier}.json"
     out.write_text(json.dumps(result, indent=2) + "\n")

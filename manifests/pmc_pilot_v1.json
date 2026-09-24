@@ -1,0 +1,22 @@
+{
+  "source": "NCBI PMC E-utilities",
+  "query_years": [
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "per_year_target": 100,
+  "selected": 963,
+  "rights": "per-article CC BY 4.0 or CC0 1.0 verified from JATS XML",
+  "documents_sha256": "06419cbb1c029337ff717e209e55c85b69513e9eaf2a73c68ec060bac735b1eb",
+  "raw_xml_dir": "/mnt/f/pangram-at-home/data/pmc_pilot_v1/raw"
+}

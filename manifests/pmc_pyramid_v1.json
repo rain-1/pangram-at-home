@@ -1,0 +1,122 @@
+{
+  "source": "pmc_pilot_v1 + Qwen/Qwen2.5-0.5B-Instruct",
+  "inputs_sha256": {
+    "documents": "06419cbb1c029337ff717e209e55c85b69513e9eaf2a73c68ec060bac735b1eb",
+    "generation": "8978edcdf36f2fb18afd97ece33322f1d536497d2696b45e23d0e5394bccf6d6"
+  },
+  "rights": "PMC human text: CC BY 4.0 per item; AI text: generated locally",
+  "human_cutoff": "2022-12-31",
+  "label_map": {
+    "human": 0,
+    "ai": 1
+  },
+  "journal_cap": 20,
+  "selection_rejections": {
+    "length": 124,
+    "journal_cap": 99
+  },
+  "test_journals": [
+    "Advanced Science",
+    "Archives of Physical Medicine and Rehabilitation",
+    "Assessment",
+    "Biochemistry",
+    "British Journal of Cancer",
+    "Canadian Journal of Public Health = Revue Canadienne de Sant\u00e9 Publique",
+    "Cancer Pathogenesis and Therapy",
+    "Current Opinion in Oncology",
+    "Current Protocols in Bioinformatics",
+    "Current Protocols in Molecular Biology",
+    "Engineering in Life Sciences",
+    "Erkenntnis",
+    "European Journal of Hospital Pharmacy",
+    "Food and nutrition sciences (Print)",
+    "Forensic Sciences Research",
+    "Frontiers in Microbiology",
+    "Frontiers in women's health",
+    "Ghana Medical Journal",
+    "Information Retrieval",
+    "International Journal of Nursing Practice",
+    "International journal of electrochemistry",
+    "International journal of sports and exercise medicine",
+    "JACC Asia",
+    "Journal of Appalachian Health",
+    "Journal of Child Psychology and Psychiatry, and Allied Disciplines",
+    "Journal of Maxillofacial & Oral Surgery",
+    "Journal of Medical Imaging",
+    "Journal of Racial and Ethnic Health Disparities",
+    "Journal of reward deficiency syndrome",
+    "Limnology and Oceanography, Methods / Aslo",
+    "Medizinische Klinik, Intensivmedizin Und Notfallmedizin",
+    "Review of Philosophy and Psychology",
+    "Scandinavian Journal of Immunology",
+    "Schizophrenia Research",
+    "Social sciences (Basel, Switzerland)",
+    "The Journal of Animal Ecology",
+    "Water",
+    "Water Resources Research"
+  ],
+  "splits": {
+    "train": {
+      "tiny": {
+        "path": "train_tiny.parquet",
+        "pairs": 30,
+        "rows": 60,
+        "human": 30,
+        "ai": 30,
+        "sha256": "0a110a1f0a02e7340264a507d7af6513c7cc8f3058b735d428903346e782afed"
+      },
+      "small": {
+        "path": "train_small.parquet",
+        "pairs": 150,
+        "rows": 300,
+        "human": 150,
+        "ai": 150,
+        "sha256": "6c926323807acbb2ab6bf07ce5920e56640d7712320c62abbe0b7e59da2d3b77"
+      },
+      "full": {
+        "path": "train_full.parquet",
+        "pairs": 308,
+        "rows": 616,
+        "human": 308,
+        "ai": 308,
+        "sha256": "3ff563abcddf0935f933c5cef4f3d9669722963e629d09df0cd3842a393f4e51"
+      }
+    },
+    "val": {
+      "tiny": {
+        "path": "val_tiny.parquet",
+        "pairs": 30,
+        "rows": 60,
+        "human": 30,
+        "ai": 30,
+        "sha256": "d7b0fa253fe1700ea6f4e8a024933f3105bcbba51802e0e598ec77da04339717"
+      },
+      "full": {
+        "path": "val_full.parquet",
+        "pairs": 87,
+        "rows": 174,
+        "human": 87,
+        "ai": 87,
+        "sha256": "7de2ef8f271186119ec0962254192cc15a78812581c198977187f8801bf29c12"
+      }
+    },
+    "test": {
+      "tiny": {
+        "path": "test_tiny.parquet",
+        "pairs": 30,
+        "rows": 60,
+        "human": 30,
+        "ai": 30,
+        "sha256": "9768061b991544dfaeb42401ab7c2145942fbeb191c253ebcc85d122d47f7a46"
+      },
+      "full": {
+        "path": "test_full.parquet",
+        "pairs": 87,
+        "rows": 174,
+        "human": 87,
+        "ai": 87,
+        "sha256": "1ec22b674594df8565f68b404d48927cdc91ffc967efb5467c3089edabf396b6"
+      }
+    }
+  }
+}

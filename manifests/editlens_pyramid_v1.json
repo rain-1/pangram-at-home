@@ -1,0 +1,193 @@
+{
+  "dataset": "pangram/editlens_iclr",
+  "revision": "34ac1ade5a814c4cea098ef70328d92880d1f1c0",
+  "license": "CC BY-NC-SA 4.0; noncommercial research only",
+  "seed": "editlens-pyramid-v1",
+  "label_map": {
+    "human": 0,
+    "ai_generated": 1
+  },
+  "excludes": [
+    "ai_edited"
+  ],
+  "splits": {
+    "train": {
+      "tiny": {
+        "path": "train_tiny.parquet",
+        "rows": 1000,
+        "human": 500,
+        "ai": 500,
+        "sha256": "f7ad50d4e1da87a55514941dcf314203cf95100355eac097bfc6e3d12a1c6c2b",
+        "sources": {
+          "amazon_reviews": 142,
+          "fineweb_edu": 239,
+          "google_reviews": 89,
+          "news": 249,
+          "reddit_writing_prompts": 281
+        }
+      },
+      "small": {
+        "path": "train_small.parquet",
+        "rows": 5000,
+        "human": 2500,
+        "ai": 2500,
+        "sha256": "92cddb6f6aeea12da75d1692c1d9e02cb26d0099d406ff0779770fb1d56d9d01",
+        "sources": {
+          "amazon_reviews": 700,
+          "fineweb_edu": 1169,
+          "google_reviews": 498,
+          "news": 1278,
+          "reddit_writing_prompts": 1355
+        }
+      },
+      "medium": {
+        "path": "train_medium.parquet",
+        "rows": 20000,
+        "human": 10000,
+        "ai": 10000,
+        "sha256": "ce54335a6b8a5701f6297e5092994d967545412bfc26c2bb9880836e37fccbc8",
+        "sources": {
+          "amazon_reviews": 2842,
+          "fineweb_edu": 4676,
+          "google_reviews": 1975,
+          "news": 5079,
+          "reddit_writing_prompts": 5428
+        }
+      },
+      "large": {
+        "path": "train_large.parquet",
+        "rows": 37568,
+        "human": 18784,
+        "ai": 18784,
+        "sha256": "b7432beacc33768ab671f244516776be16a65713b8ee9afb9f1a6ebb88c0716e",
+        "sources": {
+          "amazon_reviews": 5497,
+          "fineweb_edu": 8683,
+          "google_reviews": 3735,
+          "news": 9511,
+          "reddit_writing_prompts": 10142
+        }
+      }
+    },
+    "val": {
+      "tiny": {
+        "path": "val_tiny.parquet",
+        "rows": 200,
+        "human": 100,
+        "ai": 100,
+        "sha256": "55ba64411cb7dc9309a832518d05d62ef496fb17625d2b359d42046c8ed7c0e7",
+        "sources": {
+          "amazon_reviews": 27,
+          "fineweb_edu": 35,
+          "google_reviews": 27,
+          "news": 57,
+          "reddit_writing_prompts": 54
+        }
+      },
+      "small": {
+        "path": "val_small.parquet",
+        "rows": 800,
+        "human": 400,
+        "ai": 400,
+        "sha256": "c19d4d289e0ec06c410b4cbe32aa8a7a518f38e6f9662b25e3b9157529821825",
+        "sources": {
+          "amazon_reviews": 119,
+          "fineweb_edu": 180,
+          "google_reviews": 79,
+          "news": 213,
+          "reddit_writing_prompts": 209
+        }
+      },
+      "full": {
+        "path": "val_full.parquet",
+        "rows": 1504,
+        "human": 752,
+        "ai": 752,
+        "sha256": "32b42c6291f5d0a1a4aac4aa03873242f46cabaf76f428d338d95f1dcf70c8c0",
+        "sources": {
+          "amazon_reviews": 242,
+          "fineweb_edu": 345,
+          "google_reviews": 147,
+          "news": 384,
+          "reddit_writing_prompts": 386
+        }
+      }
+    },
+    "test": {
+      "tiny": {
+        "path": "test_tiny.parquet",
+        "rows": 200,
+        "human": 100,
+        "ai": 100,
+        "sha256": "e6b46059a06042942373f53091ef548cbf07ec5c9e60780ef3cdfebe4fca4d96",
+        "sources": {
+          "amazon_reviews": 34,
+          "fineweb_edu": 44,
+          "google_reviews": 20,
+          "news": 47,
+          "reddit_writing_prompts": 55
+        }
+      },
+      "small": {
+        "path": "test_small.parquet",
+        "rows": 1000,
+        "human": 500,
+        "ai": 500,
+        "sha256": "01ee8551f03d9be5431a746548d851222990cedfb344908b4698f4ee4e0ae7a7",
+        "sources": {
+          "amazon_reviews": 125,
+          "fineweb_edu": 236,
+          "google_reviews": 108,
+          "news": 242,
+          "reddit_writing_prompts": 289
+        }
+      },
+      "full": {
+        "path": "test_full.parquet",
+        "rows": 4000,
+        "human": 2000,
+        "ai": 2000,
+        "sha256": "7300b92f24b7a822f96d7e24aaafd76530633e0e6b7dc7a1b023f055856dabf8",
+        "sources": {
+          "amazon_reviews": 530,
+          "fineweb_edu": 968,
+          "google_reviews": 413,
+          "news": 997,
+          "reddit_writing_prompts": 1092
+        }
+      }
+    },
+    "test_enron": {
+      "tiny": {
+        "path": "test_enron_tiny.parquet",
+        "rows": 200,
+        "human": 100,
+        "ai": 100,
+        "sha256": "69fc6877aa92e10526a637805849aa71f0613c1a32439b32a042e2454dde085a",
+        "sources": {
+          "enron_email": 200
+        }
+      },
+      "small": {
+        "path": "test_enron_small.parquet",
+        "rows": 1000,
+        "human": 500,
+        "ai": 500,
+        "sha256": "565758d25fcf7ad8ce84c78156da80fe6b6fe4ffc98a2efbd98ec075e3ea1cb5",
+        "sources": {
+          "enron_email": 1000
+        }
+      },
+      "full": {
+        "path": "test_enron_full.parquet",
+        "rows": 3600,
+        "human": 1800,
+        "ai": 1800,
+        "sha256": "beaaba956f2fc8b22eabf9622408a6b6324d1bff38348a1556e3202567c3de73",
+        "sources": {
+          "enron_email": 3600
+        }
+      }
+    }
+  }
+}
