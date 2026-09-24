@@ -1,0 +1,134 @@
+"""Train a Pangram-4-inspired stage-1 segment classifier on the frozen mixed split.
+
+Only binary whole-document labels are available, so this run trains a binary
+last-token head. Tokenwise and edit-fraction objectives need separate labels.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import time
+from pathlib import Path
+
+import numpy as np
+import pyarrow.parquet as pq
+import torch
+from peft import LoraConfig, TaskType, get_peft_model, prepare_model_for_kbit_training
+from sklearn.metrics import roc_auc_score
+from torch.utils.data import Dataset
+from transformers import (
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    DataCollatorWithPadding,
+    EarlyStoppingCallback,
+    Trainer,
+    TrainerCallback,
+    TrainingArguments,
+    set_seed,
+)
+
+
+class TextDataset(Dataset):
+    def __init__(self, path: Path, tokenizer, max_length: int):
+        rows = pq.read_table(path, columns=["text", "label"]).to_pydict()
+        self.labels = rows["label"]
+        self.encodings = tokenizer(rows["text"], truncation=True, max_length=max_length)
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, index):
+        return {**{key: value[index] for key, value in self.encodings.items()}, "labels": self.labels[index]}
+
+
+class DeadlineCallback(TrainerCallback):
+    def __init__(self, deadline: float):
+        self.deadline = deadline
+
+    def on_step_end(self, args, state, control, **kwargs):
+        if time.monotonic() >= self.deadline:
+            control.should_save = True
+            control.should_training_stop = True
+        return control
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, default=Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home")))
+    parser.add_argument("--model", type=Path, default=Path("/mnt/f/pangram-at-home/models/Qwen3-1.7B"))
+    parser.add_argument("--run-name", default="qwen3_17b_mixed_stage1_v1")
+    parser.add_argument("--train-tier", choices=["tiny", "small", "medium", "full"], default="full")
+    parser.add_argument("--max-length", type=int, default=512)
+    parser.add_argument("--epochs", type=float, default=6)
+    parser.add_argument("--hours", type=float, default=9.5)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--resume", default=None)
+    args = parser.parse_args()
+
+    torch.set_num_threads(4)
+    set_seed(args.seed)
+    folder = args.root / "data" / "mixed_pyramid_v1"
+    output = args.root / "runs" / args.run_name
+    output.mkdir(parents=True, exist_ok=True)
+    tokenizer = AutoTokenizer.from_pretrained(args.model, use_fast=True)
+    tokenizer.pad_token = tokenizer.eos_token
+    train = TextDataset(folder / f"train_{args.train_tier}.parquet", tokenizer, args.max_length)
+    val = TextDataset(folder / "val_full.parquet", tokenizer, args.max_length)
+    train_counts = np.bincount(train.labels, minlength=2).tolist()
+    assert train_counts[0] == train_counts[1], train_counts
+    quantization = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_use_double_quant=True)
+    model = AutoModelForSequenceClassification.from_pretrained(
+        args.model, num_labels=2, quantization_config=quantization,
+        device_map={"": 0}, dtype=torch.bfloat16,
+    )
+    model.config.pad_token_id = tokenizer.pad_token_id
+    model.config.use_cache = False
+    model = prepare_model_for_kbit_training(model)
+    model = get_peft_model(model, LoraConfig(
+        task_type=TaskType.SEQ_CLS, r=16, lora_alpha=32, lora_dropout=0.05,
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        modules_to_save=["score"],
+    ))
+    model.print_trainable_parameters()
+    config = {
+        "base_model": str(args.model), "train_file": str(folder / f"train_{args.train_tier}.parquet"),
+        "val_file": str(folder / "val_full.parquet"), "train_counts": train_counts,
+        "max_length": args.max_length, "epochs": args.epochs, "hours": args.hours,
+        "seed": args.seed, "task": "binary_segment_classification",
+        "label_0": "human", "label_1": "ai_generated",
+    }
+    (output / "run_config.json").write_text(json.dumps(config, indent=2) + "\n")
+
+    def metrics(pred):
+        logits, labels = pred
+        scores = torch.softmax(torch.from_numpy(logits.astype(np.float32)), dim=-1)[:, 1].numpy()
+        return {"roc_auc": roc_auc_score(labels, scores)}
+
+    training_args = TrainingArguments(
+        output_dir=str(output), run_name=args.run_name,
+        per_device_train_batch_size=2, per_device_eval_batch_size=4,
+        gradient_accumulation_steps=8, num_train_epochs=args.epochs,
+        learning_rate=1e-4, lr_scheduler_type="cosine", warmup_ratio=0.05,
+        bf16=True, gradient_checkpointing=True,
+        eval_strategy="epoch", save_strategy="epoch", save_total_limit=2,
+        load_best_model_at_end=True, metric_for_best_model="roc_auc", greater_is_better=True,
+        logging_steps=20, report_to="none", dataloader_num_workers=0,
+        remove_unused_columns=False, seed=args.seed,
+    )
+    trainer = Trainer(
+        model=model, args=training_args, train_dataset=train, eval_dataset=val,
+        data_collator=DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8),
+        compute_metrics=metrics,
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=2), DeadlineCallback(time.monotonic() + args.hours * 3600)],
+    )
+    trainer.train(resume_from_checkpoint=args.resume)
+    trainer.save_model(output / "best_adapter")
+    tokenizer.save_pretrained(output / "best_adapter")
+    (output / "train_summary.json").write_text(json.dumps({"best_metric": trainer.state.best_metric, "best_checkpoint": trainer.state.best_model_checkpoint, "global_step": trainer.state.global_step}, indent=2) + "\n")
+
+
+if __name__ == "__main__":
+    main()
