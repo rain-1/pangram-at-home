@@ -164,6 +164,12 @@ def main() -> None:
     output.mkdir(parents=True, exist_ok=True)
     manifest = {
         "source": "official PMC OA JATS + ACL Anthology XML, locally generated AI",
+        "inputs_sha256": {
+            "pmc_documents": hashlib.sha256((args.root / "data" / "pmc_pilot_v1" / "documents.jsonl.gz").read_bytes()).hexdigest(),
+            "pmc_generation": hashlib.sha256((args.root / "data" / "pmc_pilot_v1" / "generated_qwen.jsonl").read_bytes()).hexdigest(),
+            "acl_documents": hashlib.sha256((args.root / "data" / "acl_abstracts_v1" / "documents.jsonl.gz").read_bytes()).hexdigest(),
+            "acl_generation": hashlib.sha256((args.root / "data" / "acl_abstracts_v1" / "generated_smollm.jsonl").read_bytes()).hexdigest(),
+        },
         "human_cutoff": "2022-12-31",
         "rights": "CC BY 4.0 verified per PMC article / ACL 2016+ publisher policy",
         "generator_revisions": GENERATOR_REVISIONS,

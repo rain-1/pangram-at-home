@@ -119,6 +119,10 @@ def main() -> None:
     train = remaining[val_count:]
     manifest = {
         "source": "pmc_pilot_v1 + Qwen/Qwen2.5-0.5B-Instruct",
+        "inputs_sha256": {
+            "documents": hashlib.sha256((source / "documents.jsonl.gz").read_bytes()).hexdigest(),
+            "generation": hashlib.sha256((source / "generated_qwen.jsonl").read_bytes()).hexdigest(),
+        },
         "rights": "PMC human text: CC BY 4.0 per item; AI text: generated locally",
         "human_cutoff": "2022-12-31",
         "label_map": {"human": 0, "ai": 1},

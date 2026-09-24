@@ -90,6 +90,10 @@ def main() -> None:
     output.mkdir(parents=True, exist_ok=True)
     manifest = {
         "source": "paper_pyramid_v1 + editlens_pyramid_v1",
+        "input_manifests_sha256": {
+            "paper": hashlib.sha256((root / "data" / "paper_pyramid_v1" / "manifest.json").read_bytes()).hexdigest(),
+            "editlens": hashlib.sha256((root / "data" / "editlens_pyramid_v1" / "manifest.json").read_bytes()).hexdigest(),
+        },
         "license": "local noncommercial research; EditLens CC BY-NC-SA 4.0",
         "paper_share_target": PAPER_SHARE,
         "label_map": {"human": 0, "ai": 1},
