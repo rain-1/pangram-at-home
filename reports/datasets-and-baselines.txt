@@ -1,24 +1,20 @@
 DATASETS AND BASELINES
 
-Our Qwen3 run trained on 4,404 mixed rows: 2,202 human and 2,202 AI.
-The mixed split contains 1,542 paper-abstract rows from PMC and ACL,
-plus 2,862 general-text rows from EditLens. The other training splits
-below were used for local baselines, not for a separate Qwen run.
+Our Qwen3 run trained on these 4,404 rows (2,202 human; 2,202 AI):
 
-WHAT "MIXED" MEANS
+  PMC Open Access paper abstracts: 618 rows (309 human; 309 AI)
+  ACL Anthology paper abstracts: 924 rows (462 human; 462 AI)
+  EditLens general writing: 2,862 rows (1,431 human; 1,431 AI)
 
-"Mixed" combines two types of text in one balanced human-versus-AI split:
-about 35% scholarly paper abstracts from PMC Open Access and ACL Anthology,
-and 65% general writing from EditLens (including reviews, news, educational
-web text, and Reddit writing prompts). Each class has the same target mix.
-The paper AI examples were generated locally with Qwen2.5-0.5B and
-SmolLM2-1.7B; the EditLens AI examples include Claude, GPT, and Gemini.
-The 4,404-row mixed training split has 771 human and 771 AI paper rows,
-plus 1,431 human and 1,431 AI general-text rows.
+EditLens includes reviews, news, educational web text, and Reddit writing
+prompts. The paper AI examples were generated locally with Qwen2.5-0.5B
+and SmolLM2-1.7B; the EditLens AI examples include Claude, GPT, and
+Gemini. The other training splits below were used for local baselines,
+not for a separate Qwen run.
 
 TRAINING SPLITS
 
-Mixed: 4,404 rows (Qwen3 and mixed baselines)
+PMC + ACL + EditLens combined: 4,404 rows (Qwen3 and combined baselines)
 PMC + ACL papers: 1,542 rows (paper baselines)
 EditLens general text: 37,568 available; baselines used 20,000 rows
 PMC-only abstracts: 616 rows (PMC-only baselines)
@@ -28,13 +24,13 @@ All binary training splits are balanced human and AI.
 BASELINES
 
 1. Character 3-5-gram TF-IDF + logistic regression
-   Mixed: 200, 1,000, 3,000, and 4,404 training rows
+   PMC + ACL + EditLens combined: 200, 1,000, 3,000, and 4,404 rows
    Papers: 100, 400, 1,000, and 1,542 training rows
    EditLens: 20,000 training rows
    PMC-only: 616 training rows
 
 2. Word 1-2-gram TF-IDF + logistic regression
-   Mixed: 3,000 training rows
+   PMC + ACL + EditLens combined: 3,000 training rows
    Papers: 1,542 training rows
    EditLens: 20,000 training rows
    PMC-only: 616 training rows
