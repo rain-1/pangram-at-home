@@ -1,0 +1,71 @@
+{
+  "mixed": {
+    "Qwen3 1.7B": {
+      "auroc": 0.9999748845316342,
+      "human": 631,
+      "ai": 631
+    },
+    "Llama 3B": {
+      "auroc": 0.9995956409593105,
+      "human": 631,
+      "ai": 631
+    },
+    "RoBERTa": {
+      "auroc": 0.9986111145993707,
+      "human": 631,
+      "ai": 631
+    },
+    "Char TF-IDF full": {
+      "auroc": 0.9965139729908253,
+      "human": 631,
+      "ai": 631
+    },
+    "Char TF-IDF medium": {
+      "auroc": 0.9945348740835993,
+      "human": 631,
+      "ai": 631
+    },
+    "Word TF-IDF": {
+      "auroc": 0.9897478658130756,
+      "human": 631,
+      "ai": 631
+    },
+    "MiniLM embedding": {
+      "auroc": 0.8824797004226934,
+      "human": 631,
+      "ai": 631
+    }
+  },
+  "paper": {
+    "Qwen3 1.7B": {
+      "auroc": 0.9999385761962286,
+      "human": 221,
+      "ai": 221
+    },
+    "Llama 3B": {
+      "auroc": 0.9975635224504003,
+      "human": 221,
+      "ai": 221
+    },
+    "RoBERTa": {
+      "auroc": 0.9920149055097152,
+      "human": 221,
+      "ai": 221
+    },
+    "Char TF-IDF full": {
+      "auroc": 0.9992424397534858,
+      "human": 221,
+      "ai": 221
+    },
+    "Word TF-IDF": {
+      "auroc": 0.9994267111648001,
+      "human": 221,
+      "ai": 221
+    },
+    "MiniLM embedding": {
+      "auroc": 0.9377367375770357,
+      "human": 221,
+      "ai": 221
+    }
+  }
+}

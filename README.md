@@ -59,6 +59,8 @@ The [full results chart](reports/charts/full_results.png) compares both Qwen3 cu
 
 The [threshold trade-off report](reports/threshold-tradeoff.md) shows that changing only the decision cutoff from the original 3.7% AI score to a validation-selected 86.4% score reduces mixed-test human false positives from 19/631 to 4/631 while still detecting 631/631 AI texts. The [operating-point configuration](configs/qwen3_stage1_operating_point.json) records the exact logit-margin cutoff. This is a research operating point, not a guarantee of a <2% population false-positive rate.
 
+The [AUROC comparison](reports/auroc-comparison.md) includes shared-holdout ROC curves, a low false-positive zoom with both Qwen thresholds marked, and an overview of every saved baseline AUROC.
+
 ## Stage-1 neural training
 
 `scripts/train_segment_lora.py` trains a binary segment classifier based on the first stage of the [Pangram 4 report](https://arxiv.org/abs/2607.27183): a causal LLM backbone, a last-token classification head, and LoRA adapters. The pilot uses [Qwen3-1.7B](https://huggingface.co/Qwen/Qwen3-1.7B), 4-bit NF4 loading, 512-token windows, and the balanced mixed split (35% papers in each class). It evaluates on frozen validation data each epoch, keeps the best adapter, stops after two epochs without validation AUC improvement, and has a 9.5-hour wall-clock limit. Run files and checkpoints stay on `F:`.
