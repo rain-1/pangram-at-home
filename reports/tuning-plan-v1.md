@@ -19,7 +19,9 @@ Use [Ray Tune's ASHA scheduler](https://docs.ray.io/en/latest/tune/getting-start
 
 Evaluation is every 3,200 examples. ASHA's first pruning point is 6,400 examples, and the maximum budget is 25,600 examples, roughly 2.56 passes over the 10,000-row training set. Comparing examples seen rather than optimization steps makes batch-size comparisons interpretable. All trials log to Weights & Biases and save local checkpoints. A short local smoke run checked the new training metrics and checkpoint reports.
 
-The first rental target is a verified, reliable four-GPU RTX 4090 offer around $1.50/hour. A 12-hour cap would cost about $18 before storage and transfer. The first phase budget is $30, leaving over $120 of the stated $150 for longer confirmatory runs, dataset experiments, and scale studies. Offers and prices are checked again immediately before renting. Use on-demand instances and destroy them when outputs are collected; stopped instances can still incur storage charges.
+The first rental is a four-GPU RTX 4090 host at $1.674/hour. The monitor limits the active sweep to 15 hours or $26 from monitor start, before storage and transfer; setup time incurred under $2. The first phase remains under $30, leaving over $120 of the stated $150 for longer confirmatory runs, dataset experiments, and scale studies. Use on-demand instances and destroy them when outputs are collected; stopped instances can still incur storage charges.
+
+The host's CUDA stack failed on 4-bit bitsandbytes training. The remote sweep instead runs full BF16 weights with LoRA adapters; one-step training and validation completed on the host before the sweep started. This fits the 24 GB GPUs and does not change the trial search dimensions. The run configuration records the quantization mode.
 
 HEBO is an available second-stage option through [Ray's HEBOSearch integration](https://docs.ray.io/en/latest/tune/api/doc/ray.tune.search.hebo.HEBOSearch.html). The first phase uses random search plus ASHA, which is simple to parallelize and gives a diverse initial set of observations. We can let HEBO refine around the promising region after that data exists.
 
