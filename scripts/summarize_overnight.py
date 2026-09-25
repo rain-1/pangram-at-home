@@ -19,15 +19,18 @@ def main():
         span=json.loads((run/"span_validation.json").read_text()) if (run/"span_validation.json").exists() else None
         rows.append({"run":name,"config":config,"training":summary,"best_checkpoint_validation":best,"span_validation":span})
     (out/"overnight_repeat2_span_v1.json").write_text(json.dumps(rows,indent=2)+"\n")
+    hpo=json.loads((args.root/"vast_results_v1/live/hpo_diverse_v3_best_config.json").read_text())
+    vast_row=f'| Vast selected model (existing) | 3200 | 3200 | {hpo["validation_partial_auc_fpr_5pct"]:.5f} | remote | remote |\n'
     token_trained=any(r["config"].get("task")=="binary_token_classification" for r in rows)
-    text="# Local Repeat2 and window evaluation\n\nValidation-only development results. No blind test was used.\n\n"
+    text="# Vast winner and local Repeat2 comparison\n\nValidation-only development results. No blind test was used.\n\n"
     if not token_trained:
         text+="Token training was deferred pending realistic, reviewed span data. Highlighting uses coarse overlapping-window classification scores.\n\n"
     text+="| Run | Steps | Best step | Validation pAUC | Training hours | Peak allocated GB |\n| --- | --- | --- | --- | --- | --- |\n"
+    text+=vast_row
     for r in rows:
         m=r["best_checkpoint_validation"];s=r["training"]
         text+=f'| {r["run"]} | {s["global_step"]} | {m.get("step")} | {m.get("eval_partial_auc_fpr_5pct",float("nan")):.5f} | {s.get("train_runtime_seconds",0)/3600:.2f} | {s.get("peak_allocated_gb",0):.2f} |\n'
-    text+="\nThe first two rows measure passage classification on the same validation documents. Compare them only if both completed the requested 3,200 steps. The token pilot uses a different synthetic validation task: its token pAUC is not comparable to passage pAUC. Its span evaluation includes overlapping-window aggregation and separate pure-human controls.\n"
+    text+="\nThe saved Vast model is the practical benchmark for improvement. The two fresh local runs isolate Repeat2: compare their passage metrics only if both completed the requested 3,200 steps. Vast used microbatch 2 × accumulation 4; local runs use 1 × 8, with the same effective batch. The token pilot, if enabled, uses a different synthetic task, so its token pAUC is not directly comparable.\n"
     text+="\nSynthetic joins and inherited source labels limit realism. An AI-assisted class is not trained. HPO settings and the selected adapter are starting points; no claim is made that they are optimal for token training.\n"
     text+="\nWhole-document span diagnostics (including the passage classifiers as coarse sliding-window baselines) are in the JSON report. Their thresholds are calibrated on the same development controls, so they do not estimate blind-test FPR.\n"
     (out/"overnight_repeat2_span_v1.md").write_text(text)

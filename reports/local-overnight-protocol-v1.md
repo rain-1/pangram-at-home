@@ -4,6 +4,8 @@ The queue is `scripts/run_local_overnight.py`. Its total wall-clock budget is te
 
 ## Matched passage comparison
 
+The selected and already trained Vast model is the practical benchmark. The fresh local single-copy run supplies a controlled comparator for the new Repeat2 run on the 4080. All three use the same 800-passage validation set; the remote microbatch differs from the two local runs. Report the Vast winner alongside the local pair.
+
 | Setting | Single copy | Repeat2 |
 | --- | --- | --- |
 | Base | Qwen3-1.7B, BF16 LoRA | Same |
