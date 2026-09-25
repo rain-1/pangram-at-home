@@ -5,6 +5,7 @@ peft==0.18.1
 accelerate==1.13.0
 bitsandbytes==0.49.2
 ray[tune]==2.58.0
+wandb==0.22.3
 
 # Optional for `--search hebo` after the initial ASHA sweep:
 # hebo>=0.3
