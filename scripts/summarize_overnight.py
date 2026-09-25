@@ -19,7 +19,10 @@ def main():
         span=json.loads((run/"span_validation.json").read_text()) if (run/"span_validation.json").exists() else None
         rows.append({"run":name,"config":config,"training":summary,"best_checkpoint_validation":best,"span_validation":span})
     (out/"overnight_repeat2_span_v1.json").write_text(json.dumps(rows,indent=2)+"\n")
-    text="# Local Repeat2 and span pilot\n\nValidation-only development results. No blind test was used.\n\n"
+    token_trained=any(r["config"].get("task")=="binary_token_classification" for r in rows)
+    text="# Local Repeat2 and window evaluation\n\nValidation-only development results. No blind test was used.\n\n"
+    if not token_trained:
+        text+="Token training was deferred pending realistic, reviewed span data. Highlighting uses coarse overlapping-window classification scores.\n\n"
     text+="| Run | Steps | Best step | Validation pAUC | Training hours | Peak allocated GB |\n| --- | --- | --- | --- | --- | --- |\n"
     for r in rows:
         m=r["best_checkpoint_validation"];s=r["training"]

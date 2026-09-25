@@ -1,4 +1,4 @@
-"""Bounded local sequence Repeat2 comparison followed by a token pilot."""
+"""Bounded local Repeat2 comparison, with an optional token pilot."""
 import argparse
 import fcntl
 import json
@@ -15,6 +15,9 @@ REPO=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser();p.add_argument("--root",type=Path,default=Path("/mnt/f/pangram-at-home"))
     p.add_argument("--hours",type=float,default=10);p.add_argument("--dry-run",action="store_true")
+    p.add_argument("--include-token-pilot",action="store_true")
+    p.add_argument("--resume-controller",action="store_true")
+    p.add_argument("--adopt-pid",type=int,help="Existing trainer PID when restarting only the controller")
     args=p.parse_args();root=args.root
     lock=open("/tmp/pangram_local_overnight.lock","w")
     fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -34,21 +37,28 @@ def main():
         if repeat:command.append("--repeat2")
         jobs.append((name,command,"sequence"))
     name="qwen3_token_repeat2_pilot_v1"
-    jobs.append((name,[sys.executable,"-u","scripts/train_token_lora.py",*common,"--run-name",name,
-        "--init-adapter",str(adapter),"--max-steps","800","--eval-steps","200","--batch-size","1","--accumulation","8"],"token"))
+    if args.include_token_pilot:
+        jobs.append((name,[sys.executable,"-u","scripts/train_token_lora.py",*common,"--run-name",name,
+            "--init-adapter",str(adapter),"--max-steps","800","--eval-steps","200","--batch-size","1","--accumulation","8"],"token"))
     if args.dry_run:
         print(json.dumps(jobs,indent=2));return
     if not os.getenv("WANDB_API_KEY"):raise SystemExit("WANDB_API_KEY required")
     for name,_,_ in jobs:
-        if (root/"runs"/name).exists():raise SystemExit(f"Run already exists: {name}")
-    if not (adapter/"adapter_config.json").exists():raise SystemExit("Initialization adapter download incomplete")
+        if (root/"runs"/name).exists() and not args.resume_controller:raise SystemExit(f"Run already exists: {name}")
+    if args.include_token_pilot and not (adapter/"adapter_config.json").exists():raise SystemExit("Initialization adapter download incomplete")
     os.environ.update(WANDB_PROJECT="pangram-at-home",WANDB_RUN_GROUP="local_repeat2_span_v1",
         WANDB_DIR=str(root/"wandb"),TOKENIZERS_PARALLELISM="false",CUDA_VISIBLE_DEVICES="0",
         OMP_NUM_THREADS="4",OPENBLAS_NUM_THREADS="4")
     (root/"wandb").mkdir(exist_ok=True)
-    logdir=root/"overnight_repeat2_span_v1";logdir.mkdir(exist_ok=False)
-    started=time.time();deadline=time.monotonic()+args.hours*3600
-    status={"started":started,"max_hours":args.hours,"jobs":[],"state":"running"}
+    logdir=root/"overnight_repeat2_span_v1";logdir.mkdir(exist_ok=args.resume_controller)
+    if args.resume_controller:
+        status=json.loads((logdir/"status.json").read_text())
+        started=status["started"];allowed_hours=status["max_hours"]
+    else:
+        started=time.time();allowed_hours=args.hours
+        status={"started":started,"max_hours":args.hours,"jobs":[]}
+    deadline=time.monotonic()+max(0,allowed_hours*3600-(time.time()-started))
+    status.update(state="running",token_pilot_enabled=args.include_token_pilot)
     def save():
         tmp=logdir/"status.tmp";tmp.write_text(json.dumps(status,indent=2)+"\n");tmp.replace(logdir/"status.json")
     def execute(command,name):
@@ -65,10 +75,28 @@ def main():
             if code:raise RuntimeError(f"{name} exited {code}; see its log")
     try:
         for name,command,task in jobs:
+            if any(job["name"]==name for job in status["jobs"]):continue
             remaining=deadline-time.monotonic()
             if remaining<600:raise TimeoutError("Insufficient time for another training stage")
             status["current_job"]=name;save();print("Starting",name,flush=True)
-            execute(command+["--hours",str(max(.05,(remaining-300)/3600))],name)
+            run=root/"runs"/name
+            if args.adopt_pid is not None:
+                pid=args.adopt_pid;proc=Path(f"/proc/{pid}")
+                if not proc.exists() or name not in (proc/"cmdline").read_bytes().decode().split("\0"):
+                    raise RuntimeError("Adopted PID does not match the expected training run")
+                status["adopted_trainer_pid"]=pid;save()
+                print("Monitoring existing trainer",pid,"without restarting training",flush=True)
+                while proc.exists():
+                    try:
+                        if (proc/"stat").read_text().split(") ",1)[1].startswith("Z"):break
+                    except FileNotFoundError:break
+                    if time.monotonic()>=deadline:
+                        os.kill(pid,signal.SIGTERM)
+                        raise TimeoutError("Overnight time limit reached during adopted training")
+                    time.sleep(10)
+                args.adopt_pid=None
+            elif not (run/"train_summary.json").exists():
+                execute(command+["--hours",str(max(.05,(remaining-300)/3600))],name)
             summary=json.loads((root/"runs"/name/"train_summary.json").read_text())
             status["jobs"].append({"name":name,"training":summary});save()
         # Paired passage models also provide coarse window-level localization baselines.

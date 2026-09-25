@@ -23,9 +23,11 @@ Both start from the same base, not from a previously trained adapter. This isola
 
 The selected checkpoint for each run maximizes validation partial AUROC at ≤5% FPR. Report the complete learning curves and equal-budget endpoints too. Keep additional test suites untouched during this pilot. Repetition costs more computation at equal examples and is not assumed to improve passage classification.
 
-## Token pilot
+## Token pilot (deferred)
 
-After the pair, train `qwen3_token_repeat2_pilot_v1` for 800 steps (6,400 windows), evaluating every 200. Transfer the selected remote winner's backbone LoRA weights and initialize a new token head. Transfer checks require identical LoRA module keys, rank, and alpha; the sequence head is discarded. The initial adapter SHA256 is `2af818a57d10139ad8f8e6889a560b870278a82c05099a216d5b998be6ee86c7`.
+Updated scope: the user chose coarse overlapping-window scores until realistic, reviewed span data is available. The current queue runs the matched passage pair and their window-based diagnostics. Token training is deferred and requires the explicit `--include-token-pilot` flag. The design below is retained for later work.
+
+If explicitly enabled later, train `qwen3_token_repeat2_pilot_v1` for 800 steps (6,400 windows), evaluating every 200. Transfer the selected remote winner's backbone LoRA weights and initialize a new token head. Transfer checks require identical LoRA module keys, rank, and alpha; the sequence head is discarded. The initial adapter SHA256 is `2af818a57d10139ad8f8e6889a560b870278a82c05099a216d5b998be6ee86c7`.
 
 The pilot uses 1,200 constructed training documents and 240 development documents. Each split contains 25% pure human, 25% pure AI, and 50% alternating mixtures, sampled from its respective original split. No original text hash or group ID crosses train/validation. Mixtures combine excerpts from the same source category with exact offsets; labels inherit the parent rows' binary labels. The new construction does not independently verify every parent's provenance, and joins can create topic artifacts. It is an engineering and learning pilot, not a realistic mixed-authorship benchmark.
 
