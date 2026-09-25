@@ -35,8 +35,9 @@ def main():
         for row in rows:
             ids,offsets,labels=encode_document(row,tokenizer)
             total=np.zeros(len(ids),dtype=np.float64);counts=np.zeros(len(ids),dtype=np.int32)
-            for start in window_starts(len(ids)):
-                window=ids[start:start+512];n=len(window)
+            size=config["max_length"]
+            for start in window_starts(len(ids),size,max(1,size//2)):
+                window=ids[start:start+size];n=len(window)
                 seq=window+window if config["repeat2"] else window
                 x=torch.tensor([seq],device="cuda");logits=model(input_ids=x,attention_mask=torch.ones_like(x)).logits.float()[0]
                 if args.task=="token":
@@ -68,7 +69,8 @@ def main():
             else:spans.append({"start":start,"end":end,"label":int(label)})
         predictions.append({"id":r["row"]["id"],"spans":spans})
     report={"run_name":args.run_name,"role":"synthetic validation calibration diagnostics; not a blind test",
-        "task":args.task,"repeat2":config["repeat2"],"threshold":threshold,
+        "task":args.task,"repeat2":config["repeat2"],"window_size":config["max_length"],
+        "window_stride":max(1,config["max_length"]//2),"threshold":threshold,
         "threshold_source":"same validation pure-human control tokens; target 2% token FPR",
         "overall":summarize(results),"human_character_false_highlight_rate":false_chars/human_chars,
         "pure_human_document_any_false_highlight_rate":float(np.mean([np.any(r["score"][r["label"]==0]>=threshold) for r in purehuman])),

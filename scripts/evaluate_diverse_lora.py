@@ -89,6 +89,8 @@ def main() -> None:
     parser.add_argument("--run-name", default="qwen3_17b_diverse_v1")
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--wandb-run-id", default="")
+    parser.add_argument("--validation-only", action="store_true",
+                        help="Development diagnostics without opening any held-out test sets")
     args = parser.parse_args()
     torch.set_num_threads(4)
     run = args.root / "runs" / args.run_name
@@ -113,6 +115,8 @@ def main() -> None:
     names = ["val", "test", "raid_external", "enron_external", "gpt4_ood", "paraphrase",
              "standard_ebooks_human", "persuade_essays_human", "federal_reserve_human",
              "stackexchange_writers_human", "pmc_full_body_human"]
+    if args.validation_only:
+        names = ["val"]
     scored = {}
     for name in names:
         path, rows = read_rows(args.root, name)
@@ -146,6 +150,28 @@ def main() -> None:
         scored[name] = (scores, labels, source, domain, generator, input_hash)
     val_scores, val_labels, *_ = scored["val"]
     threshold = threshold_for_fpr(val_scores, val_labels, .02)
+    if args.validation_only:
+        scores, labels, source, domain, generator, input_hash = scored["val"]
+        report = {"run_name": args.run_name, "role": "development validation only",
+                  "adapter_sha256": sha256(adapter / "adapter_model.safetensors"),
+                  "threshold": threshold, "threshold_source": "validation, <=2% human FPR",
+                  "overall": group_metrics(scores, labels, threshold),
+                  "by_domain": {d: group_metrics(scores[domain == d], labels[domain == d], threshold)
+                                for d in sorted(set(domain))},
+                  "by_source": {s: group_metrics(scores[source == s], labels[source == s], threshold)
+                                for s in sorted(set(source))},
+                  "input_sha256": input_hash}
+        (run / "validation_diagnostics.json").write_text(json.dumps(report, indent=2) + "\n")
+        if args.wandb_run_id:
+            import wandb
+            wb = wandb.init(project="pangram-at-home", entity="eac-adsf", id=args.wandb_run_id,
+                            resume="must", job_type="validation-diagnostics")
+            for field in ("roc_auc", "fpr", "tpr"):
+                if report["overall"].get(field) is not None:
+                    wb.summary[f"validation_diagnostics/{field}"] = report["overall"][field]
+            wb.finish()
+        print(json.dumps({"run_name": args.run_name, "overall": report["overall"]}), flush=True)
+        return
     report = {"run_name": args.run_name, "adapter_sha256": sha256(adapter / "adapter_model.safetensors"),
               "threshold": threshold, "threshold_source": "diverse validation, <=2% human FPR",
               "repeat2": config.get("repeat2", False),
