@@ -18,6 +18,9 @@ for name, expected in manifest['files'].items():
 print('Verified', len(manifest['files']), 'package files; no test sets included.')
 PY
 python -m pip install -q -r requirements-tune.txt
+# The base image's torchvision build may not match the pinned PyTorch build.
+# Text-only training has no torchvision dependency.
+python -m pip uninstall -y torchvision >/dev/null 2>&1 || true
 python - <<'PY'
 import json
 from pathlib import Path

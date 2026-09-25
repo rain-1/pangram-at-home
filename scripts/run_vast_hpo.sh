@@ -12,6 +12,7 @@ export WANDB_DIR="$root/wandb"
 export WANDB_CONSOLE=off
 export TOKENIZERS_PARALLELISM=false
 export RAY_DISABLE_DOCKER_CPU_WARNING=1
+export PANGRAM_TUNE_QUANTIZATION=none
 
 python -u scripts/tune_diverse_ray.py --root "$root" --mode hpo --search random \
   --trials 24 --max-examples 25600 --eval-examples 3200 --report-to wandb \

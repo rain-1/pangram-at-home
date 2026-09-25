@@ -109,6 +109,7 @@ def main():
     parser.add_argument("--max-steps", type=int, default=-1)
     parser.add_argument("--metrics-jsonl", type=Path)
     parser.add_argument("--selection-metric", choices=["roc_auc", "partial_auc_fpr_5pct"], default="roc_auc")
+    parser.add_argument("--quantization", choices=["nf4", "none"], default="nf4")
     args = parser.parse_args()
 
     torch.set_num_threads(4)
@@ -124,14 +125,18 @@ def main():
     val = TextDataset(folder / "val_full.parquet", tokenizer, args.max_length)
     train_counts = np.bincount(train.labels, minlength=2).tolist()
     assert train_counts[0] == train_counts[1], train_counts
-    quantization = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_use_double_quant=True)
+    quantization = (BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
+                                      bnb_4bit_compute_dtype=torch.bfloat16,
+                                      bnb_4bit_use_double_quant=True)
+                    if args.quantization == "nf4" else None)
     model = AutoModelForSequenceClassification.from_pretrained(
         args.model, num_labels=2, quantization_config=quantization,
         device_map={"": 0}, dtype=torch.bfloat16,
     )
     model.config.pad_token_id = tokenizer.pad_token_id
     model.config.use_cache = False
-    model = prepare_model_for_kbit_training(model)
+    if quantization is not None:
+        model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, LoraConfig(
         task_type=TaskType.SEQ_CLS, r=args.lora_rank, lora_alpha=args.lora_alpha,
         lora_dropout=args.lora_dropout,
@@ -154,6 +159,7 @@ def main():
         "effective_batch_size": args.train_batch_size * args.gradient_accumulation_steps,
         "max_steps": args.max_steps,
         "selection_metric": args.selection_metric,
+        "quantization": args.quantization,
         "train_sha256": file_sha256(folder / f"train_{args.train_tier}.parquet"),
         "val_sha256": file_sha256(folder / "val_full.parquet"),
         "dataset_manifest_sha256": file_sha256(folder / "manifest.json"),
