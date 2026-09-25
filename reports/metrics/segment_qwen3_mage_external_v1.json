@@ -1,0 +1,386 @@
+{
+  "run_name": "qwen3_17b_mixed_stage1_v1",
+  "adapter_sha256": "82aeb8d17351302de7d1cc424f5bbfecb67ff86c4425e0190a24ebb6157b2afa",
+  "threshold_source": "mixed validation midpoint, frozen before MAGE evaluation",
+  "threshold_margin": 1.84765625,
+  "mage_revision": "342663f0a2b775455c023f5d36a1341ff0ec5402",
+  "splits": {
+    "main": {
+      "rows": 4000,
+      "human": 2000,
+      "ai": 2000,
+      "tp": 326,
+      "fp": 22,
+      "recall": 0.163,
+      "fpr": 0.011,
+      "roc_auc": 0.633320125,
+      "average_precision": 0.6874130646578798,
+      "input_sha256": "8bfdaeb2b1a99c1af73971128e302d0b3428404daf7cdf821180f96fdf33a977",
+      "by_domain": {
+        "cmv": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 39,
+          "fp": 0,
+          "recall": 0.195,
+          "fpr": 0.0,
+          "roc_auc": 0.6325125,
+          "average_precision": 0.7078367388189062
+        },
+        "eli5": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 20,
+          "fp": 0,
+          "recall": 0.1,
+          "fpr": 0.0,
+          "roc_auc": 0.7185625,
+          "average_precision": 0.7574427684719105
+        },
+        "hswag": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 32,
+          "fp": 3,
+          "recall": 0.16,
+          "fpr": 0.015,
+          "roc_auc": 0.5707375000000001,
+          "average_precision": 0.6644030725841619
+        },
+        "roct": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 35,
+          "fp": 0,
+          "recall": 0.175,
+          "fpr": 0.0,
+          "roc_auc": 0.5512250000000001,
+          "average_precision": 0.6652614164269983
+        },
+        "sci": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 24,
+          "fp": 1,
+          "recall": 0.12,
+          "fpr": 0.005,
+          "roc_auc": 0.75585,
+          "average_precision": 0.7774555679683424
+        },
+        "squad": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 13,
+          "fp": 0,
+          "recall": 0.065,
+          "fpr": 0.0,
+          "roc_auc": 0.5887125,
+          "average_precision": 0.6357891620399962
+        },
+        "tldr": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 60,
+          "fp": 14,
+          "recall": 0.3,
+          "fpr": 0.07,
+          "roc_auc": 0.6172625,
+          "average_precision": 0.7043787772808501
+        },
+        "wp": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 48,
+          "fp": 1,
+          "recall": 0.24,
+          "fpr": 0.005,
+          "roc_auc": 0.753025,
+          "average_precision": 0.7898479128827889
+        },
+        "xsum": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 41,
+          "fp": 0,
+          "recall": 0.205,
+          "fpr": 0.0,
+          "roc_auc": 0.714575,
+          "average_precision": 0.7583181481824149
+        },
+        "yelp": {
+          "rows": 400,
+          "human": 200,
+          "ai": 200,
+          "tp": 14,
+          "fp": 3,
+          "recall": 0.07,
+          "fpr": 0.015,
+          "roc_auc": 0.5110250000000001,
+          "average_precision": 0.570544310656493
+        }
+      }
+    },
+    "gpt4_ood": {
+      "rows": 1200,
+      "human": 600,
+      "ai": 600,
+      "tp": 572,
+      "fp": 2,
+      "recall": 0.9533333333333334,
+      "fpr": 0.0033333333333333335,
+      "roc_auc": 0.9948236111111112,
+      "average_precision": 0.9959095398495174,
+      "input_sha256": "02827d661b7ff2bfc95c4e66063f0562d31c2fd73c12cafb92224440a3b1d2d3",
+      "by_domain": {
+        "cnn": {
+          "rows": 300,
+          "human": 150,
+          "ai": 150,
+          "tp": 143,
+          "fp": 0,
+          "recall": 0.9533333333333334,
+          "fpr": 0.0,
+          "roc_auc": 0.9960444444444444,
+          "average_precision": 0.996831932811386
+        },
+        "dialogsum": {
+          "rows": 300,
+          "human": 150,
+          "ai": 150,
+          "tp": 131,
+          "fp": 0,
+          "recall": 0.8733333333333333,
+          "fpr": 0.0,
+          "roc_auc": 0.9882444444444445,
+          "average_precision": 0.9905020388183844
+        },
+        "imdb": {
+          "rows": 300,
+          "human": 150,
+          "ai": 150,
+          "tp": 150,
+          "fp": 2,
+          "recall": 1.0,
+          "fpr": 0.013333333333333334,
+          "roc_auc": 1.0,
+          "average_precision": 1.0
+        },
+        "pubmed": {
+          "rows": 300,
+          "human": 150,
+          "ai": 150,
+          "tp": 148,
+          "fp": 0,
+          "recall": 0.9866666666666667,
+          "fpr": 0.0,
+          "roc_auc": 0.9999111111111111,
+          "average_precision": 0.9999122807017543
+        }
+      }
+    },
+    "paraphrase": {
+      "rows": 1200,
+      "human": 600,
+      "ai": 600,
+      "tp": 321,
+      "fp": 2,
+      "recall": 0.535,
+      "fpr": 0.0033333333333333335,
+      "roc_auc": 0.9439986111111112,
+      "average_precision": 0.951268319266091,
+      "input_sha256": "86ba2de76fc406e64f0cf8c0c7aae2d76feb20cd358b69a4b65ce7839daaa564",
+      "by_domain": {
+        "cnn": {
+          "rows": 300,
+          "human": 150,
+          "ai": 150,
+          "tp": 79,
+          "fp": 0,
+          "recall": 0.5266666666666666,
+          "fpr": 0.0,
+          "roc_auc": 0.9704444444444443,
+          "average_precision": 0.9732973018719668
+        },
+        "dialogsum": {
+          "rows": 300,
+          "human": 150,
+          "ai": 150,
+          "tp": 63,
+          "fp": 0,
+          "recall": 0.42,
+          "fpr": 0.0,
+          "roc_auc": 0.9612222222222222,
+          "average_precision": 0.9635366858497427
+        },
+        "imdb": {
+          "rows": 300,
+          "human": 150,
+          "ai": 150,
+          "tp": 90,
+          "fp": 2,
+          "recall": 0.6,
+          "fpr": 0.013333333333333334,
+          "roc_auc": 0.9586444444444445,
+          "average_precision": 0.9633326821177464
+        },
+        "pubmed": {
+          "rows": 300,
+          "human": 150,
+          "ai": 150,
+          "tp": 89,
+          "fp": 0,
+          "recall": 0.5933333333333334,
+          "fpr": 0.0,
+          "roc_auc": 0.8834444444444444,
+          "average_precision": 0.9151153317159458
+        }
+      }
+    },
+    "standard_ebooks_human": {
+      "rows": 1860,
+      "human": 1860,
+      "ai": 0,
+      "tp": 0,
+      "fp": 3,
+      "recall": null,
+      "fpr": 0.0016129032258064516,
+      "roc_auc": null,
+      "average_precision": null,
+      "input_sha256": "1708e83a7898fae43da8ad1649a3a14d87cd010e4d2588fe75a0c81c21ad0292",
+      "by_domain": {
+        "standard_ebooks": {
+          "rows": 1860,
+          "human": 1860,
+          "ai": 0,
+          "tp": 0,
+          "fp": 3,
+          "recall": null,
+          "fpr": 0.0016129032258064516,
+          "roc_auc": null,
+          "average_precision": null
+        }
+      },
+      "by_book": {
+        "arthur-conan-doyle_the-lost-world": {
+          "rows": 234,
+          "human": 234,
+          "ai": 0,
+          "tp": 0,
+          "fp": 1,
+          "recall": null,
+          "fpr": 0.004273504273504274,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "bram-stoker_dracula": {
+          "rows": 499,
+          "human": 499,
+          "ai": 0,
+          "tp": 0,
+          "fp": 0,
+          "recall": null,
+          "fpr": 0.0,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "edgar-allan-poe_the-narrative-of-arthur-gordon-pym-of-nantucket": {
+          "rows": 222,
+          "human": 222,
+          "ai": 0,
+          "tp": 0,
+          "fp": 0,
+          "recall": null,
+          "fpr": 0.0,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "edgar-rice-burroughs_a-princess-of-mars": {
+          "rows": 203,
+          "human": 203,
+          "ai": 0,
+          "tp": 0,
+          "fp": 2,
+          "recall": null,
+          "fpr": 0.009852216748768473,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "h-g-wells_the-time-machine": {
+          "rows": 105,
+          "human": 105,
+          "ai": 0,
+          "tp": 0,
+          "fp": 0,
+          "recall": null,
+          "fpr": 0.0,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "henry-james_the-turn-of-the-screw": {
+          "rows": 122,
+          "human": 122,
+          "ai": 0,
+          "tp": 0,
+          "fp": 0,
+          "recall": null,
+          "fpr": 0.0,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "jack-london_the-call-of-the-wild": {
+          "rows": 101,
+          "human": 101,
+          "ai": 0,
+          "tp": 0,
+          "fp": 0,
+          "recall": null,
+          "fpr": 0.0,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "james-joyce_dubliners": {
+          "rows": 196,
+          "human": 196,
+          "ai": 0,
+          "tp": 0,
+          "fp": 0,
+          "recall": null,
+          "fpr": 0.0,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "joseph-conrad_heart-of-darkness": {
+          "rows": 101,
+          "human": 101,
+          "ai": 0,
+          "tp": 0,
+          "fp": 0,
+          "recall": null,
+          "fpr": 0.0,
+          "roc_auc": null,
+          "average_precision": null
+        },
+        "robert-louis-stevenson_the-strange-case-of-dr-jekyll-and-mr-hyde": {
+          "rows": 77,
+          "human": 77,
+          "ai": 0,
+          "tp": 0,
+          "fp": 0,
+          "recall": null,
+          "fpr": 0.0,
+          "roc_auc": null,
+          "average_precision": null
+        }
+      }
+    }
+  }
+}

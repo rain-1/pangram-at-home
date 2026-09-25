@@ -60,17 +60,22 @@ def main():
     parser.add_argument("--root", type=Path, default=Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home")))
     parser.add_argument("--model", type=Path, default=Path("/mnt/f/pangram-at-home/models/Qwen3-1.7B"))
     parser.add_argument("--run-name", default="qwen3_17b_mixed_stage1_v1")
+    parser.add_argument("--dataset-folder", default="mixed_pyramid_v1")
     parser.add_argument("--train-tier", choices=["tiny", "small", "medium", "full"], default="full")
     parser.add_argument("--max-length", type=int, default=512)
     parser.add_argument("--epochs", type=float, default=6)
     parser.add_argument("--hours", type=float, default=9.5)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--resume", default=None)
+    parser.add_argument("--report-to", choices=["none", "wandb"], default="none")
+    parser.add_argument("--learning-rate", type=float, default=1e-4)
+    parser.add_argument("--eval-steps", type=int, default=200)
+    parser.add_argument("--lora-dropout", type=float, default=0.05)
     args = parser.parse_args()
 
     torch.set_num_threads(4)
     set_seed(args.seed)
-    folder = args.root / "data" / "mixed_pyramid_v1"
+    folder = args.root / "data" / args.dataset_folder
     output = args.root / "runs" / args.run_name
     output.mkdir(parents=True, exist_ok=True)
     tokenizer = AutoTokenizer.from_pretrained(args.model, use_fast=True)
@@ -88,7 +93,7 @@ def main():
     model.config.use_cache = False
     model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, LoraConfig(
-        task_type=TaskType.SEQ_CLS, r=16, lora_alpha=32, lora_dropout=0.05,
+        task_type=TaskType.SEQ_CLS, r=16, lora_alpha=32, lora_dropout=args.lora_dropout,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
         modules_to_save=["score"],
     ))
@@ -98,31 +103,35 @@ def main():
         "val_file": str(folder / "val_full.parquet"), "train_counts": train_counts,
         "max_length": args.max_length, "epochs": args.epochs, "hours": args.hours,
         "seed": args.seed, "task": "binary_segment_classification",
+        "dataset_folder": args.dataset_folder, "learning_rate": args.learning_rate,
+        "report_to": args.report_to, "eval_steps": args.eval_steps,
         "label_0": "human", "label_1": "ai_generated",
     }
     (output / "run_config.json").write_text(json.dumps(config, indent=2) + "\n")
 
     def metrics(pred):
         logits, labels = pred
-        scores = torch.softmax(torch.from_numpy(logits.astype(np.float32)), dim=-1)[:, 1].numpy()
+        scores = logits[:, 1].astype(np.float32) - logits[:, 0].astype(np.float32)
         return {"roc_auc": roc_auc_score(labels, scores)}
 
     training_args = TrainingArguments(
         output_dir=str(output), run_name=args.run_name,
         per_device_train_batch_size=2, per_device_eval_batch_size=4,
         gradient_accumulation_steps=8, num_train_epochs=args.epochs,
-        learning_rate=1e-4, lr_scheduler_type="cosine", warmup_ratio=0.05,
+        learning_rate=args.learning_rate, lr_scheduler_type="cosine", warmup_ratio=0.05,
+        weight_decay=0.01,
         bf16=True, gradient_checkpointing=True,
-        eval_strategy="epoch", save_strategy="epoch", save_total_limit=2,
+        eval_strategy="steps", save_strategy="steps", eval_steps=args.eval_steps,
+        save_steps=args.eval_steps, save_total_limit=3,
         load_best_model_at_end=True, metric_for_best_model="roc_auc", greater_is_better=True,
-        logging_steps=20, report_to="none", dataloader_num_workers=0,
+        logging_steps=20, report_to=args.report_to, dataloader_num_workers=0,
         remove_unused_columns=False, seed=args.seed,
     )
     trainer = Trainer(
         model=model, args=training_args, train_dataset=train, eval_dataset=val,
         data_collator=DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8),
         compute_metrics=metrics,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=2), DeadlineCallback(time.monotonic() + args.hours * 3600)],
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=6), DeadlineCallback(time.monotonic() + args.hours * 3600)],
     )
     trainer.train(resume_from_checkpoint=args.resume)
     trainer.save_model(output / "best_adapter")

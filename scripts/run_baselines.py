@@ -95,7 +95,7 @@ def fit_embedding(texts: list[str], labels: np.ndarray, root: Path):
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home")))
-    parser.add_argument("--dataset", choices=["editlens", "pmc", "paper", "mixed"], default="editlens")
+    parser.add_argument("--dataset", choices=["editlens", "pmc", "paper", "mixed", "diverse"], default="editlens")
     parser.add_argument("--train-tier", default="medium")
     parser.add_argument("--model", choices=["char", "word", "embedding"], default="char")
     parser.add_argument("--audit-acl", action="store_true", help="Report FPR on pre-2023 ACL human abstracts")
@@ -108,6 +108,7 @@ def main() -> None:
         "pmc": "pmc_pyramid_v1",
         "paper": "paper_pyramid_v1",
         "mixed": "mixed_pyramid_v1",
+        "diverse": "diverse_pyramid_v1",
     }[args.dataset]
     data = root / "data" / folder
     manifest = json.loads((data / "manifest.json").read_text())
@@ -140,6 +141,43 @@ def main() -> None:
             for source in sorted(set(sources))
             if len(set(labels[np.asarray(sources) == source])) == 2
         }
+        if args.dataset == "diverse":
+            domains = np.asarray(pq.read_table(data / f"{split}_full.parquet", columns=["domain"]).to_pydict()["domain"])
+            result[split]["by_domain"] = {
+                domain: metrics(scores[domains == domain], labels[domains == domain], threshold)
+                for domain in sorted(set(domains))
+            }
+    if args.dataset == "diverse":
+        external = root / "data/mage_external_v1/frozen"
+        for split in ("gpt4_ood", "paraphrase"):
+            rows = pq.read_table(external / f"{split}.parquet", columns=["text", "label", "source"]).to_pydict()
+            labels = np.asarray(rows["label"], dtype=int)
+            scores = predict(rows["text"])
+            domains = np.asarray(rows["source"])
+            result[split] = metrics(scores, labels, threshold)
+            result[split]["by_domain"] = {
+                domain: metrics(scores[domains == domain], labels[domains == domain], threshold)
+                for domain in sorted(set(domains))
+            }
+        books = pq.read_table(root / "data/standard_ebooks_v1/human.parquet", columns=["text", "source_id"]).to_pydict()
+        book_scores = predict(books["text"])
+        result["standard_ebooks_human"] = {
+            "rows": len(book_scores), "false_positives": int((book_scores >= threshold).sum()),
+            "fpr": float((book_scores >= threshold).mean()),
+            "by_book": {book: float((book_scores[np.asarray(books["source_id"]) == book] >= threshold).mean())
+                        for book in sorted(set(books["source_id"]))},
+        }
+        raid_path = root / "data/raid_external_v1/frozen.parquet"
+        if raid_path.exists():
+            raid = pq.read_table(raid_path, columns=["text", "label", "source", "generator"]).to_pydict()
+            raid_labels = np.asarray(raid["label"], dtype=int)
+            raid_scores = predict(raid["text"])
+            raid_domains = np.asarray(raid["source"])
+            result["raid_external"] = metrics(raid_scores, raid_labels, threshold)
+            result["raid_external"]["by_domain"] = {
+                domain: metrics(raid_scores[raid_domains == domain], raid_labels[raid_domains == domain], threshold)
+                for domain in sorted(set(raid_domains))
+            }
     if args.audit_acl:
         acl_path = root / "data" / "acl_abstracts_v1" / "documents.jsonl.gz"
         with gzip.open(acl_path, "rt", encoding="utf-8") as file:
