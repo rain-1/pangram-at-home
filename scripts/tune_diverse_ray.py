@@ -74,6 +74,7 @@ def train_trial(config: dict, *, root: str, sweep: str, max_examples: int,
                                  stderr=subprocess.STDOUT, start_new_session=True)
         offset = 0
         reported = 0
+        final_report = None
         try:
             while True:
                 if metrics_path.exists():
@@ -86,17 +87,27 @@ def train_trial(config: dict, *, root: str, sweep: str, max_examples: int,
                         examples_seen = min(int(entry["step"]) * effective_batch, max_examples)
                         score = (.7 * entry["eval_partial_auc_fpr_5pct"]
                                  + .3 * entry["eval_roc_auc"])
-                        tune.report({"examples_seen": examples_seen, "score": score,
-                                     "val_roc_auc": entry["eval_roc_auc"],
-                                     "val_partial_auc_fpr_5pct": entry["eval_partial_auc_fpr_5pct"],
-                                     "val_ai_recall_at_fpr_2pct": entry["eval_ai_recall_at_fpr_2pct"],
-                                     "val_worst_domain_ai_recall_at_fpr_2pct":
-                                     entry.get("eval_worst_domain_ai_recall_at_fpr_2pct"),
-                                     "run_name": run_name})
-                        reported += 1
+                        payload = {"examples_seen": examples_seen, "score": score,
+                                   "val_roc_auc": entry["eval_roc_auc"],
+                                   "val_partial_auc_fpr_5pct": entry["eval_partial_auc_fpr_5pct"],
+                                   "val_ai_recall_at_fpr_2pct": entry["eval_ai_recall_at_fpr_2pct"],
+                                   "val_worst_domain_ai_recall_at_fpr_2pct":
+                                   entry.get("eval_worst_domain_ai_recall_at_fpr_2pct"),
+                                   "run_name": run_name}
+                        if examples_seen >= max_examples:
+                            # Let Trainer finish writing best_adapter before ASHA closes the trial.
+                            final_report = payload
+                        else:
+                            tune.report(payload)
+                            reported += 1
                 if child.poll() is not None:
                     if child.returncode != 0:
                         raise RuntimeError(f"Training failed (exit {child.returncode}); see {run_dir / 'train.log'}")
+                    if final_report is not None:
+                        if not (run_dir / "best_adapter/adapter_model.safetensors").exists():
+                            raise RuntimeError(f"Full-budget adapter missing: {run_dir}")
+                        tune.report(final_report)
+                        reported += 1
                     if reported == 0:
                         raise RuntimeError(f"No evaluation reported; see {run_dir / 'train.log'}")
                     break

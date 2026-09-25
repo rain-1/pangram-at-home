@@ -13,7 +13,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 ROOT = Path("/mnt/f/pangram-at-home")
 CODE = ["requirements.txt", "requirements-tune.txt", "scripts/train_segment_lora.py",
-        "scripts/tune_diverse_ray.py", "scripts/bootstrap_vast_tuning.sh"]
+        "scripts/tune_diverse_ray.py", "scripts/bootstrap_vast_tuning.sh",
+        "scripts/select_and_export_tuning.py", "scripts/run_vast_hpo.sh"]
 
 
 def sha256(path: Path) -> str:
