@@ -49,6 +49,21 @@ def main() -> None:
                 path = run / name
                 if path.exists():
                     tar.add(path, arcname=f"runs/{run_name}/{name}")
+        # Retain every trial's learning curve and provenance, including pruned
+        # trials. Dataset-study adapters are needed for later external audits.
+        for sweep in (args.hpo_name, args.ablation_name):
+            for run in sorted((args.root / "runs").glob(f"{sweep}_*")):
+                if not run.is_dir():
+                    continue
+                if any(run.name == t["metrics"]["run_name"] for t in ranked[:3]):
+                    continue
+                names = ["run_config.json", "train_summary.json", "sweep_metrics.jsonl"]
+                if sweep == args.ablation_name:
+                    names.append("best_adapter")
+                for name in names:
+                    path = run / name
+                    if path.exists():
+                        tar.add(path, arcname=f"runs/{run.name}/{name}")
     print("Exported", export, export.stat().st_size, "bytes")
 
 
