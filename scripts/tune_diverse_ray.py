@@ -61,6 +61,7 @@ def train_trial(config: dict, *, root: str, sweep: str, max_examples: int,
                "--lora-rank", str(config["lora_rank"]),
                "--lora-alpha", str(2 * int(config["lora_rank"])),
                "--lora-dropout", str(config["lora_dropout"]),
+               "--selection-metric", "partial_auc_fpr_5pct",
                "--metrics-jsonl", str(metrics_path), "--report-to", report_to]
     env = os.environ.copy()
     env["WANDB_PROJECT"] = "pangram-at-home"

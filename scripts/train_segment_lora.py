@@ -108,6 +108,7 @@ def main():
     parser.add_argument("--gradient-accumulation-steps", type=int, default=8)
     parser.add_argument("--max-steps", type=int, default=-1)
     parser.add_argument("--metrics-jsonl", type=Path)
+    parser.add_argument("--selection-metric", choices=["roc_auc", "partial_auc_fpr_5pct"], default="roc_auc")
     args = parser.parse_args()
 
     torch.set_num_threads(4)
@@ -152,6 +153,7 @@ def main():
         "gradient_accumulation_steps": args.gradient_accumulation_steps,
         "effective_batch_size": args.train_batch_size * args.gradient_accumulation_steps,
         "max_steps": args.max_steps,
+        "selection_metric": args.selection_metric,
         "train_sha256": file_sha256(folder / f"train_{args.train_tier}.parquet"),
         "val_sha256": file_sha256(folder / "val_full.parquet"),
         "dataset_manifest_sha256": file_sha256(folder / "manifest.json"),
@@ -186,7 +188,7 @@ def main():
         bf16=True, gradient_checkpointing=True,
         eval_strategy="steps", save_strategy="steps", eval_steps=args.eval_steps,
         save_steps=args.eval_steps, save_total_limit=3,
-        load_best_model_at_end=True, metric_for_best_model="roc_auc", greater_is_better=True,
+        load_best_model_at_end=True, metric_for_best_model=args.selection_metric, greater_is_better=True,
         logging_steps=20, report_to=args.report_to, dataloader_num_workers=0,
         remove_unused_columns=False, seed=args.seed,
     )
