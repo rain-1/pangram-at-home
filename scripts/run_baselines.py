@@ -198,6 +198,15 @@ def main() -> None:
                 "rows": len(social_scores), "false_positives": int((social_scores >= threshold).sum()),
                 "fpr": float((social_scores >= threshold).mean()),
             }
+        paper_body_path = root / "data/pmc_body_audit_v1/human_test.parquet"
+        if paper_body_path.exists():
+            bodies = pq.read_table(paper_body_path, columns=["text", "source_id"]).to_pydict()
+            body_scores = predict(bodies["text"])
+            result["pmc_full_body_human"] = {
+                "rows": len(body_scores), "papers": len(set(bodies["source_id"])),
+                "false_positives": int((body_scores >= threshold).sum()),
+                "fpr": float((body_scores >= threshold).mean()),
+            }
         enron_path = root / "data/editlens_pyramid_v1/test_enron_full.parquet"
         if enron_path.exists():
             enron = pq.read_table(enron_path, columns=["text", "label"]).to_pydict()

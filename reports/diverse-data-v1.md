@@ -19,9 +19,20 @@ builder alternates contributing sources. Paired passages are limited to a 2:1
 word-count ratio where source pairing is available; MAGE rows are matched by
 word-count bucket. Text, source ID and group ID are disjoint across train,
 validation and test. This does not prove that MAGE prompts are independent:
-its public CSV has no common prompt ID for all generations.
+its public CSV has no common prompt ID for all generations. A train-to-evaluation
+word 2–3 gram cosine audit found one validation passage and three test passages
+at similarity >=0.7; one test passage reached 0.851, none reached 0.9. The
+high-similarity pairs are mostly MAGE SQuAD contexts, with one CMV pair. Keep
+this small residual prompt/context overlap in mind when reading in-family
+scores; the IDs and thresholds are in
+`reports/metrics/diverse_similarity_v1.json`.
 
 Full training sources, counted as human/AI pairs:
+
+At the source-family level, the 5,000 pairs comprise 3,102 MAGE, 1,127
+EditLens, and 771 locally paired PMC/ACL examples. MAGE is still the largest
+family, so RAID and the separate human audits carry more weight as transfer
+checks than the in-family mixed test.
 
 | Category | Source | Pairs |
 | --- | --- | ---: |
@@ -76,7 +87,9 @@ evaluation: 1,600 balanced passages across abstracts, books, news, poetry,
 recipes, Reddit, reviews, and Wikipedia, with 11 generators. No RAID text is
 in training or validation. Standard Ebooks and the three new human corpora
 probe false positives only. Enron from EditLens is a paired professional-email
-test.
+test. A 261-passage PMC full-body audit from 87 held-out papers checks prose
+beyond abstracts; it shares works with the paper test split and is reported
+separately rather than counted as another independent source.
 
 The first Qwen adapter was trained before MAGE was added to any training set.
 On a frozen 4,000-row MAGE ten-domain test it scores **0.6333 AUROC**, **16.3%

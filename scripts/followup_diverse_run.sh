@@ -22,7 +22,19 @@ set +a
 export WANDB_DIR="/mnt/f/pangram-at-home/wandb"
 export WANDB_CONSOLE="off"
 python -u scripts/evaluate_diverse_lora.py --wandb-run-id "$wandb_run_id"
+if ! python -u scripts/run_editlens_reference.py --dataset diverse --tier full --model roberta > "$run_dir/reference_roberta_eval.log" 2>&1; then
+  echo "RoBERTa reference evaluation failed; see $run_dir/reference_roberta_eval.log" >&2
+fi
+if ! python -u scripts/run_editlens_reference.py --dataset diverse --tier full --model llama > "$run_dir/reference_llama_eval.log" 2>&1; then
+  echo "Llama reference evaluation failed; see $run_dir/reference_llama_eval.log" >&2
+fi
 MPLBACKEND=Agg python scripts/chart_diverse_results.py
 git add reports/metrics/qwen3_17b_diverse_v1.json reports/diverse_full_results_v1.pdf
+for model_name in roberta llama; do
+  report_path="reports/metrics/reference_diverse_${model_name}_full.json"
+  if [[ -f "$report_path" ]]; then
+    git add "$report_path"
+  fi
+done
 git commit -m "Report Qwen diverse evaluation against baselines"
 git push origin main

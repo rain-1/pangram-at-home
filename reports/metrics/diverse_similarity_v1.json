@@ -1,0 +1,54 @@
+{
+  "method": "word 2-3 gram TF-IDF cosine; fit on train",
+  "train_rows": 10000,
+  "splits": {
+    "val": {
+      "rows": 800,
+      "max_cosine": 0.7761502861976624,
+      "p99_cosine": 0.3349613219499586,
+      "gte_0_7": 1,
+      "gte_0_8": 0,
+      "gte_0_9": 0,
+      "high_similarity_pairs": [
+        {
+          "eval_id": "mage:f6d5805a61930b859556e490137a5f57f2b34ff01c197e01169fe0993f2015a4",
+          "eval_source": "mage:squad",
+          "train_id": "mage:3bd4f3b6eddd9c757b0e7709a07af677b5b9933d2a8029c7479e4e62b997e081",
+          "train_source": "mage:squad",
+          "cosine": 0.7761502861976624
+        }
+      ]
+    },
+    "test": {
+      "rows": 1000,
+      "max_cosine": 0.8509472608566284,
+      "p99_cosine": 0.2842807307839392,
+      "gte_0_7": 3,
+      "gte_0_8": 1,
+      "gte_0_9": 0,
+      "high_similarity_pairs": [
+        {
+          "eval_id": "mage:16cc7980711ed97fea3d738b028d13e3c13edde68cf1ce92d66e0ff5603a4c9b",
+          "eval_source": "mage:squad",
+          "train_id": "mage:3bd4f3b6eddd9c757b0e7709a07af677b5b9933d2a8029c7479e4e62b997e081",
+          "train_source": "mage:squad",
+          "cosine": 0.8509472608566284
+        },
+        {
+          "eval_id": "mage:847e8e1f25bcd4800786a0e64e29cb4937dfbacbd91ba23d94e6166ff2556ef8",
+          "eval_source": "mage:squad",
+          "train_id": "mage:4cf178602d56b519ffa607a64b97281159e7b4571e306188c12f8de33ffcef18",
+          "train_source": "mage:squad",
+          "cosine": 0.7927472591400146
+        },
+        {
+          "eval_id": "mage:a79a873de1af986207c78612c1aeaf04bfaf8ae6b6273995cb97d8cb682692ef",
+          "eval_source": "mage:cmv",
+          "train_id": "mage:6202003affda046f9b03b3944371657912613e1b3468897ae6ca972b43f36e33",
+          "train_source": "mage:cmv",
+          "cosine": 0.7409318685531616
+        }
+      ]
+    }
+  }
+}

@@ -47,6 +47,7 @@ def read_rows(root: Path, name: str) -> tuple[Path, dict]:
         "persuade_essays_human": root / "data/persuade_essays_v1/human_eval.parquet",
         "federal_reserve_human": root / "data/federal_reserve_beige_book_v1/human.parquet",
         "stackexchange_writers_human": root / "data/stackexchange_writers_v1/human_eval.parquet",
+        "pmc_full_body_human": root / "data/pmc_body_audit_v1/human_test.parquet",
     }
     path = paths[name]
     rows = pq.read_table(path).to_pydict()
@@ -77,6 +78,8 @@ def read_rows(root: Path, name: str) -> tuple[Path, dict]:
         rows["domain"] = ["professional_finance"] * count
     if name == "stackexchange_writers_human":
         rows["domain"] = ["social_qa_other_platform"] * count
+    if name == "pmc_full_body_human":
+        rows["domain"] = ["paper_full_body"] * count
     return path, rows
 
 
@@ -91,6 +94,9 @@ def main() -> None:
     run = args.root / "runs" / args.run_name
     adapter = run / "best_adapter"
     config = json.loads((run / "run_config.json").read_text())
+    if "train_sha256" in config:
+        assert sha256(Path(config["train_file"])) == config["train_sha256"]
+        assert sha256(Path(config["val_file"])) == config["val_sha256"]
     tokenizer = AutoTokenizer.from_pretrained(adapter)
     base = AutoModelForSequenceClassification.from_pretrained(
         config["base_model"], num_labels=2,
@@ -105,7 +111,7 @@ def main() -> None:
     cache_dir.mkdir(exist_ok=True)
     names = ["val", "test", "raid_external", "enron_external", "gpt4_ood", "paraphrase",
              "standard_ebooks_human", "persuade_essays_human", "federal_reserve_human",
-             "stackexchange_writers_human"]
+             "stackexchange_writers_human", "pmc_full_body_human"]
     scored = {}
     for name in names:
         path, rows = read_rows(args.root, name)
@@ -138,14 +144,26 @@ def main() -> None:
     report = {"run_name": args.run_name, "adapter_sha256": sha256(adapter / "adapter_model.safetensors"),
               "threshold": threshold, "threshold_source": "diverse validation, <=2% human FPR",
               "wandb_url": f"https://wandb.ai/eac-adsf/pangram-at-home/runs/{args.wandb_run_id}" if args.wandb_run_id else None,
-              "splits": {}}
+              "splits": {}, "operating_points": {}}
+    for target in (.005, .01, .02):
+        point_threshold = threshold_for_fpr(val_scores, val_labels, target)
+        report["operating_points"][f"val_fpr_le_{target:.3f}"] = {
+            "threshold": point_threshold,
+            "test": group_metrics(scored["test"][0], scored["test"][1], point_threshold),
+            "raid_external": group_metrics(scored["raid_external"][0], scored["raid_external"][1], point_threshold),
+            "stackexchange_writers_human": group_metrics(scored["stackexchange_writers_human"][0],
+                                                            scored["stackexchange_writers_human"][1], point_threshold),
+            "pmc_full_body_human": group_metrics(scored["pmc_full_body_human"][0],
+                                                   scored["pmc_full_body_human"][1], point_threshold),
+        }
     for name, (scores, labels, source, domain, generator, input_hash) in scored.items():
         result = group_metrics(scores, labels, threshold)
         result["input_sha256"] = input_hash
         result["by_domain"] = {d: group_metrics(scores[domain == d], labels[domain == d], threshold)
                                for d in sorted(set(domain))}
         if name in {"test", "raid_external", "enron_external", "standard_ebooks_human",
-                    "persuade_essays_human", "federal_reserve_human", "stackexchange_writers_human"}:
+                    "persuade_essays_human", "federal_reserve_human", "stackexchange_writers_human",
+                    "pmc_full_body_human"}:
             result["by_source"] = {s: group_metrics(scores[source == s], labels[source == s], threshold)
                                    for s in sorted(set(source))}
         if name == "raid_external":
@@ -156,14 +174,22 @@ def main() -> None:
     out = Path(__file__).resolve().parents[1] / "reports/metrics" / f"{args.run_name}.json"
     out.write_text(json.dumps(report, indent=2) + "\n")
     if args.wandb_run_id:
-        import wandb
-        wb = wandb.init(project="pangram-at-home", entity="eac-adsf", id=args.wandb_run_id,
-                        resume="must", job_type="final-evaluation")
-        for name, result in report["splits"].items():
-            for field in ("roc_auc", "fpr", "tpr"):
-                if result.get(field) is not None:
-                    wb.summary[f"final/{name}/{field}"] = result[field]
-        wb.finish()
+        try:
+            import wandb
+            wb = wandb.init(project="pangram-at-home", entity="eac-adsf", id=args.wandb_run_id,
+                            resume="must", job_type="final-evaluation")
+            for name, result in report["splits"].items():
+                for field in ("roc_auc", "fpr", "tpr"):
+                    if result.get(field) is not None:
+                        wb.summary[f"final/{name}/{field}"] = result[field]
+            for point_name, point in report["operating_points"].items():
+                for split in ("test", "raid_external", "stackexchange_writers_human", "pmc_full_body_human"):
+                    for field in ("fpr", "tpr"):
+                        if point[split].get(field) is not None:
+                            wb.summary[f"operating_points/{point_name}/{split}/{field}"] = point[split][field]
+            wb.finish()
+        except Exception as exc:
+            print(f"W&B final summary upload failed; local report is saved at {out}: {exc}", flush=True)
     print(out)
 
 

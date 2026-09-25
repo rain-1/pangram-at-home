@@ -48,15 +48,38 @@ def main() -> None:
         pdf.savefig(fig)
         plt.close(fig)
 
+        audits = ["standard_ebooks_human", "persuade_essays_human", "federal_reserve_human",
+                  "stackexchange_writers_human", "pmc_full_body_human"]
+        labels = ["Classic fiction", "Student essays", "Federal Reserve", "Writers SE", "PMC paper bodies"]
+        fig, ax = plt.subplots(figsize=(11.7, 8.3))
+        x = np.arange(len(audits))
+        width = .22
+        for i, name in enumerate(("char", "word", "embedding")):
+            vals = [reports[name][audit]["fpr"] * 100 for audit in audits]
+            ax.bar(x + (i - 1) * width, vals, width, label=NAMES[name], color=COLORS[name])
+        ax.set_xticks(x, labels)
+        ax.set_ylabel("Human text falsely flagged as AI (%)")
+        ax.set_title("Baseline false positives on independent human sources", fontsize=17)
+        ax.grid(axis="y", alpha=.2)
+        ax.set_axisbelow(True)
+        ax.legend(ncol=3)
+        fig.subplots_adjust(bottom=.22, top=.88)
+        fig.text(.5, .07, "Thresholds calibrated to <=2% human FPR on diverse validation.\n"
+                 "Writers Stack Exchange authorship is inferred from dated posts, not individually verified.",
+                 ha="center", va="center", fontsize=9)
+        pdf.savefig(fig)
+        plt.close(fig)
+
         if all("raid_external" in reports[name] for name in MODELS):
             raid_domains = list(reports["char"]["raid_external"]["by_domain"])
             fig, axes = plt.subplots(2, 1, figsize=(11.7, 8.3), constrained_layout=True)
             x = np.arange(len(raid_domains))
             width = .19
             for i, name in enumerate(MODELS):
-                vals = [reports[name]["raid_external"]["by_domain"][d]["roc_auc"] for d in raid_domains]
+                cells = reports[name]["raid_external"].get("by_domain", reports[name]["raid_external"].get("by_source", {}))
+                vals = [cells[d]["roc_auc"] for d in raid_domains]
                 axes[0].bar(x + (i - 1.5) * width, vals, width, label=NAMES[name], color=COLORS[name])
-                recall = [reports[name]["raid_external"]["by_domain"][d]["tpr"] for d in raid_domains]
+                recall = [cells[d]["tpr"] for d in raid_domains]
                 axes[1].bar(x + (i - 1.5) * width, recall, width, color=COLORS[name])
             for ax in axes:
                 ax.set_xticks(x, [d.title() for d in raid_domains])

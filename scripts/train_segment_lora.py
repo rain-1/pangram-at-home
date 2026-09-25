@@ -7,6 +7,7 @@ last-token head. Tokenwise and edit-fraction objectives need separate labels.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import time
@@ -53,6 +54,14 @@ class DeadlineCallback(TrainerCallback):
             control.should_save = True
             control.should_training_stop = True
         return control
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as file:
+        for block in iter(lambda: file.read(4 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def main():
@@ -105,6 +114,9 @@ def main():
         "seed": args.seed, "task": "binary_segment_classification",
         "dataset_folder": args.dataset_folder, "learning_rate": args.learning_rate,
         "report_to": args.report_to, "eval_steps": args.eval_steps,
+        "train_sha256": file_sha256(folder / f"train_{args.train_tier}.parquet"),
+        "val_sha256": file_sha256(folder / "val_full.parquet"),
+        "dataset_manifest_sha256": file_sha256(folder / "manifest.json"),
         "label_0": "human", "label_1": "ai_generated",
     }
     (output / "run_config.json").write_text(json.dumps(config, indent=2) + "\n")

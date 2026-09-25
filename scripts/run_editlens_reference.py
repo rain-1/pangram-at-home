@@ -98,7 +98,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home")))
     parser.add_argument("--model", choices=["roberta", "llama"], required=True)
-    parser.add_argument("--dataset", choices=["editlens", "pmc", "paper", "mixed"], default="editlens")
+    parser.add_argument("--dataset", choices=["editlens", "pmc", "paper", "mixed", "diverse"], default="editlens")
     parser.add_argument("--tier", choices=["small", "full"], default="small")
     parser.add_argument("--batch-size", type=int, default=0)
     parser.add_argument("--audit-acl-limit", type=int, default=0)
@@ -114,6 +114,7 @@ def main() -> None:
         "pmc": "pmc_pyramid_v1",
         "paper": "paper_pyramid_v1",
         "mixed": "mixed_pyramid_v1",
+        "diverse": "diverse_pyramid_v1",
     }[args.dataset]
     data = args.root / "data" / folder
     val_text, val_label, _ = load(data / f"val_{args.tier}.parquet")
@@ -133,6 +134,48 @@ def main() -> None:
             for source in sorted(set(sources))
             if len(set(test_label[sources == source])) == 2
         }
+        if args.dataset == "diverse":
+            domains = np.asarray(pq.read_table(data / f"{split}_{args.tier}.parquet", columns=["domain"]).to_pydict()["domain"])
+            result[split]["by_domain"] = {
+                domain: metrics(test_scores[domains == domain], test_label[domains == domain], threshold)
+                for domain in sorted(set(domains))
+            }
+    if args.dataset == "diverse":
+        external_paths = {
+            "raid_external": args.root / "data/raid_external_v1/frozen.parquet",
+            "enron_external": args.root / "data/editlens_pyramid_v1/test_enron_full.parquet",
+            "gpt4_ood": args.root / "data/mage_external_v1/frozen/gpt4_ood.parquet",
+            "paraphrase": args.root / "data/mage_external_v1/frozen/paraphrase.parquet",
+        }
+        for name, path in external_paths.items():
+            rows = pq.read_table(path, columns=["text", "label", "source"]).to_pydict()
+            labels = np.asarray(rows["label"], dtype=int)
+            sources = np.asarray(rows["source"])
+            scores = score(rows["text"], tokenizer, model, batch_size)
+            result[name] = metrics(scores, labels, threshold)
+            result[name]["by_domain"] = {
+                source_name: metrics(scores[sources == source_name], labels[sources == source_name], threshold)
+                for source_name in sorted(set(sources))
+            }
+            print(name, result[name]["roc_auc"], flush=True)
+        audit_paths = {
+            "standard_ebooks_human": args.root / "data/standard_ebooks_v1/human.parquet",
+            "persuade_essays_human": args.root / "data/persuade_essays_v1/human_eval.parquet",
+            "federal_reserve_human": args.root / "data/federal_reserve_beige_book_v1/human.parquet",
+            "stackexchange_writers_human": args.root / "data/stackexchange_writers_v1/human_eval.parquet",
+            "pmc_full_body_human": args.root / "data/pmc_body_audit_v1/human_test.parquet",
+        }
+        for name, path in audit_paths.items():
+            rows = pq.read_table(path, columns=["text", "text_id"]).to_pydict()
+            texts = rows["text"]
+            if name in {"persuade_essays_human", "stackexchange_writers_human"}:
+                seed = "persuade-audit-v1:" if name == "persuade_essays_human" else "stackexchange-audit-v1:"
+                indices = sorted(range(len(texts)), key=lambda i: hashlib.sha256((seed + rows["text_id"][i]).encode()).digest())[:1000]
+                texts = [texts[i] for i in indices]
+            scores = score(texts, tokenizer, model, batch_size)
+            result[name] = {"rows": len(scores), "false_positives": int((scores >= threshold).sum()),
+                            "fpr": float((scores >= threshold).mean())}
+            print(name, result[name]["fpr"], flush=True)
     if args.audit_acl_limit:
         acl_path = args.root / "data" / "acl_abstracts_v1" / "documents.jsonl.gz"
         with gzip.open(acl_path, "rt", encoding="utf-8") as file:
@@ -168,6 +211,9 @@ def main() -> None:
         }
     out = args.root / "results" / f"reference_{args.dataset}_{args.model}_{args.tier}.json"
     out.write_text(json.dumps(result, indent=2) + "\n")
+    if args.dataset == "diverse":
+        mirror = Path(__file__).resolve().parents[1] / "reports/metrics" / out.name
+        mirror.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
 
 
