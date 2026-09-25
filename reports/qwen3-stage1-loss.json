@@ -1,0 +1,28 @@
+{
+  "run_name": "qwen3_17b_mixed_stage1_v1",
+  "trainer_state_sha256": "ccaf7c71d6371bea92370768eb940b74bd6918666380becc5b50d9e9854bed8f",
+  "training_points": 41,
+  "validation_points": 3,
+  "best_global_step": 276,
+  "stopped_global_step": 828,
+  "validation": [
+    {
+      "epoch": 1.0,
+      "step": 276,
+      "loss": 0.0012175667798146605,
+      "roc_auc": 1.0
+    },
+    {
+      "epoch": 2.0,
+      "step": 552,
+      "loss": 0.038744401186704636,
+      "roc_auc": 0.9996342572967608
+    },
+    {
+      "epoch": 3.0,
+      "step": 828,
+      "loss": 0.010283359326422215,
+      "roc_auc": 0.9998914403283672
+    }
+  ]
+}
