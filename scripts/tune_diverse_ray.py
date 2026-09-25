@@ -168,6 +168,14 @@ def main() -> None:
     if args.mode == "hpo" and args.search == "hebo":
         from ray.tune.search.hebo import HEBOSearch
         search_alg = HEBOSearch(metric="score", mode="max", random_state_seed=42)
+    elif args.mode == "hpo":
+        from ray.tune.search.basic_variant import BasicVariantGenerator
+        search_alg = BasicVariantGenerator(
+            points_to_evaluate=[{"learning_rate": 5e-5,
+                                 "gradient_accumulation_steps": 8,
+                                 "lora_rank": 16, "lora_dropout": .1}],
+            random_state=42,
+        )
     results = tune.Tuner(
         trainable, param_space=search_space,
         tune_config=tune.TuneConfig(num_samples=trials, metric="score", mode="max",
