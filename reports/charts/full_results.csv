@@ -7,6 +7,7 @@ MIXED TEST,Character TF-IDF · small,baseline_mixed_char_small,test,baseline,631
 MIXED TEST,Character TF-IDF · tiny,baseline_mixed_char_tiny,test,baseline,631,424,631,8,0.6719492868462758,0.012678288431061807
 MIXED TEST,Word TF-IDF · medium,baseline_mixed_word_medium,test,baseline,631,573,631,12,0.9080824088748018,0.01901743264659271
 MIXED TEST,MiniLM embedding · medium,baseline_mixed_embedding_medium,test,baseline,631,191,631,9,0.30269413629160064,0.014263074484944533
+MIXED TEST,Load-bearing PR style · frozen,baseline_mixed_load_bearing_full,test,baseline,631,48,631,11,0.07606973058637084,0.017432646592709985
 MIXED TEST,EditLens RoBERTa,reference_mixed_roberta_full,test,reference,631,617,631,8,0.9778129952456418,0.012678288431061807
 MIXED TEST,EditLens Llama,reference_mixed_llama_full,test,reference,631,629,631,16,0.9968304278922345,0.025356576862123614
 PAPER ABSTRACT TEST,Qwen3 LoRA · 86.4% cutoff,segment_qwen3_17b_mixed_stage1_v1_midpoint,test:acl_anthology+pmc_oa,trained,221,221,221,2,1.0,0.00904977375565611
@@ -17,6 +18,7 @@ PAPER ABSTRACT TEST,Character TF-IDF · small,baseline_paper_char_small,test,bas
 PAPER ABSTRACT TEST,Character TF-IDF · tiny,baseline_paper_char_tiny,test,baseline,221,212,221,6,0.9592760180995475,0.027149321266968326
 PAPER ABSTRACT TEST,Word TF-IDF · full,baseline_paper_word_full,test,baseline,221,219,221,5,0.9909502262443439,0.02262443438914027
 PAPER ABSTRACT TEST,MiniLM embedding · full,baseline_paper_embedding_full,test,baseline,221,129,221,6,0.583710407239819,0.027149321266968326
+PAPER ABSTRACT TEST,Load-bearing PR style · frozen,baseline_paper_load_bearing_full,test,baseline,221,0,221,2,0.0,0.00904977375565611
 PAPER ABSTRACT TEST,EditLens RoBERTa,reference_paper_roberta_full,test,reference,221,203,221,2,0.918552036199095,0.00904977375565611
 PAPER ABSTRACT TEST,EditLens Llama,reference_paper_llama_full,test,reference,221,218,221,3,0.9864253393665159,0.013574660633484163
 GENERAL EDITLENS TEST,Qwen3 LoRA · 86.4% cutoff,segment_qwen3_17b_mixed_stage1_v1_midpoint,editlens_test,trained,2000,1999,2000,7,0.9995,0.0035
@@ -24,6 +26,7 @@ GENERAL EDITLENS TEST,Qwen3 LoRA · 3.7% cutoff,segment_qwen3_17b_mixed_stage1_v
 GENERAL EDITLENS TEST,Character TF-IDF · medium,baseline_editlens_char_medium,test,baseline,2000,1978,2000,39,0.989,0.0195
 GENERAL EDITLENS TEST,Word TF-IDF · medium,baseline_editlens_word_medium,test,baseline,2000,1928,2000,40,0.964,0.02
 GENERAL EDITLENS TEST,MiniLM embedding · medium,baseline_editlens_embedding_medium,test,baseline,2000,942,2000,31,0.471,0.0155
+GENERAL EDITLENS TEST,Load-bearing PR style · frozen,baseline_editlens_load_bearing_full,test,baseline,2000,137,2000,31,0.0685,0.0155
 GENERAL EDITLENS TEST,EditLens RoBERTa,reference_editlens_roberta_full,test,reference,2000,1999,2000,62,0.9995,0.031
 GENERAL EDITLENS TEST,EditLens Llama · small test,reference_editlens_llama_small,test,reference,500,500,500,18,1.0,0.036
 ENRON EMAIL TEST,Qwen3 LoRA · 86.4% cutoff,segment_qwen3_17b_mixed_stage1_v1_midpoint,enron_test,trained,1800,1799,1800,2,0.9994444444444445,0.0011111111111111111
@@ -31,6 +34,7 @@ ENRON EMAIL TEST,Qwen3 LoRA · 3.7% cutoff,segment_qwen3_17b_mixed_stage1_v1,enr
 ENRON EMAIL TEST,Character TF-IDF · general medium,baseline_editlens_char_medium,test_enron,baseline,1800,1366,1800,7,0.7588888888888888,0.0038888888888888888
 ENRON EMAIL TEST,Word TF-IDF · general medium,baseline_editlens_word_medium,test_enron,baseline,1800,1278,1800,38,0.71,0.021111111111111112
 ENRON EMAIL TEST,MiniLM embedding · general medium,baseline_editlens_embedding_medium,test_enron,baseline,1800,571,1800,17,0.31722222222222224,0.009444444444444445
+ENRON EMAIL TEST,Load-bearing PR style · frozen,baseline_editlens_load_bearing_full,test_enron,baseline,1800,0,1800,2,0.0,0.0011111111111111111
 ENRON EMAIL TEST,EditLens RoBERTa,reference_editlens_roberta_full,test_enron,reference,1800,1766,1800,49,0.9811111111111112,0.02722222222222222
 ENRON EMAIL TEST,EditLens Llama · small test,reference_editlens_llama_small,test_enron,reference,500,500,500,5,1.0,0.01
 MIXED-TEST PMC SUBSET,Qwen3 LoRA · 86.4% cutoff,segment_qwen3_17b_mixed_stage1_v1_midpoint,test:pmc_oa,trained,87,87,87,1,1.0,0.011494252873563218
@@ -41,11 +45,13 @@ MIXED-TEST PMC SUBSET,Character TF-IDF · mixed small,baseline_mixed_char_small,
 MIXED-TEST PMC SUBSET,Character TF-IDF · mixed tiny,baseline_mixed_char_tiny,test:pmc_oa,baseline,87,75,87,7,0.8620689655172413,0.08045977011494253
 MIXED-TEST PMC SUBSET,Word TF-IDF · mixed medium,baseline_mixed_word_medium,test:pmc_oa,baseline,87,86,87,6,0.9885057471264368,0.06896551724137931
 MIXED-TEST PMC SUBSET,MiniLM embedding · mixed medium,baseline_mixed_embedding_medium,test:pmc_oa,baseline,87,25,87,1,0.28735632183908044,0.011494252873563218
+MIXED-TEST PMC SUBSET,Load-bearing PR style · frozen,baseline_mixed_load_bearing_full,test:pmc_oa,baseline,87,0,87,0,0.0,0.0
 MIXED-TEST PMC SUBSET,EditLens RoBERTa,reference_mixed_roberta_full,test:pmc_oa,reference,87,78,87,1,0.896551724137931,0.011494252873563218
 MIXED-TEST PMC SUBSET,EditLens Llama,reference_mixed_llama_full,test:pmc_oa,reference,87,85,87,4,0.9770114942528736,0.04597701149425287
 PMC-ONLY ABSTRACT TEST,Character TF-IDF · full,baseline_pmc_char_full,test,baseline,87,84,87,0,0.9655172413793104,0.0
 PMC-ONLY ABSTRACT TEST,Word TF-IDF · full,baseline_pmc_word_full,test,baseline,87,85,87,2,0.9770114942528736,0.022988505747126436
 PMC-ONLY ABSTRACT TEST,MiniLM embedding · full,baseline_pmc_embedding_full,test,baseline,87,18,87,1,0.20689655172413793,0.011494252873563218
+PMC-ONLY ABSTRACT TEST,Load-bearing PR style · frozen,baseline_pmc_load_bearing_full,test,baseline,87,0,87,1,0.0,0.011494252873563218
 PMC-ONLY ABSTRACT TEST,EditLens RoBERTa,reference_pmc_roberta_full,test,reference,87,80,87,1,0.9195402298850575,0.011494252873563218
 PMC-ONLY ABSTRACT TEST,EditLens Llama,reference_pmc_llama_full,test,reference,87,85,87,1,0.9770114942528736,0.011494252873563218
 SWAPPED-GENERATOR PAPER TEST,Qwen3 LoRA · 86.4% cutoff,segment_qwen3_17b_mixed_stage1_v1_midpoint,cross_model_test,trained,182,182,182,0,1.0,0.0
@@ -53,6 +59,7 @@ SWAPPED-GENERATOR PAPER TEST,Qwen3 LoRA · 3.7% cutoff,segment_qwen3_17b_mixed_s
 SWAPPED-GENERATOR PAPER TEST,Character TF-IDF · paper full,baseline_paper_char_full,cross_model_test,baseline,182,177,182,5,0.9725274725274725,0.027472527472527472
 SWAPPED-GENERATOR PAPER TEST,Word TF-IDF · paper full,baseline_paper_word_full,cross_model_test,baseline,182,182,182,5,1.0,0.027472527472527472
 SWAPPED-GENERATOR PAPER TEST,MiniLM embedding · paper full,baseline_paper_embedding_full,cross_model_test,baseline,182,111,182,4,0.6098901098901099,0.02197802197802198
+SWAPPED-GENERATOR PAPER TEST,Load-bearing PR style · frozen,baseline_paper_load_bearing_full,cross_model_test,baseline,182,0,182,1,0.0,0.005494505494505495
 SWAPPED-GENERATOR PAPER TEST,EditLens RoBERTa,reference_paper_roberta_full,cross_model_test,reference,182,164,182,2,0.9010989010989011,0.01098901098901099
 SWAPPED-GENERATOR PAPER TEST,EditLens Llama,reference_paper_llama_full,cross_model_test,reference,182,182,182,2,1.0,0.01098901098901099
 HUMAN ACL ABSTRACT AUDIT,Qwen3 LoRA · 86.4% cutoff,segment_qwen3_17b_mixed_stage1_v1_midpoint,acl_human_audit,trained,0,0,17560,97,,0.005523917995444191

@@ -1,0 +1,72 @@
+{
+  "model": "load-bearing arriving PR vocabulary cluster",
+  "upstream_commit": "45d353684c82ec59342cbcd96a85829d22acfd31",
+  "model_sha256": "22a9f53fdefa7c812e481c6d96f1011624765413567b0c16cf6598246bc76f8d",
+  "score": "cluster-0 log odds versus other nine clusters",
+  "threshold_source": "pmc validation, <=2% human FPR",
+  "threshold": -0.6473727018941416,
+  "val": {
+    "rows": 174,
+    "human": 87,
+    "ai": 87,
+    "threshold": -0.6473727018941416,
+    "fpr": 0.011494252873563218,
+    "tpr": 0.0,
+    "precision": 0.0,
+    "roc_auc": 0.26819923371647514,
+    "average_precision": 0.37009639234649916,
+    "tp": 0,
+    "fp": 1,
+    "tn": 86,
+    "fn": 87,
+    "by_source": {
+      "pmc_oa": {
+        "rows": 174,
+        "human": 87,
+        "ai": 87,
+        "threshold": -0.6473727018941416,
+        "fpr": 0.011494252873563218,
+        "tpr": 0.0,
+        "precision": 0.0,
+        "roc_auc": 0.26819923371647514,
+        "average_precision": 0.37009639234649916,
+        "tp": 0,
+        "fp": 1,
+        "tn": 86,
+        "fn": 87
+      }
+    }
+  },
+  "test": {
+    "rows": 174,
+    "human": 87,
+    "ai": 87,
+    "threshold": -0.6473727018941416,
+    "fpr": 0.011494252873563218,
+    "tpr": 0.0,
+    "precision": 0.0,
+    "roc_auc": 0.2350376535869996,
+    "average_precision": 0.3577641980198701,
+    "tp": 0,
+    "fp": 1,
+    "tn": 86,
+    "fn": 87,
+    "by_source": {
+      "pmc_oa": {
+        "rows": 174,
+        "human": 87,
+        "ai": 87,
+        "threshold": -0.6473727018941416,
+        "fpr": 0.011494252873563218,
+        "tpr": 0.0,
+        "precision": 0.0,
+        "roc_auc": 0.2350376535869996,
+        "average_precision": 0.3577641980198701,
+        "tp": 0,
+        "fp": 1,
+        "tn": 86,
+        "fn": 87
+      }
+    }
+  }
+}

@@ -34,6 +34,11 @@
       "auroc": 0.8824797004226934,
       "human": 631,
       "ai": 631
+    },
+    "Load-bearing PR style": {
+      "auroc": 0.45583068155846507,
+      "human": 631,
+      "ai": 631
     }
   },
   "paper": {
@@ -64,6 +69,11 @@
     },
     "MiniLM embedding": {
       "auroc": 0.9377367375770357,
+      "human": 221,
+      "ai": 221
+    },
+    "Load-bearing PR style": {
+      "auroc": 0.2532298683483139,
       "human": 221,
       "ai": 221
     }

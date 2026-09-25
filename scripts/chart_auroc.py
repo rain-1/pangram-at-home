@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home"))
 OUT = ROOT / "reports" / "charts"
 OUT.mkdir(exist_ok=True, parents=True)
-COLORS = {"Qwen3 1.7B": "#b03a48", "Llama 3B": "#735fb1", "RoBERTa": "#28799a", "Char TF-IDF full": "#4b8f55", "Char TF-IDF medium": "#8bad6f", "Word TF-IDF": "#c48a32", "MiniLM embedding": "#858585"}
+COLORS = {"Qwen3 1.7B": "#b03a48", "Llama 3B": "#735fb1", "RoBERTa": "#28799a", "Char TF-IDF full": "#4b8f55", "Char TF-IDF medium": "#8bad6f", "Word TF-IDF": "#c48a32", "MiniLM embedding": "#858585", "Load-bearing PR style": "#252525"}
 
 
 def qwen(dataset):
@@ -25,7 +25,7 @@ def qwen(dataset):
 
 
 def baseline(dataset, model):
-    z = np.load(DATA / "runs/roc_cache_v1" / f"{dataset}_{model}.npz")
+    z = np.load(DATA / ("runs/load_bearing_v1" if model == "load_bearing" else "runs/roc_cache_v1") / (f"{dataset}_test.npz" if model == "load_bearing" else f"{dataset}_{model}.npz"))
     return z["label"], z["score"]
 
 
@@ -36,6 +36,7 @@ def plot_curves():
         models = [("Qwen3 1.7B", None), ("Llama 3B", "llama"), ("RoBERTa", "roberta"), ("Char TF-IDF full", "char_full" if dataset == "mixed" else "char"), ("Word TF-IDF", "word"), ("MiniLM embedding", "embedding")]
         if dataset == "mixed":
             models.insert(4, ("Char TF-IDF medium", "char"))
+        models.append(("Load-bearing PR style", "load_bearing"))
         summaries[dataset] = {}
         for name, model in models:
             labels, scores = qwen(dataset) if model is None else baseline(dataset, model)
@@ -43,7 +44,7 @@ def plot_curves():
             fpr, tpr, _ = roc_curve(labels, scores)
             summaries[dataset][name] = {"auroc": float(auc), "human": int((labels == 0).sum()), "ai": int((labels == 1).sum())}
             for ax in axes[row]:
-                ax.plot(fpr, tpr, color=COLORS[name], linewidth=2.3 if model is None else 1.5, alpha=0.95, label=f"{name}  {auc:.5f}")
+                ax.plot(fpr, tpr, color=COLORS[name], linewidth=2.3 if model is None else 1.5, linestyle="--" if model == "load_bearing" else "-", alpha=0.95, label=f"{name}  {auc:.5f}")
         labels, scores = qwen(dataset)
         original = math.log(.0373971275985241 / (1 - .0373971275985241))
         midpoint = json.loads((ROOT / "configs/qwen3_stage1_operating_point.json").read_text())["threshold_margin"]
@@ -75,10 +76,10 @@ def plot_curves():
 
 def plot_overview():
     specs = [
-        ("Mixed test", [("Qwen3 1.7B", "segment_qwen3_17b_mixed_stage1_v1", "test"), ("Llama 3B", "reference_mixed_llama_full", "test"), ("RoBERTa", "reference_mixed_roberta_full", "test"), ("Char TF-IDF full", "baseline_mixed_char_full", "test"), ("Char TF-IDF medium", "baseline_mixed_char_medium", "test"), ("Char TF-IDF small", "baseline_mixed_char_small", "test"), ("Char TF-IDF tiny", "baseline_mixed_char_tiny", "test"), ("Word TF-IDF", "baseline_mixed_word_medium", "test"), ("MiniLM embedding", "baseline_mixed_embedding_medium", "test")]),
-        ("Paper abstracts", [("Qwen3 1.7B", "segment_qwen3_17b_mixed_stage1_v1", "test_paper"), ("Llama 3B", "reference_paper_llama_full", "test"), ("RoBERTa", "reference_paper_roberta_full", "test"), ("Char TF-IDF full", "baseline_paper_char_full", "test"), ("Char TF-IDF medium", "baseline_paper_char_medium", "test"), ("Char TF-IDF small", "baseline_paper_char_small", "test"), ("Char TF-IDF tiny", "baseline_paper_char_tiny", "test"), ("Word TF-IDF", "baseline_paper_word_full", "test"), ("MiniLM embedding", "baseline_paper_embedding_full", "test")]),
-        ("General EditLens", [("Qwen3 1.7B", "segment_qwen3_17b_mixed_stage1_v1", "editlens_test"), ("Llama 3B*", "reference_editlens_llama_small", "test"), ("RoBERTa", "reference_editlens_roberta_full", "test"), ("Char TF-IDF", "baseline_editlens_char_medium", "test"), ("Word TF-IDF", "baseline_editlens_word_medium", "test"), ("MiniLM embedding", "baseline_editlens_embedding_medium", "test")]),
-        ("PMC-only test†", [("Llama 3B", "reference_pmc_llama_full", "test"), ("RoBERTa", "reference_pmc_roberta_full", "test"), ("Char TF-IDF", "baseline_pmc_char_full", "test"), ("Word TF-IDF", "baseline_pmc_word_full", "test"), ("MiniLM embedding", "baseline_pmc_embedding_full", "test")]),
+        ("Mixed test", [("Qwen3 1.7B", "segment_qwen3_17b_mixed_stage1_v1", "test"), ("Llama 3B", "reference_mixed_llama_full", "test"), ("RoBERTa", "reference_mixed_roberta_full", "test"), ("Char TF-IDF full", "baseline_mixed_char_full", "test"), ("Char TF-IDF medium", "baseline_mixed_char_medium", "test"), ("Char TF-IDF small", "baseline_mixed_char_small", "test"), ("Char TF-IDF tiny", "baseline_mixed_char_tiny", "test"), ("Word TF-IDF", "baseline_mixed_word_medium", "test"), ("MiniLM embedding", "baseline_mixed_embedding_medium", "test"), ("Load-bearing PR style", "baseline_mixed_load_bearing_full", "test")]),
+        ("Paper abstracts", [("Qwen3 1.7B", "segment_qwen3_17b_mixed_stage1_v1", "test_paper"), ("Llama 3B", "reference_paper_llama_full", "test"), ("RoBERTa", "reference_paper_roberta_full", "test"), ("Char TF-IDF full", "baseline_paper_char_full", "test"), ("Char TF-IDF medium", "baseline_paper_char_medium", "test"), ("Char TF-IDF small", "baseline_paper_char_small", "test"), ("Char TF-IDF tiny", "baseline_paper_char_tiny", "test"), ("Word TF-IDF", "baseline_paper_word_full", "test"), ("MiniLM embedding", "baseline_paper_embedding_full", "test"), ("Load-bearing PR style", "baseline_paper_load_bearing_full", "test")]),
+        ("General EditLens", [("Qwen3 1.7B", "segment_qwen3_17b_mixed_stage1_v1", "editlens_test"), ("Llama 3B*", "reference_editlens_llama_small", "test"), ("RoBERTa", "reference_editlens_roberta_full", "test"), ("Char TF-IDF", "baseline_editlens_char_medium", "test"), ("Word TF-IDF", "baseline_editlens_word_medium", "test"), ("MiniLM embedding", "baseline_editlens_embedding_medium", "test"), ("Load-bearing PR style", "baseline_editlens_load_bearing_full", "test")]),
+        ("PMC-only test†", [("Llama 3B", "reference_pmc_llama_full", "test"), ("RoBERTa", "reference_pmc_roberta_full", "test"), ("Char TF-IDF", "baseline_pmc_char_full", "test"), ("Word TF-IDF", "baseline_pmc_word_full", "test"), ("MiniLM embedding", "baseline_pmc_embedding_full", "test"), ("Load-bearing PR style", "baseline_pmc_load_bearing_full", "test")]),
     ]
     fig, axes = plt.subplots(2, 2, figsize=(12, 10))
     for ax, (title, entries) in zip(axes.flat, specs):
@@ -93,14 +94,14 @@ def plot_overview():
             names.append(name)
             values.append(auc)
         y = np.arange(len(names))[::-1]
-        ax.hlines(y, .8, values, color="#d3d9dd", linewidth=2)
+        ax.hlines(y, 0, values, color="#d3d9dd", linewidth=2)
         ax.scatter(values, y, s=54, c=[COLORS.get(n, "#888888") for n in names], zorder=3)
         for yi, val in zip(y, values):
             ax.text(min(val + .003, 1.004), yi, f"{val:.5f}", va="center", fontsize=8)
         ax.set_yticks(y, names, fontsize=9)
-        ax.set_xlim(.8, 1.065)
-        ax.set_xticks([.8, .85, .9, .95, 1.0])
-        ax.set_xlabel("AUROC (axis starts at 0.8)")
+        ax.set_xlim(0, 1.14)
+        ax.set_xticks([0, .25, .5, .75, 1.0])
+        ax.set_xlabel("AUROC")
         ax.set_title(title, loc="left", fontweight="bold")
         ax.grid(axis="x", alpha=.2)
     fig.suptitle("AUROC across every evaluated baseline", fontsize=16, fontweight="bold")

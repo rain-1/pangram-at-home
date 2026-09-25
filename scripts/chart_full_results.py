@@ -65,6 +65,7 @@ sections = [
         row("Character TF-IDF · tiny", "baseline_mixed_char_tiny"),
         row("Word TF-IDF · medium", "baseline_mixed_word_medium"),
         row("MiniLM embedding · medium", "baseline_mixed_embedding_medium"),
+        row("Load-bearing PR style · frozen", "baseline_mixed_load_bearing_full"),
         row("EditLens RoBERTa", "reference_mixed_roberta_full", kind="reference"),
         row("EditLens Llama", "reference_mixed_llama_full", kind="reference"),
     ]),
@@ -77,6 +78,7 @@ sections = [
         row("Character TF-IDF · tiny", "baseline_paper_char_tiny"),
         row("Word TF-IDF · full", "baseline_paper_word_full"),
         row("MiniLM embedding · full", "baseline_paper_embedding_full"),
+        row("Load-bearing PR style · frozen", "baseline_paper_load_bearing_full"),
         row("EditLens RoBERTa", "reference_paper_roberta_full", kind="reference"),
         row("EditLens Llama", "reference_paper_llama_full", kind="reference"),
     ]),
@@ -85,6 +87,7 @@ sections = [
         row("Character TF-IDF · medium", "baseline_editlens_char_medium"),
         row("Word TF-IDF · medium", "baseline_editlens_word_medium"),
         row("MiniLM embedding · medium", "baseline_editlens_embedding_medium"),
+        row("Load-bearing PR style · frozen", "baseline_editlens_load_bearing_full"),
         row("EditLens RoBERTa", "reference_editlens_roberta_full", kind="reference"),
         row("EditLens Llama · small test", "reference_editlens_llama_small", kind="reference"),
     ]),
@@ -93,6 +96,7 @@ sections = [
         row("Character TF-IDF · general medium", "baseline_editlens_char_medium", "test_enron"),
         row("Word TF-IDF · general medium", "baseline_editlens_word_medium", "test_enron"),
         row("MiniLM embedding · general medium", "baseline_editlens_embedding_medium", "test_enron"),
+        row("Load-bearing PR style · frozen", "baseline_editlens_load_bearing_full", "test_enron"),
         row("EditLens RoBERTa", "reference_editlens_roberta_full", "test_enron", "reference"),
         row("EditLens Llama · small test", "reference_editlens_llama_small", "test_enron", "reference"),
     ]),
@@ -104,6 +108,7 @@ sections = [
         row("Character TF-IDF · mixed tiny", "baseline_mixed_char_tiny", source_name="pmc_oa"),
         row("Word TF-IDF · mixed medium", "baseline_mixed_word_medium", source_name="pmc_oa"),
         row("MiniLM embedding · mixed medium", "baseline_mixed_embedding_medium", source_name="pmc_oa"),
+        row("Load-bearing PR style · frozen", "baseline_mixed_load_bearing_full", source_name="pmc_oa"),
         row("EditLens RoBERTa", "reference_mixed_roberta_full", kind="reference", source_name="pmc_oa"),
         row("EditLens Llama", "reference_mixed_llama_full", kind="reference", source_name="pmc_oa"),
     ]),
@@ -111,6 +116,7 @@ sections = [
         row("Character TF-IDF · full", "baseline_pmc_char_full"),
         row("Word TF-IDF · full", "baseline_pmc_word_full"),
         row("MiniLM embedding · full", "baseline_pmc_embedding_full"),
+        row("Load-bearing PR style · frozen", "baseline_pmc_load_bearing_full"),
         row("EditLens RoBERTa", "reference_pmc_roberta_full", kind="reference"),
         row("EditLens Llama", "reference_pmc_llama_full", kind="reference"),
     ]),
@@ -119,6 +125,7 @@ sections = [
         row("Character TF-IDF · paper full", "baseline_paper_char_full", "cross_model_test"),
         row("Word TF-IDF · paper full", "baseline_paper_word_full", "cross_model_test"),
         row("MiniLM embedding · paper full", "baseline_paper_embedding_full", "cross_model_test"),
+        row("Load-bearing PR style · frozen", "baseline_paper_load_bearing_full", "cross_model_test"),
         row("EditLens RoBERTa", "reference_paper_roberta_full", "cross_model_test", "reference"),
         row("EditLens Llama", "reference_paper_llama_full", "cross_model_test", "reference"),
     ]),
@@ -204,7 +211,7 @@ def main():
 
     ax.text(0.025, y - 0.14, "FPR bars use 0–10%; mixed PMC uses 0–15%, ACL audit 0–70%, and PMC body audit 0–40%. Rates are observed, not confidence bounds.", fontsize=8.8, color="#53657a", va="center")
     ax.text(0.025, y - 0.58, "Thresholds were selected on each model's validation set. Purple Qwen3 rows use the mixed-validation midpoint; grey rows preserve the original cutoff.", fontsize=8.8, color="#53657a", va="center")
-    ax.text(0.025, y - 1.02, "The PMC-only test overlaps Qwen3 training works. Paper AI comes from two small local generators; the swapped test reuses held-out human works. EditLens assets are noncommercial.", fontsize=8.8, color="#53657a", va="center")
+    ax.text(0.025, y - 1.02, "PMC-only overlaps Qwen3 training. Paper AI uses two small local generators. Load-bearing scores a GitHub PR writing style, not authorship. EditLens is noncommercial.", fontsize=8.8, color="#53657a", va="center")
     fig.savefig(OUT / "full_results.png", bbox_inches="tight", facecolor=fig.get_facecolor())
     fig.savefig(OUT / "full_results.pdf", bbox_inches="tight", facecolor=fig.get_facecolor())
     print(f"Wrote {OUT / 'full_results.png'} and {OUT / 'full_results.pdf'}")
