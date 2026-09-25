@@ -189,5 +189,136 @@
     "rows": 261,
     "false_positives": 15,
     "fpr": 0.05747126436781609
-  }
+  },
+  "editlens_test": {
+    "rows": 4000,
+    "human": 2000,
+    "ai": 2000,
+    "threshold": 0.0373971275985241,
+    "fpr": 0.0205,
+    "tpr": 1.0,
+    "precision": 0.9799118079372856,
+    "roc_auc": 0.999975,
+    "average_precision": 0.9999723119663927,
+    "tp": 2000,
+    "fp": 41,
+    "tn": 1959,
+    "fn": 0,
+    "by_source": {
+      "amazon_reviews": {
+        "rows": 530,
+        "human": 270,
+        "ai": 260,
+        "threshold": 0.0373971275985241,
+        "fpr": 0.018518518518518517,
+        "tpr": 1.0,
+        "precision": 0.9811320754716981,
+        "roc_auc": 0.9999999999999999,
+        "average_precision": 1.0,
+        "tp": 260,
+        "fp": 5,
+        "tn": 265,
+        "fn": 0
+      },
+      "fineweb_edu": {
+        "rows": 968,
+        "human": 508,
+        "ai": 460,
+        "threshold": 0.0373971275985241,
+        "fpr": 0.011811023622047244,
+        "tpr": 1.0,
+        "precision": 0.9871244635193133,
+        "roc_auc": 1.0,
+        "average_precision": 1.0,
+        "tp": 460,
+        "fp": 6,
+        "tn": 502,
+        "fn": 0
+      },
+      "google_reviews": {
+        "rows": 413,
+        "human": 205,
+        "ai": 208,
+        "threshold": 0.0373971275985241,
+        "fpr": 0.05853658536585366,
+        "tpr": 1.0,
+        "precision": 0.9454545454545454,
+        "roc_auc": 0.9998592870544091,
+        "average_precision": 0.9998368463528365,
+        "tp": 208,
+        "fp": 12,
+        "tn": 193,
+        "fn": 0
+      },
+      "news": {
+        "rows": 997,
+        "human": 485,
+        "ai": 512,
+        "threshold": 0.0373971275985241,
+        "fpr": 0.006185567010309278,
+        "tpr": 1.0,
+        "precision": 0.9941747572815534,
+        "roc_auc": 1.0,
+        "average_precision": 1.0,
+        "tp": 512,
+        "fp": 3,
+        "tn": 482,
+        "fn": 0
+      },
+      "reddit_writing_prompts": {
+        "rows": 1092,
+        "human": 532,
+        "ai": 560,
+        "threshold": 0.0373971275985241,
+        "fpr": 0.02819548872180451,
+        "tpr": 1.0,
+        "precision": 0.9739130434782609,
+        "roc_auc": 0.9999966433941998,
+        "average_precision": 0.9999968169085817,
+        "tp": 560,
+        "fp": 15,
+        "tn": 517,
+        "fn": 0
+      }
+    }
+  },
+  "enron_test": {
+    "rows": 3600,
+    "human": 1800,
+    "ai": 1800,
+    "threshold": 0.0373971275985241,
+    "fpr": 0.021111111111111112,
+    "tpr": 1.0,
+    "precision": 0.9793253536452666,
+    "roc_auc": 0.9999904320987654,
+    "average_precision": 0.9999905738451363,
+    "tp": 1800,
+    "fp": 38,
+    "tn": 1762,
+    "fn": 0,
+    "by_source": {
+      "enron_email": {
+        "rows": 3600,
+        "human": 1800,
+        "ai": 1800,
+        "threshold": 0.0373971275985241,
+        "fpr": 0.021111111111111112,
+        "tpr": 1.0,
+        "precision": 0.9793253536452666,
+        "roc_auc": 0.9999904320987654,
+        "average_precision": 0.9999905738451363,
+        "tp": 1800,
+        "fp": 38,
+        "tn": 1762,
+        "fn": 0
+      }
+    }
+  },
+  "acl_human_audit": {
+    "rows": 17560,
+    "false_positives": 383,
+    "fpr": 0.021810933940774487,
+    "exclusion": "all ACL works sampled for paper train/validation/test"
+  },
+  "threshold_source": "mixed_pyramid_v1/val_full.parquet"
 }

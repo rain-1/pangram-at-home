@@ -22,14 +22,18 @@ def load(name: str):
 trained = load("segment_qwen3_17b_mixed_stage1_v1")
 
 
-def row(name, file, key="test", kind="baseline"):
+def row(name, file, key="test", kind="baseline", source_name=None):
     value = load(file)[key]
-    return dict(name=name, source=file, split=key, kind=kind, ai=value.get("ai"), tp=value.get("tp"), human=value.get("human", value.get("rows")), fp=value.get("fp", value.get("false_positives")))
+    if source_name:
+        value = value["by_source"][source_name]
+    return dict(name=name, source=file, split=key + (":" + source_name if source_name else ""), kind=kind, ai=value.get("ai"), tp=value.get("tp"), human=value.get("human", value.get("rows")), fp=value.get("fp", value.get("false_positives")))
 
 
-def trained_row(name, key="test"):
+def trained_row(name, key="test", source_name=None):
     value = trained[key]
-    return dict(name=name, source="segment_qwen3_17b_mixed_stage1_v1", split=key, kind="trained", ai=value.get("ai"), tp=value.get("tp"), human=value.get("human", value.get("rows")), fp=value.get("fp", value.get("false_positives")))
+    if source_name:
+        value = value["by_source"][source_name]
+    return dict(name=name, source="segment_qwen3_17b_mixed_stage1_v1", split=key + (":" + source_name if source_name else ""), kind="trained", ai=value.get("ai"), tp=value.get("tp"), human=value.get("human", value.get("rows")), fp=value.get("fp", value.get("false_positives")))
 
 
 paper_sources = [trained["test"]["by_source"][name] for name in ("acl_anthology", "pmc_oa")]
@@ -64,6 +68,7 @@ sections = [
         row("EditLens Llama", "reference_paper_llama_full", kind="reference"),
     ]),
     ("GENERAL EDITLENS TEST", "2,000 human + 2,000 AI; Llama scored 500 + 500", [
+        trained_row("Qwen3 LoRA · ours", "editlens_test"),
         row("Character TF-IDF · medium", "baseline_editlens_char_medium"),
         row("Word TF-IDF · medium", "baseline_editlens_word_medium"),
         row("MiniLM embedding · medium", "baseline_editlens_embedding_medium"),
@@ -71,13 +76,25 @@ sections = [
         row("EditLens Llama · small test", "reference_editlens_llama_small", kind="reference"),
     ]),
     ("ENRON EMAIL TEST", "1,800 human + 1,800 AI; Llama scored 500 + 500", [
+        trained_row("Qwen3 LoRA · ours", "enron_test"),
         row("Character TF-IDF · general medium", "baseline_editlens_char_medium", "test_enron"),
         row("Word TF-IDF · general medium", "baseline_editlens_word_medium", "test_enron"),
         row("MiniLM embedding · general medium", "baseline_editlens_embedding_medium", "test_enron"),
         row("EditLens RoBERTa", "reference_editlens_roberta_full", "test_enron", "reference"),
         row("EditLens Llama · small test", "reference_editlens_llama_small", "test_enron", "reference"),
     ]),
-    ("PMC ABSTRACT TEST", "87 human + 87 AI · held-out journals", [
+    ("MIXED-TEST PMC SUBSET", "87 human + 87 AI · papers held out from the Qwen3 mixed training split", [
+        trained_row("Qwen3 LoRA · ours", source_name="pmc_oa"),
+        row("Character TF-IDF · mixed full", "baseline_mixed_char_full", source_name="pmc_oa"),
+        row("Character TF-IDF · mixed medium", "baseline_mixed_char_medium", source_name="pmc_oa"),
+        row("Character TF-IDF · mixed small", "baseline_mixed_char_small", source_name="pmc_oa"),
+        row("Character TF-IDF · mixed tiny", "baseline_mixed_char_tiny", source_name="pmc_oa"),
+        row("Word TF-IDF · mixed medium", "baseline_mixed_word_medium", source_name="pmc_oa"),
+        row("MiniLM embedding · mixed medium", "baseline_mixed_embedding_medium", source_name="pmc_oa"),
+        row("EditLens RoBERTa", "reference_mixed_roberta_full", kind="reference", source_name="pmc_oa"),
+        row("EditLens Llama", "reference_mixed_llama_full", kind="reference", source_name="pmc_oa"),
+    ]),
+    ("PMC-ONLY ABSTRACT TEST", "87 human + 87 AI · separate split overlaps mixed training, so Qwen3 is omitted", [
         row("Character TF-IDF · full", "baseline_pmc_char_full"),
         row("Word TF-IDF · full", "baseline_pmc_word_full"),
         row("MiniLM embedding · full", "baseline_pmc_embedding_full"),
@@ -93,6 +110,7 @@ sections = [
         row("EditLens Llama", "reference_paper_llama_full", "cross_model_test", "reference"),
     ]),
     ("HUMAN ACL ABSTRACT AUDIT", "human only · paper/mixed audits exclude sampled paper works; general audits have a larger pool", [
+        trained_row("Qwen3 LoRA · ours", "acl_human_audit"),
         row("Character TF-IDF · mixed medium", "baseline_mixed_char_medium", "acl_human_audit"),
         row("Word TF-IDF · mixed medium", "baseline_mixed_word_medium", "acl_human_audit"),
         row("Character TF-IDF · paper full", "baseline_paper_char_full", "acl_human_audit"),
@@ -147,7 +165,7 @@ def main():
         ax.text(0.032, y + 0.31, title, va="center", fontsize=10.7, weight="bold", color="#19304a")
         ax.text(0.32, y + 0.31, note, va="center", fontsize=8.7, color="#53657a")
         y -= 0.5
-        fp_max = 70 if title == "HUMAN ACL ABSTRACT AUDIT" else 40 if title == "HUMAN PMC BODY AUDIT" else 10
+        fp_max = 70 if title == "HUMAN ACL ABSTRACT AUDIT" else 40 if title == "HUMAN PMC BODY AUDIT" else 15 if title == "MIXED-TEST PMC SUBSET" else 10
         for index, item in enumerate(rows):
             if index % 2 == 0:
                 ax.add_patch(Rectangle((0.02, y - 0.33), 0.96, 0.69, facecolor="#ffffff", edgecolor="none"))
@@ -170,9 +188,9 @@ def main():
             y -= 0.67
         y -= 0.12
 
-    ax.text(0.025, y - 0.14, "FPR bars use a 0–10% scale; ACL and PMC body audits use 0–70% and 0–40%. Percentages are observed rates, not confidence bounds.", fontsize=8.8, color="#53657a", va="center")
-    ax.text(0.025, y - 0.58, "Thresholds were selected on each model's validation set. The Qwen3 paper subset uses its mixed-set threshold. Reference checkpoints had larger external training data.", fontsize=8.8, color="#53657a", va="center")
-    ax.text(0.025, y - 1.02, "Paper AI is title-conditioned text from two small local generators; the swapped test reuses the same held-out human works. EditLens assets are noncommercial.", fontsize=8.8, color="#53657a", va="center")
+    ax.text(0.025, y - 0.14, "FPR bars use 0–10%; mixed PMC uses 0–15%, ACL audit 0–70%, and PMC body audit 0–40%. Rates are observed, not confidence bounds.", fontsize=8.8, color="#53657a", va="center")
+    ax.text(0.025, y - 0.58, "Thresholds were selected on each model's validation set. All Qwen3 rows use its mixed-set threshold. Reference checkpoints had larger external training data.", fontsize=8.8, color="#53657a", va="center")
+    ax.text(0.025, y - 1.02, "The PMC-only test overlaps Qwen3 training works. Paper AI comes from two small local generators; the swapped test reuses held-out human works. EditLens assets are noncommercial.", fontsize=8.8, color="#53657a", va="center")
     fig.savefig(OUT / "full_results.png", bbox_inches="tight", facecolor=fig.get_facecolor())
     fig.savefig(OUT / "full_results.pdf", bbox_inches="tight", facecolor=fig.get_facecolor())
     print(f"Wrote {OUT / 'full_results.png'} and {OUT / 'full_results.pdf'}")
