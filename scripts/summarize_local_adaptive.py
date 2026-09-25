@@ -48,10 +48,8 @@ def main():
     if decision:
         lines += [f"Short-window pilot chosen: **{decision['short_window_run']}**.",
                   "Its 1,600-step result is exploratory and has a smaller training budget than the full runs.", ""]
-    for name in ("vast_hpo_selected_v3", selected):
-        if not name:
-            continue
-        report = runs.get(name, {}).get("holdout")
+    for name, item in runs.items():
+        report = item.get("holdout")
         if not report:
             continue
         lines += [f"## Held-out evaluation: {name}", "",

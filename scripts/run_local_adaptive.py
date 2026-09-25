@@ -182,8 +182,10 @@ def main():
         selected = max(candidates, key=lambda name: latest_validation(name)["eval_partial_auc_fpr_5pct"])
         status["selected_for_holdout"] = selected
         save()
-        for name in ("vast_hpo_selected_v3", selected):
-            if (ROOT / "runs" / name / "best_adapter/adapter_config.json").exists():
+        holdout_order = list(dict.fromkeys([selected, "vast_hpo_selected_v3", FIRST, SECOND, short]))
+        for name in holdout_order:
+            if (ROOT / "runs" / name / "best_adapter/adapter_config.json").exists() and \
+                    deadline - time.time() >= 3600:
                 run(name + "_holdouts", [sys.executable, "-u", "scripts/evaluate_diverse_lora.py",
                     "--root", str(ROOT), "--run-name", name, "--batch-size", "2"])
         run("summarize", [sys.executable, "scripts/summarize_overnight.py", "--root", str(ROOT)])
