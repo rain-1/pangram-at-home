@@ -1,5 +1,10 @@
 -r requirements.txt
-ray[tune]>=2.50,<3
+torch==2.11.0
+transformers==5.4.0
+peft==0.18.1
+accelerate==1.13.0
+bitsandbytes==0.49.2
+ray[tune]==2.58.0
 
 # Optional for `--search hebo` after the initial ASHA sweep:
 # hebo>=0.3
