@@ -34,8 +34,12 @@ from transformers import (
 
 class TextDataset(Dataset):
     def __init__(self, path: Path, tokenizer, max_length: int):
-        rows = pq.read_table(path, columns=["text", "label"]).to_pydict()
+        columns = ["text", "label"]
+        if "domain" in pq.read_schema(path).names:
+            columns.append("domain")
+        rows = pq.read_table(path, columns=columns).to_pydict()
         self.labels = rows["label"]
+        self.domains = rows.get("domain")
         self.encodings = tokenizer(rows["text"], truncation=True, max_length=max_length)
 
     def __len__(self):
@@ -54,6 +58,24 @@ class DeadlineCallback(TrainerCallback):
             control.should_save = True
             control.should_training_stop = True
         return control
+
+
+class SavedEvalCallback(TrainerCallback):
+    """Publish an evaluation only after its corresponding checkpoint is saved."""
+
+    def __init__(self, path: Path):
+        self.path = path
+        self.latest_metrics = None
+
+    def on_evaluate(self, args, state, control, metrics=None, **kwargs):
+        self.latest_metrics = dict(metrics or {})
+
+    def on_save(self, args, state, control, **kwargs):
+        if self.latest_metrics is not None:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with self.path.open("a", encoding="utf-8") as file:
+                file.write(json.dumps({"step": state.global_step, **self.latest_metrics}) + "\n")
+            self.latest_metrics = None
 
 
 def file_sha256(path: Path) -> str:
@@ -80,6 +102,12 @@ def main():
     parser.add_argument("--learning-rate", type=float, default=1e-4)
     parser.add_argument("--eval-steps", type=int, default=200)
     parser.add_argument("--lora-dropout", type=float, default=0.05)
+    parser.add_argument("--lora-rank", type=int, default=16)
+    parser.add_argument("--lora-alpha", type=int, default=32)
+    parser.add_argument("--train-batch-size", type=int, default=2)
+    parser.add_argument("--gradient-accumulation-steps", type=int, default=8)
+    parser.add_argument("--max-steps", type=int, default=-1)
+    parser.add_argument("--metrics-jsonl", type=Path)
     args = parser.parse_args()
 
     torch.set_num_threads(4)
@@ -87,6 +115,8 @@ def main():
     folder = args.root / "data" / args.dataset_folder
     output = args.root / "runs" / args.run_name
     output.mkdir(parents=True, exist_ok=True)
+    if args.metrics_jsonl and args.metrics_jsonl.exists():
+        raise SystemExit(f"Metrics path already exists: {args.metrics_jsonl}")
     tokenizer = AutoTokenizer.from_pretrained(args.model, use_fast=True)
     tokenizer.pad_token = tokenizer.eos_token
     train = TextDataset(folder / f"train_{args.train_tier}.parquet", tokenizer, args.max_length)
@@ -102,7 +132,8 @@ def main():
     model.config.use_cache = False
     model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, LoraConfig(
-        task_type=TaskType.SEQ_CLS, r=16, lora_alpha=32, lora_dropout=args.lora_dropout,
+        task_type=TaskType.SEQ_CLS, r=args.lora_rank, lora_alpha=args.lora_alpha,
+        lora_dropout=args.lora_dropout,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
         modules_to_save=["score"],
     ))
@@ -114,6 +145,13 @@ def main():
         "seed": args.seed, "task": "binary_segment_classification",
         "dataset_folder": args.dataset_folder, "learning_rate": args.learning_rate,
         "report_to": args.report_to, "eval_steps": args.eval_steps,
+        "lora_rank": args.lora_rank, "lora_alpha": args.lora_alpha,
+        "lora_dropout": args.lora_dropout, "weight_decay": 0.01,
+        "warmup_ratio": 0.05, "lr_scheduler_type": "cosine",
+        "train_batch_size": args.train_batch_size,
+        "gradient_accumulation_steps": args.gradient_accumulation_steps,
+        "effective_batch_size": args.train_batch_size * args.gradient_accumulation_steps,
+        "max_steps": args.max_steps,
         "train_sha256": file_sha256(folder / f"train_{args.train_tier}.parquet"),
         "val_sha256": file_sha256(folder / "val_full.parquet"),
         "dataset_manifest_sha256": file_sha256(folder / "manifest.json"),
@@ -124,12 +162,25 @@ def main():
     def metrics(pred):
         logits, labels = pred
         scores = logits[:, 1].astype(np.float32) - logits[:, 0].astype(np.float32)
-        return {"roc_auc": roc_auc_score(labels, scores)}
+        human_scores = np.sort(scores[labels == 0])[::-1]
+        allowed = int(np.floor(.02 * len(human_scores)))
+        threshold = np.nextafter(human_scores[allowed], np.inf)
+        result = {"roc_auc": roc_auc_score(labels, scores),
+                  "partial_auc_fpr_5pct": roc_auc_score(labels, scores, max_fpr=.05),
+                  "ai_recall_at_fpr_2pct": float(np.mean(scores[labels == 1] >= threshold))}
+        if val.domains is not None:
+            domains = np.asarray(val.domains)
+            result["worst_domain_ai_recall_at_fpr_2pct"] = float(min(
+                np.mean(scores[(labels == 1) & (domains == domain)] >= threshold)
+                for domain in set(domains)
+            ))
+        return result
 
     training_args = TrainingArguments(
         output_dir=str(output), run_name=args.run_name,
-        per_device_train_batch_size=2, per_device_eval_batch_size=4,
-        gradient_accumulation_steps=8, num_train_epochs=args.epochs,
+        per_device_train_batch_size=args.train_batch_size, per_device_eval_batch_size=4,
+        gradient_accumulation_steps=args.gradient_accumulation_steps, num_train_epochs=args.epochs,
+        max_steps=args.max_steps,
         learning_rate=args.learning_rate, lr_scheduler_type="cosine", warmup_ratio=0.05,
         weight_decay=0.01,
         bf16=True, gradient_checkpointing=True,
@@ -143,7 +194,8 @@ def main():
         model=model, args=training_args, train_dataset=train, eval_dataset=val,
         data_collator=DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8),
         compute_metrics=metrics,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=6), DeadlineCallback(time.monotonic() + args.hours * 3600)],
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=6), DeadlineCallback(time.monotonic() + args.hours * 3600)]
+        + ([SavedEvalCallback(args.metrics_jsonl)] if args.metrics_jsonl else []),
     )
     trainer.train(resume_from_checkpoint=args.resume)
     trainer.save_model(output / "best_adapter")

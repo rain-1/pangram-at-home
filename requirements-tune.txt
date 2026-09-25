@@ -1,0 +1,5 @@
+-r requirements.txt
+ray[tune]>=2.50,<3
+
+# Optional for `--search hebo` after the initial ASHA sweep:
+# hebo>=0.3
