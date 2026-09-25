@@ -72,9 +72,12 @@ def main() -> None:
             "estimated_cost_usd": (time.monotonic() - started) / 3600 * args.hourly_rate,
         }, indent=2) + "\n")
     finally:
-        action = "stop" if status == "done" and not archive_copied else "destroy"
-        command = ([args.cli, "--raw", "stop", "instance", str(args.instance)] if action == "stop"
-                   else [args.cli, "--raw", "destroy", "instance", str(args.instance), "-y"])
+        # Keep the instance disk for debugging or partial recovery if the sweep
+        # fails or reaches the cap before the export has been copied.
+        action = "destroy" if status == "done" and archive_copied else "stop"
+        command = ([args.cli, "--raw", "destroy", "instance", str(args.instance), "-y"]
+                   if action == "destroy" else
+                   [args.cli, "--raw", "stop", "instance", str(args.instance)])
         result = run(command)
         print(action, "response:", result.stdout.strip()[:500],
               "exit", result.returncode, flush=True)
