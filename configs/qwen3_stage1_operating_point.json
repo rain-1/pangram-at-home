@@ -1,0 +1,13 @@
+{
+  "run_name": "qwen3_17b_mixed_stage1_v1",
+  "adapter_sha256": "82aeb8d17351302de7d1cc424f5bbfecb67ff86c4425e0190a24ebb6157b2afa",
+  "policy": "midpoint between highest human and lowest AI margin on mixed validation",
+  "validation_file": "mixed_pyramid_v1/val_full.parquet",
+  "validation_file_sha256": "c947e0e1d2555eb7aa066231761773b849eb36376f4ce938fd78b8c3e8972169",
+  "decision_rule": "AI if (AI logit - human logit) >= threshold_margin",
+  "threshold_margin": 1.84765625,
+  "equivalent_uncalibrated_ai_score_cutoff": 0.863851684976284,
+  "validation_human_max_margin": -1.1640625,
+  "validation_ai_min_margin": 4.859375,
+  "max_length": 512
+}

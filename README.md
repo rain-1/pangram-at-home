@@ -55,7 +55,9 @@ The baseline scripts select a threshold on **validation humans** for at most 2% 
 
 On the balanced paper test, the EditLens RoBERTa reference detected 203/221 AI abstracts with 2/221 human false positives. On the 35%-paper mixed test it detected 617/631 AI texts with 8/631 human false positives. The mixed character n-gram baseline detected 601/631 AI texts with 13/631 human false positives, including **8/87 PMC abstracts**. See [the report](reports/first-data-and-baselines.md) for all models, source breakdowns, the swapped-generator test, and the large human-only audit.
 
-The [full results chart](reports/charts/full_results.png) compares the trained Qwen3 adapter with every saved baseline and training tier across the main test sets and human-only audits. A [vector PDF](reports/charts/full_results.pdf) and [source table](reports/charts/full_results.csv) are also available. Regenerate them with `python scripts/chart_full_results.py`.
+The [full results chart](reports/charts/full_results.png) compares both Qwen3 cutoffs with every saved baseline and training tier across the main test sets and human-only audits. A [vector PDF](reports/charts/full_results.pdf) and [source table](reports/charts/full_results.csv) are also available. Regenerate them with `python scripts/chart_full_results.py`.
+
+The [threshold trade-off report](reports/threshold-tradeoff.md) shows that changing only the decision cutoff from the original 3.7% AI score to a validation-selected 86.4% score reduces mixed-test human false positives from 19/631 to 4/631 while still detecting 631/631 AI texts. The [operating-point configuration](configs/qwen3_stage1_operating_point.json) records the exact logit-margin cutoff. This is a research operating point, not a guarantee of a <2% population false-positive rate.
 
 ## Stage-1 neural training
 

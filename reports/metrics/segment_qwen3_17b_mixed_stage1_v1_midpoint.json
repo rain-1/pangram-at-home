@@ -1,0 +1,191 @@
+{
+  "run_name": "qwen3_17b_mixed_stage1_v1",
+  "threshold_policy": "validation_class_gap_midpoint",
+  "threshold_source": "mixed_pyramid_v1/val_full.parquet",
+  "threshold_margin": 1.84765625,
+  "threshold": 0.863851684976284,
+  "val": {
+    "human": 622,
+    "ai": 622,
+    "fp": 0,
+    "tp": 622,
+    "fpr": 0.0,
+    "recall": 1.0
+  },
+  "test": {
+    "human": 631,
+    "ai": 631,
+    "fp": 4,
+    "tp": 631,
+    "fpr": 0.006339144215530904,
+    "recall": 1.0,
+    "by_source": {
+      "acl_anthology": {
+        "human": 134,
+        "ai": 134,
+        "fp": 1,
+        "tp": 134,
+        "fpr": 0.007462686567164179,
+        "recall": 1.0
+      },
+      "amazon_reviews": {
+        "human": 46,
+        "ai": 55,
+        "fp": 0,
+        "tp": 55,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "fineweb_edu": {
+        "human": 102,
+        "ai": 91,
+        "fp": 0,
+        "tp": 91,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "google_reviews": {
+        "human": 44,
+        "ai": 42,
+        "fp": 0,
+        "tp": 42,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "news": {
+        "human": 111,
+        "ai": 114,
+        "fp": 0,
+        "tp": 114,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "pmc_oa": {
+        "human": 87,
+        "ai": 87,
+        "fp": 1,
+        "tp": 87,
+        "fpr": 0.011494252873563218,
+        "recall": 1.0
+      },
+      "reddit_writing_prompts": {
+        "human": 107,
+        "ai": 108,
+        "fp": 2,
+        "tp": 108,
+        "fpr": 0.018691588785046728,
+        "recall": 1.0
+      }
+    }
+  },
+  "cross_model_test": {
+    "human": 182,
+    "ai": 182,
+    "fp": 0,
+    "tp": 182,
+    "fpr": 0.0,
+    "recall": 1.0,
+    "by_source": {
+      "acl_anthology": {
+        "human": 104,
+        "ai": 104,
+        "fp": 0,
+        "tp": 104,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "pmc_oa": {
+        "human": 78,
+        "ai": 78,
+        "fp": 0,
+        "tp": 78,
+        "fpr": 0.0,
+        "recall": 1.0
+      }
+    }
+  },
+  "pmc_body_human_audit": {
+    "human": 261,
+    "ai": 0,
+    "fp": 4,
+    "tp": 0,
+    "fpr": 0.01532567049808429,
+    "recall": null
+  },
+  "editlens_test": {
+    "human": 2000,
+    "ai": 2000,
+    "fp": 7,
+    "tp": 1999,
+    "fpr": 0.0035,
+    "recall": 0.9995,
+    "by_source": {
+      "amazon_reviews": {
+        "human": 270,
+        "ai": 260,
+        "fp": 0,
+        "tp": 260,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "fineweb_edu": {
+        "human": 508,
+        "ai": 460,
+        "fp": 0,
+        "tp": 459,
+        "fpr": 0.0,
+        "recall": 0.9978260869565218
+      },
+      "google_reviews": {
+        "human": 205,
+        "ai": 208,
+        "fp": 2,
+        "tp": 208,
+        "fpr": 0.00975609756097561,
+        "recall": 1.0
+      },
+      "news": {
+        "human": 485,
+        "ai": 512,
+        "fp": 0,
+        "tp": 512,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "reddit_writing_prompts": {
+        "human": 532,
+        "ai": 560,
+        "fp": 5,
+        "tp": 560,
+        "fpr": 0.009398496240601503,
+        "recall": 1.0
+      }
+    }
+  },
+  "enron_test": {
+    "human": 1800,
+    "ai": 1800,
+    "fp": 2,
+    "tp": 1799,
+    "fpr": 0.0011111111111111111,
+    "recall": 0.9994444444444445,
+    "by_source": {
+      "enron_email": {
+        "human": 1800,
+        "ai": 1800,
+        "fp": 2,
+        "tp": 1799,
+        "fpr": 0.0011111111111111111,
+        "recall": 0.9994444444444445
+      }
+    }
+  },
+  "acl_human_audit": {
+    "human": 17560,
+    "ai": 0,
+    "fp": 97,
+    "tp": 0,
+    "fpr": 0.005523917995444191,
+    "recall": null
+  }
+}

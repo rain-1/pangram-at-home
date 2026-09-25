@@ -1,0 +1,476 @@
+{
+  "run_name": "qwen3_17b_mixed_stage1_v1",
+  "score_cache_manifest": "/mnt/f/pangram-at-home/runs/qwen3_17b_mixed_stage1_v1/score_cache_v1/manifest.json",
+  "threshold_selection": "Only mixed validation labels and a fixed 50% probability rule; no holdout thresholds fitted",
+  "note": "Scores were recomputed in batches of 8; the original run used batches of 4. Frozen mixed/cross/body holdout counts reproduce the original run at its saved cutoff.",
+  "policies": [
+    {
+      "policy": "original",
+      "label": "Original \u00b7 2% validation FPR",
+      "margin_cutoff": -3.2480470415752043,
+      "ai_probability_cutoff": 0.0373971275985241,
+      "mixed_val": {
+        "human": 622,
+        "ai": 622,
+        "fp": 11,
+        "tp": 622,
+        "fpr": 0.017684887459807074,
+        "recall": 1.0
+      },
+      "mixed_test": {
+        "human": 631,
+        "ai": 631,
+        "fp": 19,
+        "tp": 631,
+        "fpr": 0.030110935023771792,
+        "recall": 1.0
+      },
+      "paper_subset": {
+        "human": 221,
+        "ai": 221,
+        "fp": 10,
+        "tp": 221,
+        "fpr": 0.04524886877828054,
+        "recall": 1.0
+      },
+      "pmc_subset": {
+        "human": 87,
+        "ai": 87,
+        "fp": 5,
+        "tp": 87,
+        "fpr": 0.05747126436781609,
+        "recall": 1.0
+      },
+      "cross_model_test": {
+        "human": 182,
+        "ai": 182,
+        "fp": 6,
+        "tp": 182,
+        "fpr": 0.03296703296703297,
+        "recall": 1.0
+      },
+      "editlens_test": {
+        "human": 2000,
+        "ai": 2000,
+        "fp": 41,
+        "tp": 2000,
+        "fpr": 0.0205,
+        "recall": 1.0
+      },
+      "enron_test": {
+        "human": 1800,
+        "ai": 1800,
+        "fp": 38,
+        "tp": 1800,
+        "fpr": 0.021111111111111112,
+        "recall": 1.0
+      },
+      "acl_human_audit": {
+        "human": 17560,
+        "ai": 0,
+        "fp": 383,
+        "tp": 0,
+        "fpr": 0.021810933940774487,
+        "recall": null
+      },
+      "pmc_body_audit": {
+        "human": 261,
+        "ai": 0,
+        "fp": 15,
+        "tp": 0,
+        "fpr": 0.05747126436781609,
+        "recall": null
+      }
+    },
+    {
+      "policy": "val_1pct",
+      "label": "At most 1% validation FPR",
+      "margin_cutoff": -2.9433593749999996,
+      "ai_probability_cutoff": 0.05005130611855735,
+      "mixed_val": {
+        "human": 622,
+        "ai": 622,
+        "fp": 6,
+        "tp": 622,
+        "fpr": 0.00964630225080386,
+        "recall": 1.0
+      },
+      "mixed_test": {
+        "human": 631,
+        "ai": 631,
+        "fp": 14,
+        "tp": 631,
+        "fpr": 0.022187004754358162,
+        "recall": 1.0
+      },
+      "paper_subset": {
+        "human": 221,
+        "ai": 221,
+        "fp": 8,
+        "tp": 221,
+        "fpr": 0.03619909502262444,
+        "recall": 1.0
+      },
+      "pmc_subset": {
+        "human": 87,
+        "ai": 87,
+        "fp": 4,
+        "tp": 87,
+        "fpr": 0.04597701149425287,
+        "recall": 1.0
+      },
+      "cross_model_test": {
+        "human": 182,
+        "ai": 182,
+        "fp": 4,
+        "tp": 182,
+        "fpr": 0.02197802197802198,
+        "recall": 1.0
+      },
+      "editlens_test": {
+        "human": 2000,
+        "ai": 2000,
+        "fp": 32,
+        "tp": 2000,
+        "fpr": 0.016,
+        "recall": 1.0
+      },
+      "enron_test": {
+        "human": 1800,
+        "ai": 1800,
+        "fp": 32,
+        "tp": 1800,
+        "fpr": 0.017777777777777778,
+        "recall": 1.0
+      },
+      "acl_human_audit": {
+        "human": 17560,
+        "ai": 0,
+        "fp": 344,
+        "tp": 0,
+        "fpr": 0.01958997722095672,
+        "recall": null
+      },
+      "pmc_body_audit": {
+        "human": 261,
+        "ai": 0,
+        "fp": 10,
+        "tp": 0,
+        "fpr": 0.038314176245210725,
+        "recall": null
+      }
+    },
+    {
+      "policy": "val_0fp",
+      "label": "Zero validation false positives",
+      "margin_cutoff": -1.1640624999999998,
+      "ai_probability_cutoff": 0.23792989161116976,
+      "mixed_val": {
+        "human": 622,
+        "ai": 622,
+        "fp": 0,
+        "tp": 622,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "mixed_test": {
+        "human": 631,
+        "ai": 631,
+        "fp": 8,
+        "tp": 631,
+        "fpr": 0.012678288431061807,
+        "recall": 1.0
+      },
+      "paper_subset": {
+        "human": 221,
+        "ai": 221,
+        "fp": 5,
+        "tp": 221,
+        "fpr": 0.02262443438914027,
+        "recall": 1.0
+      },
+      "pmc_subset": {
+        "human": 87,
+        "ai": 87,
+        "fp": 4,
+        "tp": 87,
+        "fpr": 0.04597701149425287,
+        "recall": 1.0
+      },
+      "cross_model_test": {
+        "human": 182,
+        "ai": 182,
+        "fp": 3,
+        "tp": 182,
+        "fpr": 0.016483516483516484,
+        "recall": 1.0
+      },
+      "editlens_test": {
+        "human": 2000,
+        "ai": 2000,
+        "fp": 12,
+        "tp": 2000,
+        "fpr": 0.006,
+        "recall": 1.0
+      },
+      "enron_test": {
+        "human": 1800,
+        "ai": 1800,
+        "fp": 8,
+        "tp": 1799,
+        "fpr": 0.0044444444444444444,
+        "recall": 0.9994444444444445
+      },
+      "acl_human_audit": {
+        "human": 17560,
+        "ai": 0,
+        "fp": 199,
+        "tp": 0,
+        "fpr": 0.01133257403189066,
+        "recall": null
+      },
+      "pmc_body_audit": {
+        "human": 261,
+        "ai": 0,
+        "fp": 7,
+        "tp": 0,
+        "fpr": 0.02681992337164751,
+        "recall": null
+      }
+    },
+    {
+      "policy": "score_50pct",
+      "label": "Standard AI score \u2265 50%",
+      "margin_cutoff": 0.0,
+      "ai_probability_cutoff": 0.5,
+      "mixed_val": {
+        "human": 622,
+        "ai": 622,
+        "fp": 0,
+        "tp": 622,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "mixed_test": {
+        "human": 631,
+        "ai": 631,
+        "fp": 4,
+        "tp": 631,
+        "fpr": 0.006339144215530904,
+        "recall": 1.0
+      },
+      "paper_subset": {
+        "human": 221,
+        "ai": 221,
+        "fp": 2,
+        "tp": 221,
+        "fpr": 0.00904977375565611,
+        "recall": 1.0
+      },
+      "pmc_subset": {
+        "human": 87,
+        "ai": 87,
+        "fp": 1,
+        "tp": 87,
+        "fpr": 0.011494252873563218,
+        "recall": 1.0
+      },
+      "cross_model_test": {
+        "human": 182,
+        "ai": 182,
+        "fp": 0,
+        "tp": 182,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "editlens_test": {
+        "human": 2000,
+        "ai": 2000,
+        "fp": 9,
+        "tp": 2000,
+        "fpr": 0.0045,
+        "recall": 1.0
+      },
+      "enron_test": {
+        "human": 1800,
+        "ai": 1800,
+        "fp": 2,
+        "tp": 1799,
+        "fpr": 0.0011111111111111111,
+        "recall": 0.9994444444444445
+      },
+      "acl_human_audit": {
+        "human": 17560,
+        "ai": 0,
+        "fp": 147,
+        "tp": 0,
+        "fpr": 0.00837129840546697,
+        "recall": null
+      },
+      "pmc_body_audit": {
+        "human": 261,
+        "ai": 0,
+        "fp": 7,
+        "tp": 0,
+        "fpr": 0.02681992337164751,
+        "recall": null
+      }
+    },
+    {
+      "policy": "val_midpoint",
+      "label": "Validation class-gap midpoint",
+      "margin_cutoff": 1.84765625,
+      "ai_probability_cutoff": 0.863851684976284,
+      "mixed_val": {
+        "human": 622,
+        "ai": 622,
+        "fp": 0,
+        "tp": 622,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "mixed_test": {
+        "human": 631,
+        "ai": 631,
+        "fp": 4,
+        "tp": 631,
+        "fpr": 0.006339144215530904,
+        "recall": 1.0
+      },
+      "paper_subset": {
+        "human": 221,
+        "ai": 221,
+        "fp": 2,
+        "tp": 221,
+        "fpr": 0.00904977375565611,
+        "recall": 1.0
+      },
+      "pmc_subset": {
+        "human": 87,
+        "ai": 87,
+        "fp": 1,
+        "tp": 87,
+        "fpr": 0.011494252873563218,
+        "recall": 1.0
+      },
+      "cross_model_test": {
+        "human": 182,
+        "ai": 182,
+        "fp": 0,
+        "tp": 182,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "editlens_test": {
+        "human": 2000,
+        "ai": 2000,
+        "fp": 7,
+        "tp": 1999,
+        "fpr": 0.0035,
+        "recall": 0.9995
+      },
+      "enron_test": {
+        "human": 1800,
+        "ai": 1800,
+        "fp": 2,
+        "tp": 1799,
+        "fpr": 0.0011111111111111111,
+        "recall": 0.9994444444444445
+      },
+      "acl_human_audit": {
+        "human": 17560,
+        "ai": 0,
+        "fp": 97,
+        "tp": 0,
+        "fpr": 0.005523917995444191,
+        "recall": null
+      },
+      "pmc_body_audit": {
+        "human": 261,
+        "ai": 0,
+        "fp": 4,
+        "tp": 0,
+        "fpr": 0.01532567049808429,
+        "recall": null
+      }
+    },
+    {
+      "policy": "val_99recall",
+      "label": "At least 99% validation AI recall",
+      "margin_cutoff": 9.4375,
+      "ai_probability_cutoff": 0.9999203269901391,
+      "mixed_val": {
+        "human": 622,
+        "ai": 622,
+        "fp": 0,
+        "tp": 616,
+        "fpr": 0.0,
+        "recall": 0.9903536977491961
+      },
+      "mixed_test": {
+        "human": 631,
+        "ai": 631,
+        "fp": 1,
+        "tp": 623,
+        "fpr": 0.001584786053882726,
+        "recall": 0.9873217115689382
+      },
+      "paper_subset": {
+        "human": 221,
+        "ai": 221,
+        "fp": 1,
+        "tp": 218,
+        "fpr": 0.004524886877828055,
+        "recall": 0.9864253393665159
+      },
+      "pmc_subset": {
+        "human": 87,
+        "ai": 87,
+        "fp": 0,
+        "tp": 85,
+        "fpr": 0.0,
+        "recall": 0.9770114942528736
+      },
+      "cross_model_test": {
+        "human": 182,
+        "ai": 182,
+        "fp": 0,
+        "tp": 182,
+        "fpr": 0.0,
+        "recall": 1.0
+      },
+      "editlens_test": {
+        "human": 2000,
+        "ai": 2000,
+        "fp": 1,
+        "tp": 1981,
+        "fpr": 0.0005,
+        "recall": 0.9905
+      },
+      "enron_test": {
+        "human": 1800,
+        "ai": 1800,
+        "fp": 0,
+        "tp": 1792,
+        "fpr": 0.0,
+        "recall": 0.9955555555555555
+      },
+      "acl_human_audit": {
+        "human": 17560,
+        "ai": 0,
+        "fp": 21,
+        "tp": 0,
+        "fpr": 0.0011958997722095672,
+        "recall": null
+      },
+      "pmc_body_audit": {
+        "human": 261,
+        "ai": 0,
+        "fp": 0,
+        "tp": 0,
+        "fpr": 0.0,
+        "recall": null
+      }
+    }
+  ]
+}
