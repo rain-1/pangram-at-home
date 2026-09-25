@@ -27,8 +27,10 @@ def stop_child(child: subprocess.Popen) -> None:
     if child.poll() is not None:
         return
     try:
-        os.killpg(child.pid, signal.SIGTERM)
-        child.wait(timeout=20)
+        # Terminate the trainer first so it can flush W&B and mark ASHA pruning.
+        # Its W&B service process must stay alive until that flush completes.
+        child.terminate()
+        child.wait(timeout=60)
     except (ProcessLookupError, subprocess.TimeoutExpired):
         if child.poll() is None:
             os.killpg(child.pid, signal.SIGKILL)

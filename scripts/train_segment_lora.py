@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import os
+import signal
 import time
 from pathlib import Path
 
@@ -111,6 +112,17 @@ def main():
     parser.add_argument("--selection-metric", choices=["roc_auc", "partial_auc_fpr_5pct"], default="roc_auc")
     parser.add_argument("--quantization", choices=["nf4", "none"], default="nf4")
     args = parser.parse_args()
+
+    def finish_on_sigterm(signum, frame):
+        """Let ASHA-pruned subprocesses close their W&B run cleanly."""
+        if args.report_to == "wandb":
+            import wandb
+            if wandb.run is not None:
+                wandb.run.summary["stopped_by_scheduler"] = True
+                wandb.finish(exit_code=0)
+        raise SystemExit(0)
+
+    signal.signal(signal.SIGTERM, finish_on_sigterm)
 
     torch.set_num_threads(4)
     set_seed(args.seed)
