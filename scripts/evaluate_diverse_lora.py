@@ -98,11 +98,12 @@ def main() -> None:
         assert sha256(Path(config["train_file"])) == config["train_sha256"]
         assert sha256(Path(config["val_file"])) == config["val_sha256"]
     tokenizer = AutoTokenizer.from_pretrained(adapter)
-    base = AutoModelForSequenceClassification.from_pretrained(
-        config["base_model"], num_labels=2,
-        quantization_config=BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
+    quantization = (BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
                                                  bnb_4bit_compute_dtype=torch.bfloat16,
-                                                 bnb_4bit_use_double_quant=True),
+                                                 bnb_4bit_use_double_quant=True)
+                    if config.get("quantization", "nf4") == "nf4" else None)
+    base = AutoModelForSequenceClassification.from_pretrained(
+        config["base_model"], num_labels=2, quantization_config=quantization,
         device_map={"": 0}, dtype=torch.bfloat16,
     )
     base.config.pad_token_id = tokenizer.pad_token_id
@@ -128,8 +129,12 @@ def main() -> None:
         else:
             margins = []
             for start in range(0, len(labels), args.batch_size):
-                batch = tokenizer(rows["text"][start:start + args.batch_size], return_tensors="pt",
-                                  padding=True, truncation=True, max_length=config["max_length"]).to("cuda")
+                encoded = tokenizer(rows["text"][start:start + args.batch_size],
+                                    truncation=True, max_length=config["max_length"])
+                if config.get("repeat2", False):
+                    encoded = {key: [values + values for values in batch_values]
+                               for key, batch_values in encoded.items()}
+                batch = tokenizer.pad(encoded, padding=True, return_tensors="pt").to("cuda")
                 with torch.inference_mode():
                     logits = model(**batch).logits.float()
                 margins.extend((logits[:, 1] - logits[:, 0]).cpu().numpy().tolist())
@@ -143,6 +148,8 @@ def main() -> None:
     threshold = threshold_for_fpr(val_scores, val_labels, .02)
     report = {"run_name": args.run_name, "adapter_sha256": sha256(adapter / "adapter_model.safetensors"),
               "threshold": threshold, "threshold_source": "diverse validation, <=2% human FPR",
+              "repeat2": config.get("repeat2", False),
+              "quantization": config.get("quantization", "nf4"),
               "wandb_url": f"https://wandb.ai/eac-adsf/pangram-at-home/runs/{args.wandb_run_id}" if args.wandb_run_id else None,
               "splits": {}, "operating_points": {}}
     for target in (.005, .01, .02):

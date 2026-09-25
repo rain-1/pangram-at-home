@@ -34,7 +34,7 @@ from transformers import (
 
 
 class TextDataset(Dataset):
-    def __init__(self, path: Path, tokenizer, max_length: int):
+    def __init__(self, path: Path, tokenizer, max_length: int, repeat2: bool = False):
         columns = ["text", "label"]
         if "domain" in pq.read_schema(path).names:
             columns.append("domain")
@@ -42,6 +42,11 @@ class TextDataset(Dataset):
         self.labels = rows["label"]
         self.domains = rows.get("domain")
         self.encodings = tokenizer(rows["text"], truncation=True, max_length=max_length)
+        if repeat2:
+            # Truncate the source first, then repeat the identical token IDs.
+            # Padding is added by the collator after repetition.
+            for key in self.encodings:
+                self.encodings[key] = [values + values for values in self.encodings[key]]
 
     def __len__(self):
         return len(self.labels)
@@ -79,6 +84,17 @@ class SavedEvalCallback(TrainerCallback):
             self.latest_metrics = None
 
 
+class RunMetadataCallback(TrainerCallback):
+    def __init__(self, config):
+        self.config = config
+
+    def on_train_begin(self, args, state, control, **kwargs):
+        if "wandb" in args.report_to:
+            import wandb
+            if wandb.run is not None:
+                wandb.config.update(self.config, allow_val_change=True)
+
+
 def file_sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as file:
@@ -111,6 +127,9 @@ def main():
     parser.add_argument("--metrics-jsonl", type=Path)
     parser.add_argument("--selection-metric", choices=["roc_auc", "partial_auc_fpr_5pct"], default="roc_auc")
     parser.add_argument("--quantization", choices=["nf4", "none"], default="nf4")
+    parser.add_argument("--repeat2", action="store_true")
+    parser.add_argument("--eval-batch-size", type=int, default=4)
+    parser.add_argument("--disable-early-stopping", action="store_true")
     args = parser.parse_args()
 
     def finish_on_sigterm(signum, frame):
@@ -133,8 +152,8 @@ def main():
         raise SystemExit(f"Metrics path already exists: {args.metrics_jsonl}")
     tokenizer = AutoTokenizer.from_pretrained(args.model, use_fast=True)
     tokenizer.pad_token = tokenizer.eos_token
-    train = TextDataset(folder / f"train_{args.train_tier}.parquet", tokenizer, args.max_length)
-    val = TextDataset(folder / "val_full.parquet", tokenizer, args.max_length)
+    train = TextDataset(folder / f"train_{args.train_tier}.parquet", tokenizer, args.max_length, args.repeat2)
+    val = TextDataset(folder / "val_full.parquet", tokenizer, args.max_length, args.repeat2)
     train_counts = np.bincount(train.labels, minlength=2).tolist()
     assert train_counts[0] == train_counts[1], train_counts
     quantization = (BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
@@ -172,6 +191,10 @@ def main():
         "max_steps": args.max_steps,
         "selection_metric": args.selection_metric,
         "quantization": args.quantization,
+        "repeat2": args.repeat2,
+        "max_model_tokens": args.max_length * (2 if args.repeat2 else 1),
+        "eval_batch_size": args.eval_batch_size,
+        "early_stopping": not args.disable_early_stopping,
         "train_sha256": file_sha256(folder / f"train_{args.train_tier}.parquet"),
         "val_sha256": file_sha256(folder / "val_full.parquet"),
         "dataset_manifest_sha256": file_sha256(folder / "manifest.json"),
@@ -198,7 +221,7 @@ def main():
 
     training_args = TrainingArguments(
         output_dir=str(output), run_name=args.run_name,
-        per_device_train_batch_size=args.train_batch_size, per_device_eval_batch_size=4,
+        per_device_train_batch_size=args.train_batch_size, per_device_eval_batch_size=args.eval_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps, num_train_epochs=args.epochs,
         max_steps=args.max_steps,
         learning_rate=args.learning_rate, lr_scheduler_type="cosine", warmup_ratio=0.05,
@@ -214,13 +237,21 @@ def main():
         model=model, args=training_args, train_dataset=train, eval_dataset=val,
         data_collator=DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8),
         compute_metrics=metrics,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=6), DeadlineCallback(time.monotonic() + args.hours * 3600)]
+        callbacks=([EarlyStoppingCallback(early_stopping_patience=6)] if not args.disable_early_stopping else [])
+        + [DeadlineCallback(time.monotonic() + args.hours * 3600)]
+        + [RunMetadataCallback(config)]
         + ([SavedEvalCallback(args.metrics_jsonl)] if args.metrics_jsonl else []),
     )
-    trainer.train(resume_from_checkpoint=args.resume)
+    training_result = trainer.train(resume_from_checkpoint=args.resume)
     trainer.save_model(output / "best_adapter")
     tokenizer.save_pretrained(output / "best_adapter")
-    (output / "train_summary.json").write_text(json.dumps({"best_metric": trainer.state.best_metric, "best_checkpoint": trainer.state.best_model_checkpoint, "global_step": trainer.state.global_step}, indent=2) + "\n")
+    (output / "train_summary.json").write_text(json.dumps({"best_metric": trainer.state.best_metric, "best_checkpoint": trainer.state.best_model_checkpoint, "global_step": trainer.state.global_step,
+        "train_runtime_seconds": training_result.metrics.get("train_runtime"),
+        "peak_allocated_gb": torch.cuda.max_memory_allocated()/2**30}, indent=2) + "\n")
+    if args.report_to == "wandb":
+        import wandb
+        if wandb.run is not None:
+            wandb.finish()
 
 
 if __name__ == "__main__":
