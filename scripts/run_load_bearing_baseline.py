@@ -104,7 +104,7 @@ class LoadBearing:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(os.getenv("PANGRAM_DATA_ROOT", "/mnt/f/pangram-at-home")))
-    parser.add_argument("--dataset", choices=["mixed", "paper", "editlens", "pmc"], required=True)
+    parser.add_argument("--dataset", choices=["mixed", "paper", "editlens", "pmc", "diverse"], required=True)
     args = parser.parse_args()
     model_path = args.root / "models/load-bearing/model.js"
     model = LoadBearing(model_path)
@@ -138,11 +138,24 @@ def main() -> None:
             source: metrics(score[sources == source], labels[sources == source], threshold)
             for source in sorted(set(sources)) if len(set(labels[sources == source])) == 2
         }
+        if args.dataset == "diverse":
+            domains = np.asarray(pq.read_table(folder / f"{split}_full.parquet", columns=["domain"]).to_pydict()["domain"])
+            report[split]["by_domain"] = {
+                domain: metrics(score[domains == domain], labels[domains == domain], threshold)
+                for domain in sorted(set(domains))
+            }
     extras = []
     if args.dataset == "editlens":
         extras.append(("test_enron", folder / "test_enron_full.parquet"))
     if args.dataset == "paper":
         extras.append(("cross_model_test", args.root / "data/paper_cross_model_test_v1/test.parquet"))
+    if args.dataset == "diverse":
+        extras.extend([
+            ("enron_external", args.root / "data/editlens_pyramid_v1/test_enron_full.parquet"),
+            ("raid_external", args.root / "data/raid_external_v1/frozen.parquet"),
+            ("gpt4_ood", args.root / "data/mage_external_v1/frozen/gpt4_ood.parquet"),
+            ("paraphrase", args.root / "data/mage_external_v1/frozen/paraphrase.parquet"),
+        ])
     for name, path in extras:
         rows = pq.read_table(path, columns=["text", "label", "source"]).to_pylist()
         score = np.asarray([model.score_one(row["text"])[0] for row in rows])

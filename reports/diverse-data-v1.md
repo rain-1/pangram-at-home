@@ -53,9 +53,13 @@ independent human false-positive audit. The original PMC/ACL rows retain their
 per-item/publisher rights metadata.
 
 The original target in `notes/datasets.md` also includes essays, general web,
-and professional/finance. This pilot has no defensible paired source for those
-categories yet. Reddit contributes several communities but only one social
-platform; adding an independent platform is still required. AO3 is not used:
+and professional/finance. This training pilot has no defensible *paired* source
+for those categories yet. Independent human false-positive sets now cover
+15,594 PERSUADE student essays (fixed 1,000-row audit), 1,622 Federal Reserve
+Beige Book passages, and 5,000 Writers Stack Exchange posts (fixed 1,000-row
+audit). The latter gives us a second Q&A platform beyond Reddit, but its
+authorship labels and CC BY-SA rights need further review before training.
+AO3 is not used:
 its archive allows AI-written works, so an AO3 page alone cannot certify human
 authorship. Amazon/Google/Yelp review labels are benchmark labels, not
 verified-purchase proof.
@@ -67,9 +71,12 @@ EditLens splits with non-overlapping halves of MAGE's published test CSV. Since
 MAGE train is in the new training mix, these are *in-family* evaluations, even
 though their text is disjoint. Report each source and domain, not just the
 aggregate. MAGE GPT-4 and paraphrase subsets are challenge tests from the same
-benchmark family. RAID is being frozen separately as an untouched source-family
-evaluation: no RAID text is in training or validation. Standard Ebooks probes
-human false positives only.
+benchmark family. RAID is frozen separately as an untouched source-family
+evaluation: 1,600 balanced passages across abstracts, books, news, poetry,
+recipes, Reddit, reviews, and Wikipedia, with 11 generators. No RAID text is
+in training or validation. Standard Ebooks and the three new human corpora
+probe false positives only. Enron from EditLens is a paired professional-email
+test.
 
 The first Qwen adapter was trained before MAGE was added to any training set.
 On a frozen 4,000-row MAGE ten-domain test it scores **0.6333 AUROC**, **16.3%
@@ -94,7 +101,7 @@ The Qwen run uses Qwen3-1.7B QLoRA, 512 tokens, rank 16, dropout 0.1, batch 2,
 gradient accumulation 8, learning rate 5e-5 with cosine decay and 5% warmup,
 step-200 validation/checkpointing, four epochs, and a 9.5-hour deadline. It
 logs loss and validation metrics to W&B. Run name:
-`qwen3_17b_diverse_v1`.
+`qwen3_17b_diverse_v1`; [live W&B run](https://wandb.ai/eac-adsf/pangram-at-home/runs/ogc1ve1i).
 
 Sources: [MAGE](https://github.com/yafuly/MAGE),
 [RAID](https://github.com/liamdugan/raid),

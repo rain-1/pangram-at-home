@@ -12,23 +12,28 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 ROOT = Path("/mnt/f/pangram-at-home/results")
 OUT = Path(__file__).resolve().parents[1] / "reports/diverse_baselines_v1.pdf"
-MODELS = ["char", "word", "embedding"]
-NAMES = {"char": "Character TF-IDF", "word": "Word TF-IDF", "embedding": "MiniLM + logistic"}
-COLORS = {"char": "#1E5B8F", "word": "#E98943", "embedding": "#57A681"}
+MODELS = ["char", "word", "embedding", "load_bearing"]
+NAMES = {"char": "Character TF-IDF", "word": "Word TF-IDF", "embedding": "MiniLM + logistic",
+         "load_bearing": "Load Bearing cluster"}
+COLORS = {"char": "#1E5B8F", "word": "#E98943", "embedding": "#57A681", "load_bearing": "#B76BA3"}
 
 
 def main() -> None:
-    reports = {name: json.loads((ROOT / f"baseline_diverse_{name}_full.json").read_text()) for name in MODELS}
+    reports = {
+        name: json.loads(((Path(__file__).resolve().parents[1] / "reports/metrics" if name == "load_bearing" else ROOT)
+                          / f"baseline_diverse_{name}_full.json").read_text())
+        for name in MODELS
+    }
     domains = list(reports["char"]["test"]["by_domain"])
     with PdfPages(OUT) as pdf:
         fig, axes = plt.subplots(2, 1, figsize=(11.7, 8.3), constrained_layout=True)
         x = np.arange(len(domains))
-        width = .24
+        width = .19
         for i, name in enumerate(MODELS):
             values = [reports[name]["test"]["by_domain"][d]["roc_auc"] for d in domains]
-            axes[0].bar(x + (i - 1) * width, values, width, label=NAMES[name], color=COLORS[name])
+            axes[0].bar(x + (i - 1.5) * width, values, width, label=NAMES[name], color=COLORS[name])
             recall = [reports[name]["test"]["by_domain"][d]["tpr"] for d in domains]
-            axes[1].bar(x + (i - 1) * width, recall, width, color=COLORS[name])
+            axes[1].bar(x + (i - 1.5) * width, recall, width, color=COLORS[name])
         for ax in axes:
             ax.set_xticks(x, [d.replace("_", " ").title() for d in domains])
             ax.set_ylim(0, 1)
@@ -36,12 +41,36 @@ def main() -> None:
             ax.set_axisbelow(True)
         axes[0].set_title("Diverse test: AUROC by writing domain", fontsize=15)
         axes[0].set_ylabel("AUROC")
-        axes[0].legend(ncol=3, loc="upper center", bbox_to_anchor=(.5, 1.0))
+        axes[0].legend(ncol=4, loc="upper center", bbox_to_anchor=(.5, 1.0))
         axes[1].set_title("AI recall at each model's 2% validation human-FPR threshold", fontsize=15)
         axes[1].set_ylabel("AI recall")
         fig.suptitle("Baseline performance | 1,000 balanced test passages | source-aware pyramid v1", fontsize=17)
         pdf.savefig(fig)
         plt.close(fig)
+
+        if all("raid_external" in reports[name] for name in MODELS):
+            raid_domains = list(reports["char"]["raid_external"]["by_domain"])
+            fig, axes = plt.subplots(2, 1, figsize=(11.7, 8.3), constrained_layout=True)
+            x = np.arange(len(raid_domains))
+            width = .19
+            for i, name in enumerate(MODELS):
+                vals = [reports[name]["raid_external"]["by_domain"][d]["roc_auc"] for d in raid_domains]
+                axes[0].bar(x + (i - 1.5) * width, vals, width, label=NAMES[name], color=COLORS[name])
+                recall = [reports[name]["raid_external"]["by_domain"][d]["tpr"] for d in raid_domains]
+                axes[1].bar(x + (i - 1.5) * width, recall, width, color=COLORS[name])
+            for ax in axes:
+                ax.set_xticks(x, [d.title() for d in raid_domains])
+                ax.set_ylim(0, 1)
+                ax.grid(axis="y", alpha=.2)
+                ax.set_axisbelow(True)
+            axes[0].set_title("RAID external: AUROC by domain", fontsize=15)
+            axes[0].set_ylabel("AUROC")
+            axes[0].legend(ncol=4, loc="upper center", bbox_to_anchor=(.5, 1.0))
+            axes[1].set_title("RAID AI recall at frozen diverse-validation thresholds", fontsize=15)
+            axes[1].set_ylabel("AI recall")
+            fig.suptitle("Independent source-family test | 1,600 balanced passages | 11 generators", fontsize=17)
+            pdf.savefig(fig)
+            plt.close(fig)
 
         fig, ax = plt.subplots(figsize=(11.7, 8.3))
         ax.axis("off")
@@ -51,7 +80,8 @@ def main() -> None:
             r = reports[name]
             rows.append([NAMES[name], f"{r['test']['roc_auc']:.3f}", f"{r['test']['fpr']:.1%}",
                          f"{r['test']['tpr']:.1%}", f"{r['gpt4_ood']['roc_auc']:.3f}",
-                         f"{r['paraphrase']['roc_auc']:.3f}", f"{r['standard_ebooks_human']['fpr']:.1%}"])
+                         f"{r['paraphrase']['roc_auc']:.3f}",
+                         f"{r['standard_ebooks_human']['fpr']:.1%}" if "standard_ebooks_human" in r else "—"])
         table = ax.table(cellText=rows, colLabels=columns, loc="center", cellLoc="center", colLoc="center")
         table.auto_set_font_size(False)
         table.set_fontsize(9)

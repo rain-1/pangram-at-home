@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -167,6 +168,42 @@ def main() -> None:
             "by_book": {book: float((book_scores[np.asarray(books["source_id"]) == book] >= threshold).mean())
                         for book in sorted(set(books["source_id"]))},
         }
+        essay_path = root / "data/persuade_essays_v1/human_eval.parquet"
+        if essay_path.exists():
+            essays = pq.read_table(essay_path, columns=["text_id", "text"]).to_pydict()
+            indices = sorted(range(len(essays["text"])),
+                             key=lambda i: hashlib.sha256(("persuade-audit-v1:" + essays["text_id"][i]).encode()).digest())[:1000]
+            essay_scores = predict([essays["text"][i] for i in indices])
+            result["persuade_essays_human"] = {
+                "rows": len(essay_scores), "false_positives": int((essay_scores >= threshold).sum()),
+                "fpr": float((essay_scores >= threshold).mean()),
+            }
+        finance_path = root / "data/federal_reserve_beige_book_v1/human.parquet"
+        if finance_path.exists():
+            finance = pq.read_table(finance_path, columns=["text", "source_id"]).to_pydict()
+            finance_scores = predict(finance["text"])
+            result["federal_reserve_human"] = {
+                "rows": len(finance_scores), "false_positives": int((finance_scores >= threshold).sum()),
+                "fpr": float((finance_scores >= threshold).mean()),
+                "by_release": {release: float((finance_scores[np.asarray(finance["source_id"]) == release] >= threshold).mean())
+                               for release in sorted(set(finance["source_id"]))},
+            }
+        social_path = root / "data/stackexchange_writers_v1/human_eval.parquet"
+        if social_path.exists():
+            social = pq.read_table(social_path, columns=["text_id", "text"]).to_pydict()
+            indices = sorted(range(len(social["text"])),
+                             key=lambda i: hashlib.sha256(("stackexchange-audit-v1:" + social["text_id"][i]).encode()).digest())[:1000]
+            social_scores = predict([social["text"][i] for i in indices])
+            result["stackexchange_writers_human"] = {
+                "rows": len(social_scores), "false_positives": int((social_scores >= threshold).sum()),
+                "fpr": float((social_scores >= threshold).mean()),
+            }
+        enron_path = root / "data/editlens_pyramid_v1/test_enron_full.parquet"
+        if enron_path.exists():
+            enron = pq.read_table(enron_path, columns=["text", "label"]).to_pydict()
+            enron_labels = np.asarray(enron["label"], dtype=int)
+            enron_scores = predict(enron["text"])
+            result["enron_external"] = metrics(enron_scores, enron_labels, threshold)
         raid_path = root / "data/raid_external_v1/frozen.parquet"
         if raid_path.exists():
             raid = pq.read_table(raid_path, columns=["text", "label", "source", "generator"]).to_pydict()
