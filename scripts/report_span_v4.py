@@ -102,6 +102,10 @@ def main():
                                      b["overall"]["ai_recall"]),
                           table_line(f"{title}: human token FPR", a["overall"]["fpr"],
                                      b["overall"]["fpr"])])
+    if "v4_realistic_locked_test" in new:
+        coverage = new["v4_realistic_locked_test"].get("labeled_token_fraction")
+        if coverage is not None:
+            lines.extend(["", f"CoAuthor metrics score {pct(coverage)} of source tokens. Prompts, ambiguous pasted text, and edited AI regions are masked; these are insertion-provenance metrics, not complete assisted-writing labels."])
     lines.extend(["", "## Held-out human breakdown", "",
                   "| Domain | v3 token FPR | v4 token FPR | v3 any-highlight | v4 any-highlight | Human documents |",
                   "| --- | ---: | ---: | ---: | ---: | ---: |"])

@@ -282,6 +282,8 @@ def main():
     ap.add_argument("--min-scored-chars", type=int, default=100)
     ap.add_argument("--min-chars-per-class", type=int, default=50)
     args = ap.parse_args()
+    if (args.out_dir / "test.jsonl").exists():
+        raise SystemExit("Refusing to overwrite a frozen evaluation; choose a new --out-dir")
     metadata = load_metadata(args.metadata)
     selected_workers = choose_workers(metadata, args.seed, args.target_sessions, args.max_sessions_per_worker)
     selected_sids = {sid for sid, row in metadata.items() if row["worker_id"] in selected_workers}
