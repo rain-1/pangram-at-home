@@ -39,6 +39,8 @@ def render(rows):
     OUT.mkdir(exist_ok=True)
     fig, axes = plt.subplots(3, 2, figsize=(11.5, 9.8), sharex='col')
     names = [m[0] for m in MODELS]
+    recall_limit = max(105, max(100 * r['recall'] for r in rows) + 12)
+    fpr_limit = max(55, max(100 * r['fpr'] for r in rows) + 12)
     for i, (dataset, _, _) in enumerate(SETS):
         group = [r for r in rows if r['dataset'] == dataset]
         y = np.arange(3)
@@ -47,8 +49,9 @@ def render(rows):
             values = [100 * r[key] for r in group]
             ax.barh(y, values, color=[r['color'] for r in group], height=.64)
             for k, value in enumerate(values):
-                ax.text(value + 1, k, f'{value:.1f}%', va='center', fontsize=9)
-            ax.set_xlim(0, max(105 if j == 0 else 55, max(values) + 12))
+                display = f'{value:.1f}%' if j == 0 else f'{value:.2f}%'
+                ax.text(value + 1, k, display, va='center', fontsize=9)
+            ax.set_xlim(0, recall_limit if j == 0 else fpr_limit)
             ax.set_yticks(y, names)
             ax.invert_yaxis()
             ax.grid(axis='x', alpha=.2)
