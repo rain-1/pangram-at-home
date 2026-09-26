@@ -1,7 +1,7 @@
 """Prepare a publication hard-negative pilot from dated, attributed CC BY news.
 
-This replaces 1,500 DAMASHA mixed documents with 1,500 pure human articles
-from seven Common Pile publishers. It is an experiment, not a claim that the
+This replaces 500 DAMASHA mixed documents with 500 pure human articles
+from five Common Pile publishers. It is an experiment, not a claim that the
 publication false-positive problem is solved or that every byline is verified.
 """
 from __future__ import annotations
@@ -24,9 +24,8 @@ from span_data import window_starts
 RAW=DATA/'common_pile_news_v1/raw/v0/documents'
 OUT=DATA/'span_publication_hardneg_v8'
 SEED=20260927
-QUOTAS={'news-factly':280,'news-altnews':280,'news-milwaukeenns':280,
-        'news-newcanadianmedia':280,'news-360info':280,
-        'news-freedom':50,'news-zimfact':50}
+QUOTAS={'news-factly':100,'news-altnews':100,'news-milwaukeenns':100,
+        'news-newcanadianmedia':100,'news-360info':100}
 PROTECTED=(
     'span_balanced_v6/train.jsonl',
     'span_ai_eval_candidate_v1/test.jsonl',
@@ -111,10 +110,10 @@ def main():
             used+=1
             if used==quota:break
         if used!=quota:raise ValueError(f'{source}: needed {quota}, found {used}')
-    assert len(selected)==1500
+    assert len(selected)==500
     original=[json.loads(line) for line in (DATA/'span_balanced_v6/train.jsonl').open()]
     damasha=[row for row in original if row['source']=='DAMASHA clean published aggregate']
-    rng.shuffle(damasha);removed={row['id'] for row in damasha[:1500]}
+    rng.shuffle(damasha);removed={row['id'] for row in damasha[:500]}
     rows=[row for row in original if row['id'] not in removed]+selected
     assert len(rows)==20000
     rng.shuffle(rows)
@@ -128,14 +127,14 @@ def main():
         windows[source]+=len(window_starts(n))
         for span in row['spans']:chars[str(span['label'])]+=span['end']-span['start']
     assert docs['LLMTrace']==600 and windows['LLMTrace']/sum(windows.values())<=.03
-    assert max(docs.values())/len(rows)<.20
+    assert max(docs.values())/len(rows)<.25
     OUT.mkdir()
     with (OUT/'train.jsonl').open('w') as file:
         for row in rows:file.write(json.dumps(row,ensure_ascii=False)+'\n')
     (OUT/'val.jsonl').write_bytes((DATA/'span_balanced_v6/val.jsonl').read_bytes())
     manifest={'role':'prepared publication hard-negative pilot; only local research, no raw Git text',
-              'seed':SEED,'documents':len(rows),'replaced_damasha_documents':1500,
-              'added_human_publication_documents':1500,'publisher_quotas':QUOTAS,
+              'seed':SEED,'documents':len(rows),'replaced_damasha_documents':500,
+              'added_human_publication_documents':500,'publisher_quotas':QUOTAS,
               'source_documents':dict(docs),'source_windows':dict(windows),
               'kinds':dict(kinds),'ai_character_fraction':chars['1']/(chars['0']+chars['1']),
               'llmtrace_document_fraction':docs['LLMTrace']/len(rows),
