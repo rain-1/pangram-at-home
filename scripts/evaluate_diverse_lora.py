@@ -11,6 +11,7 @@ import numpy as np
 import pyarrow.parquet as pq
 import torch
 from peft import PeftModel
+from sklearn.metrics import roc_auc_score
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, BitsAndBytesConfig
 
 from run_baselines import metrics, threshold_for_fpr
@@ -26,7 +27,9 @@ def sha256(path: Path) -> str:
 
 def group_metrics(scores: np.ndarray, labels: np.ndarray, threshold: float) -> dict:
     if len(set(labels)) == 2:
-        return metrics(scores, labels, threshold)
+        result = metrics(scores, labels, threshold)
+        result["partial_auc_fpr_5pct"] = float(roc_auc_score(labels, scores, max_fpr=.05))
+        return result
     pred = scores >= threshold
     return {"rows": len(labels), "human": int((labels == 0).sum()), "ai": int((labels == 1).sum()),
             "false_positives": int((pred & (labels == 0)).sum()),

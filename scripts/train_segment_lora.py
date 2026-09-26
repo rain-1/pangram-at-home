@@ -207,7 +207,8 @@ def main():
         scores = logits[:, 1].astype(np.float32) - logits[:, 0].astype(np.float32)
         human_scores = np.sort(scores[labels == 0])[::-1]
         allowed = int(np.floor(.02 * len(human_scores)))
-        threshold = np.nextafter(human_scores[allowed], np.inf)
+        threshold = np.nextafter(human_scores[allowed],
+                                 np.array(np.inf, dtype=human_scores.dtype))
         result = {"roc_auc": roc_auc_score(labels, scores),
                   "partial_auc_fpr_5pct": roc_auc_score(labels, scores, max_fpr=.05),
                   "ai_recall_at_fpr_2pct": float(np.mean(scores[labels == 1] >= threshold))}

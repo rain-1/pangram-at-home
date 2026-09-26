@@ -27,7 +27,9 @@ def threshold_for_fpr(scores: np.ndarray, labels: np.ndarray, target: float) -> 
     allowed = int(np.floor(target * len(human)))
     if allowed >= len(human):
         return float("-inf")
-    return float(np.nextafter(human[allowed], np.inf))
+    # Advance in the score array's dtype. A float64-only increment rounds back
+    # to the same float32 score during comparison and admits one extra human.
+    return float(np.nextafter(human[allowed], np.array(np.inf, dtype=human.dtype)))
 
 
 def metrics(scores: np.ndarray, labels: np.ndarray, threshold: float) -> dict:
