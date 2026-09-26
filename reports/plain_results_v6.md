@@ -28,6 +28,8 @@ LLMTrace contributes **2.43% of 512-token/256-stride training windows**. The lar
 
 The source cap is real, but diversity still has limits. The 4,000 synthetic examples reuse passages from the 10,000 pure-parent pool, and DAMASHA does not provide its original document or prompt IDs. We therefore cannot prove full source independence for DAMASHA using the published aggregate alone. We kept AITDNA and CoAuthor for evaluation and did not train on the external article stress set.
 
+A subsequent read-only check found zero exact-text and zero sampled 24-word phrase matches between the 20,000 training records and each of the external articles, locked human, CoAuthor, AITDNA, and LLMTrace held-out sets. This screens direct text reuse; it does not establish independent provenance where source IDs are absent.
+
 ## How we are testing the false-positive fix
 
 The new Qwen Repeat2 run uses the same base model, tuned LoRA hyperparameters, and initialization adapter as the previous 20k run; its principal change is the data mixture. It reports training to W&B. The [run controller](../scripts/run_span_balanced_v6.py) evaluates the new checkpoint at a threshold set on the separate 1,120-document human calibration set, then checks LLMTrace, synthetic validation, external articles, locked human documents, AITDNA, and CoAuthor.
