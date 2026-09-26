@@ -4,6 +4,7 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import re
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -68,6 +69,18 @@ def article_highlight_share(run,stem,threshold):
         score=data['score'];offsets=data['document_offsets']
         return np.array([(score[offsets[i]:offsets[i+1]]>=threshold).mean()
                          for i in range(len(offsets)-1)])
+
+
+def mixed_span_lengths(folder,filename):
+    lengths=[]
+    for line in (ROOT/'data'/folder/filename).open():
+        row=json.loads(line)
+        spans=row['spans']
+        if not any(span['label']==0 for span in spans) or not any(span['label']==1 for span in spans):
+            continue
+        lengths.extend(len(re.findall(r'\S+',row['text'][span['start']:span['end']]))
+                       for span in spans if span['label']==1)
+    return len(lengths),float(np.median(lengths))
 
 
 def source_aware(threshold):
@@ -222,6 +235,18 @@ def main():
         for name,m in zip(NAMES,models(v6_mix,v8_mix,source)):
             lines.append(f'| {source} | {name} | {100*m["ai_recall"]:.1f}% | '
                          f'{100*m["human_fpr"]:.2f}% | {100*m["span_recall_half_covered"]:.1f}% |')
+    lines+=['','AI-token recall weighs long passages more heavily. The half-covered span rate '
+            'gives each AI passage one vote, including short insertions. These sets differ '
+            'substantially in passage length:','',
+            '| Mixed set | AI passages | Median AI passage length |',
+            '| --- | ---: | ---: |']
+    for label,folder,filename in (
+        ('LLMTrace','span_size_curve_v5/size_20000','test_llmtrace.jsonl'),
+        ('Synthetic v4','span_training_v4','val.jsonl'),
+        ('AITDNA','span_sources_v5/normalized_aitdna_real','locked_test.jsonl'),
+        ('CoAuthor','span_realistic_eval_v1','test.jsonl')):
+        n,median=mixed_span_lengths(folder,filename)
+        lines.append(f'| {label} | {n} | {median:g} words |')
     lines+=['','## Human article false alarms by publication','',
             '| Publication | Human articles | Qwen v6 | Qwen v8 | Pangram RoBERTa | Pangram Llama |',
             '| --- | ---: | ---: | ---: | ---: | ---: |']
