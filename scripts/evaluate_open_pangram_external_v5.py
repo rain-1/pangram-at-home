@@ -24,7 +24,10 @@ def main():
     scores = score_dataset('external_human_detectors', rows, tokenizer, model,
                            spec['max_length'], spec['batch_size'],
                            output / 'external_human_detectors.jsonl')
-    score_by_id = {row['id']: row for row in scores}
+    # This source reuses numeric article IDs across generator variants, so
+    # align scores by the preserved input row order rather than by ID.
+    assert len(scores) == len(rows)
+    assert all(score['id'] == row['id'] for score, row in zip(scores, rows))
     report = {
         'model': spec['source'],
         'source': 'Russell et al., Human Detectors (2025); 150 human and 150 AI articles',
@@ -32,8 +35,8 @@ def main():
         'threshold_source': 'frozen separate pure-human calibration; no tuning on this set',
         'overall': metrics(scores, threshold),
         'by_generator': {
-            generator: metrics([score_by_id[row['id']] for row in rows
-                                if row.get('generator') == generator], threshold)
+            generator: metrics([score for score, row in zip(scores, rows)
+                                if row['kind'] == 'ai' and row.get('generator') == generator], threshold)
             for generator in sorted({row['generator'] for row in rows if row['kind'] == 'ai'})
         },
         'human_provenance_caveat': 'Named published authors; AI-free writing workflow not independently verified',
