@@ -1,0 +1,2639 @@
+{
+  "run_name": "qwen3_hpo_single_local_v1",
+  "role": "source-disjoint pre-2023 PMC full-paper human audit",
+  "pool": "all_raw",
+  "threshold": -1.7167967557907104,
+  "threshold_source": "diverse 512-token validation passages at <=2% FPR",
+  "source_ids_selected_by": "Exclude all diverse train/val/test source IDs; then SHA256(full-paper-audit-v1:source_id), first N",
+  "eligible_ids": 959,
+  "independent_ids": 545,
+  "excluded_overlap_ids": 414,
+  "chunk_audit_ids": 87,
+  "chunk_audit_overlap_ids": 73,
+  "window_size": 512,
+  "stride": 256,
+  "documents": 100,
+  "tokens": 685096,
+  "windows": 2622,
+  "token_false_highlight_rate": 0.01772306362903885,
+  "documents_with_any_false_highlight": 17,
+  "operating_points": {
+    "val_fpr_le_0.005": {
+      "threshold": 3.177734613418579,
+      "token_false_highlight_rate": 0.00037367025935051436,
+      "documents_with_any_false_highlight": 1
+    },
+    "val_fpr_le_0.010": {
+      "threshold": 0.5312500596046448,
+      "token_false_highlight_rate": 0.0037367025935051436,
+      "documents_with_any_false_highlight": 4
+    },
+    "val_fpr_le_0.020": {
+      "threshold": -1.7167967557907104,
+      "token_false_highlight_rate": 0.01772306362903885,
+      "documents_with_any_false_highlight": 17
+    }
+  },
+  "per_document": [
+    {
+      "source_id": "PMC3377396",
+      "publication_date": "2011-04-01",
+      "journal": "Emerging Infectious Diseases",
+      "license": "CC BY 4.0",
+      "tokens": 1669,
+      "windows": 6,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.58984375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC3377419",
+      "publication_date": "2011-04-01",
+      "journal": "Emerging Infectious Diseases",
+      "license": "CC BY 4.0",
+      "tokens": 1903,
+      "windows": 7,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC3377411",
+      "publication_date": "2011-04-01",
+      "journal": "Emerging Infectious Diseases",
+      "license": "CC BY 4.0",
+      "tokens": 1693,
+      "windows": 6,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.1015625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC3377420",
+      "publication_date": "2011-04-01",
+      "journal": "Emerging Infectious Diseases",
+      "license": "CC BY 4.0",
+      "tokens": 1858,
+      "windows": 7,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.984375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC4008152",
+      "publication_date": "2012-03-06",
+      "journal": "Information Retrieval",
+      "license": "CC BY 4.0",
+      "tokens": 26635,
+      "windows": 104,
+      "false_highlight_tokens": 4864,
+      "false_highlight_fraction": 0.18261685751830298,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": 4.0849609375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 1792,
+          "any_false_highlight": true
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 4864,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC5637776",
+      "publication_date": "2013-08-27",
+      "journal": "African Journal of Laboratory Medicine",
+      "license": "CC BY 4.0",
+      "tokens": 2225,
+      "windows": 8,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -9.1484375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6271340",
+      "publication_date": "2014-10-31",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 8391,
+      "windows": 32,
+      "false_highlight_tokens": 512,
+      "false_highlight_fraction": 0.06101775712072459,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": 1.15625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 512,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC6270806",
+      "publication_date": "2014-10-24",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 4445,
+      "windows": 17,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.900390625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6272013",
+      "publication_date": "2014-11-03",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 8842,
+      "windows": 34,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.7451171875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6270813",
+      "publication_date": "2014-10-31",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 5064,
+      "windows": 19,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.642578125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6272682",
+      "publication_date": "2014-12-24",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 17097,
+      "windows": 66,
+      "false_highlight_tokens": 512,
+      "false_highlight_fraction": 0.029946774287886765,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -0.8408203125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 512,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC6272496",
+      "publication_date": "2014-12-26",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 2953,
+      "windows": 11,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.75,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6272447",
+      "publication_date": "2014-12-23",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 3638,
+      "windows": 14,
+      "false_highlight_tokens": 54,
+      "false_highlight_fraction": 0.014843320505772403,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -0.12109375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 54,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC6272780",
+      "publication_date": "2014-12-23",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 10090,
+      "windows": 39,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.951171875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6271442",
+      "publication_date": "2014-12-18",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 6969,
+      "windows": 27,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -1.847412109375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6272282",
+      "publication_date": "2014-12-23",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 6109,
+      "windows": 23,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.607421875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6271352",
+      "publication_date": "2014-12-16",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 6783,
+      "windows": 26,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.263671875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6270936",
+      "publication_date": "2014-12-16",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 9391,
+      "windows": 36,
+      "false_highlight_tokens": 1536,
+      "false_highlight_fraction": 0.16356085613885635,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": 1.484375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 1536,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC6271186",
+      "publication_date": "2014-12-22",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 5696,
+      "windows": 22,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.953125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6271707",
+      "publication_date": "2014-12-19",
+      "journal": "Molecules",
+      "license": "CC BY 4.0",
+      "tokens": 8180,
+      "windows": 31,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.2265625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC4996888",
+      "publication_date": "2015-07-25",
+      "journal": "Science and Engineering Ethics",
+      "license": "CC BY 4.0",
+      "tokens": 13272,
+      "windows": 51,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.71484375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC4996881",
+      "publication_date": "2015-12-08",
+      "journal": "Aerobiologia",
+      "license": "CC BY 4.0",
+      "tokens": 10189,
+      "windows": 39,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.921875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC5008477",
+      "publication_date": "2015-12-11",
+      "journal": "Medicine",
+      "license": "CC BY 4.0",
+      "tokens": 3158,
+      "windows": 12,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.703125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC4995231",
+      "publication_date": "2015-10-21",
+      "journal": "Review of Philosophy and Psychology",
+      "license": "CC BY 4.0",
+      "tokens": 6586,
+      "windows": 25,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.97265625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC4996412",
+      "publication_date": "2015-11-16",
+      "journal": "Microarrays",
+      "license": "CC BY 4.0",
+      "tokens": 8197,
+      "windows": 32,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.12109375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC4996379",
+      "publication_date": "2015-09-22",
+      "journal": "Microarrays",
+      "license": "CC BY 4.0",
+      "tokens": 3394,
+      "windows": 13,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.6171875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC4991299",
+      "publication_date": "2015-12-11",
+      "journal": "Child Development",
+      "license": "CC BY 4.0",
+      "tokens": 10638,
+      "windows": 41,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.626953125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC4996417",
+      "publication_date": "2015-11-23",
+      "journal": "American Journal of Transplantation",
+      "license": "CC BY 4.0",
+      "tokens": 6282,
+      "windows": 24,
+      "false_highlight_tokens": 512,
+      "false_highlight_fraction": 0.08150270614453996,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.291015625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 512,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC4996386",
+      "publication_date": "2015-01-27",
+      "journal": "Microarrays",
+      "license": "CC BY 4.0",
+      "tokens": 5879,
+      "windows": 22,
+      "false_highlight_tokens": 256,
+      "false_highlight_fraction": 0.04354482054771219,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.672607421875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC5803627",
+      "publication_date": "2016-10-10",
+      "journal": "Research Integrity and Peer Review",
+      "license": "CC BY 4.0",
+      "tokens": 6503,
+      "windows": 25,
+      "false_highlight_tokens": 256,
+      "false_highlight_fraction": 0.03936644625557435,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": 0.05859375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC5810111",
+      "publication_date": "2016-07-22",
+      "journal": "Public Health Reviews",
+      "license": "CC BY 4.0",
+      "tokens": 4704,
+      "windows": 18,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC5810060",
+      "publication_date": "2016-10-27",
+      "journal": "Public Health Reviews",
+      "license": "CC BY 4.0",
+      "tokens": 1055,
+      "windows": 4,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -10.75,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC5809970",
+      "publication_date": "2016-10-20",
+      "journal": "Public Health Reviews",
+      "license": "CC BY 4.0",
+      "tokens": 9865,
+      "windows": 38,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.8515625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC5809946",
+      "publication_date": "2016-09-09",
+      "journal": "Public Health Reviews",
+      "license": "CC BY 4.0",
+      "tokens": 3582,
+      "windows": 13,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -7.078125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC5809877",
+      "publication_date": "2016-12-07",
+      "journal": "Public Health Reviews",
+      "license": "CC BY 4.0",
+      "tokens": 13744,
+      "windows": 53,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.90625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC5806281",
+      "publication_date": "2016-05-30",
+      "journal": "Advances in Simulation",
+      "license": "CC BY 4.0",
+      "tokens": 6659,
+      "windows": 26,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.4423828125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC5754876",
+      "publication_date": "2016-02-24",
+      "journal": "Archives of Disease in Childhood",
+      "license": "CC BY 4.0",
+      "tokens": 2214,
+      "windows": 8,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -7.2900390625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC5806259",
+      "publication_date": "2016-03-08",
+      "journal": "Advances in Simulation",
+      "license": "CC BY 4.0",
+      "tokens": 7619,
+      "windows": 29,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.216064453125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418549",
+      "publication_date": "2017-10-18",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 18875,
+      "windows": 73,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.91796875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418810",
+      "publication_date": "2017-10-12",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 7636,
+      "windows": 29,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.35302734375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418541",
+      "publication_date": "2017-10-13",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 4650,
+      "windows": 18,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.9560546875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418665",
+      "publication_date": "2017-10-19",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 9178,
+      "windows": 35,
+      "false_highlight_tokens": 256,
+      "false_highlight_fraction": 0.027892787099585967,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.68115234375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418613",
+      "publication_date": "2017-10-13",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 11136,
+      "windows": 43,
+      "false_highlight_tokens": 256,
+      "false_highlight_fraction": 0.022988505747126436,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -0.7581787109375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418911",
+      "publication_date": "2017-10-18",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 9285,
+      "windows": 36,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.203125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418706",
+      "publication_date": "2017-10-16",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 5117,
+      "windows": 19,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -1.814453125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418897",
+      "publication_date": "2017-10-10",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 7040,
+      "windows": 27,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.451171875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418647",
+      "publication_date": "2017-10-10",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 8298,
+      "windows": 32,
+      "false_highlight_tokens": 256,
+      "false_highlight_fraction": 0.030850807423475537,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.47265625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418928",
+      "publication_date": "2017-10-12",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 7316,
+      "windows": 28,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -1.941162109375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418553",
+      "publication_date": "2017-09-16",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 8794,
+      "windows": 34,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.833984375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418542",
+      "publication_date": "2017-09-07",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 10204,
+      "windows": 39,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.78125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418812",
+      "publication_date": "2017-09-15",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 6832,
+      "windows": 26,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.8232421875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418658",
+      "publication_date": "2017-09-09",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 8068,
+      "windows": 31,
+      "false_highlight_tokens": 388,
+      "false_highlight_fraction": 0.0480912245909767,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": 1.396484375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 388,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC6418694",
+      "publication_date": "2017-09-07",
+      "journal": "Polymers",
+      "license": "CC BY 4.0",
+      "tokens": 10090,
+      "windows": 39,
+      "false_highlight_tokens": 1280,
+      "false_highlight_fraction": 0.12685827552031714,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.115234375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 1280,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC8320871",
+      "publication_date": "2018-12-31",
+      "journal": "Journal of Imaging",
+      "license": "CC BY 4.0",
+      "tokens": 7584,
+      "windows": 29,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.34765625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8344072",
+      "publication_date": "2018-06-15",
+      "journal": "Galen Medical Journal",
+      "license": "CC BY 4.0",
+      "tokens": 3330,
+      "windows": 13,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.8515625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8344056",
+      "publication_date": "2018-05-26",
+      "journal": "Galen Medical Journal",
+      "license": "CC BY 4.0",
+      "tokens": 3592,
+      "windows": 14,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.52734375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8357195",
+      "publication_date": "2018-08-27",
+      "journal": "Journal of Biomedical Optics",
+      "license": "CC BY 4.0",
+      "tokens": 11720,
+      "windows": 45,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.56396484375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8279248",
+      "publication_date": "2018-11-23",
+      "journal": "The East African Health Research Journal",
+      "license": "CC BY 4.0",
+      "tokens": 6203,
+      "windows": 24,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.046875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8203109",
+      "publication_date": "2018-12-05",
+      "journal": "Animal Reproduction",
+      "license": "CC BY 4.0",
+      "tokens": 5396,
+      "windows": 21,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.3837890625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8203112",
+      "publication_date": "2018-12-05",
+      "journal": "Animal Reproduction",
+      "license": "CC BY 4.0",
+      "tokens": 1604,
+      "windows": 6,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -8.234375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8202467",
+      "publication_date": "2018-08-17",
+      "journal": "Animal Reproduction",
+      "license": "CC BY 4.0",
+      "tokens": 5187,
+      "windows": 20,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.43359375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8203115",
+      "publication_date": "2018-12-05",
+      "journal": "Animal Reproduction",
+      "license": "CC BY 4.0",
+      "tokens": 8774,
+      "windows": 34,
+      "false_highlight_tokens": 512,
+      "false_highlight_fraction": 0.05835422840209711,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.58203125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 512,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC9285922",
+      "publication_date": "2019-07-24",
+      "journal": "Geophysical Research Letters",
+      "license": "CC BY 4.0",
+      "tokens": 5399,
+      "windows": 21,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.615234375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9285398",
+      "publication_date": "2019-03-07",
+      "journal": "Geochemistry, Geophysics, Geosystems : G(3)",
+      "license": "CC BY 4.0",
+      "tokens": 11655,
+      "windows": 45,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.4375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9245983",
+      "publication_date": "2019-12-13",
+      "journal": "Forensic Sciences Research",
+      "license": "CC BY 4.0",
+      "tokens": 3461,
+      "windows": 13,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -7.453125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9138698",
+      "publication_date": "2019-09-27",
+      "journal": "Journal of Appalachian Health",
+      "license": "CC BY 4.0",
+      "tokens": 1839,
+      "windows": 7,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -7.5546875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8985776",
+      "publication_date": "2019-11-13",
+      "journal": "Precision Clinical Medicine",
+      "license": "CC BY 4.0",
+      "tokens": 2812,
+      "windows": 10,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.4140625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9138855",
+      "publication_date": "2019-07-06",
+      "journal": "Journal of Appalachian Health",
+      "license": "CC BY 4.0",
+      "tokens": 1659,
+      "windows": 6,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -11.40625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9241673",
+      "publication_date": "2019-10-10",
+      "journal": "Proceedings of the ACM on programming languages",
+      "license": "CC BY 4.0",
+      "tokens": 12295,
+      "windows": 48,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.0234375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8992633",
+      "publication_date": "2019-06-19",
+      "journal": "Cancer Drug Resistance",
+      "license": "CC BY 4.0",
+      "tokens": 7932,
+      "windows": 30,
+      "false_highlight_tokens": 256,
+      "false_highlight_fraction": 0.03227433182047403,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.04296875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC8992507",
+      "publication_date": "2019-09-19",
+      "journal": "Cancer Drug Resistance",
+      "license": "CC BY 4.0",
+      "tokens": 6717,
+      "windows": 26,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.6328125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9113399",
+      "publication_date": "2019-12-03",
+      "journal": "Advanced intelligent systems (Weinheim an der Bergstrasse, Germany)",
+      "license": "CC BY 4.0",
+      "tokens": 5762,
+      "windows": 22,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.095947265625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8992533",
+      "publication_date": "2019-09-19",
+      "journal": "Cancer Drug Resistance",
+      "license": "CC BY 4.0",
+      "tokens": 6332,
+      "windows": 24,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.3544921875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8992513",
+      "publication_date": "2019-09-19",
+      "journal": "Cancer Drug Resistance",
+      "license": "CC BY 4.0",
+      "tokens": 13271,
+      "windows": 51,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.068359375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8992621",
+      "publication_date": "2019-06-19",
+      "journal": "Cancer Drug Resistance",
+      "license": "CC BY 4.0",
+      "tokens": 5356,
+      "windows": 20,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.9765625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8314278",
+      "publication_date": "2020-05-23",
+      "journal": "European Journal of Investigation in Health, Psychology and Education",
+      "license": "CC BY 4.0",
+      "tokens": 7656,
+      "windows": 29,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.46875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC8410718",
+      "publication_date": "2020-06-15",
+      "journal": "Clinical Neuroradiology",
+      "license": "CC BY 4.0",
+      "tokens": 3811,
+      "windows": 14,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.7734375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC7722894",
+      "publication_date": "2020-09-17",
+      "journal": "British Journal of Cancer",
+      "license": "CC BY 4.0",
+      "tokens": 9862,
+      "windows": 38,
+      "false_highlight_tokens": 256,
+      "false_highlight_fraction": 0.02595822348408031,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.560546875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 256,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC8437049",
+      "publication_date": "2021-09-01",
+      "journal": "Clinical Microbiology and Infection",
+      "license": "CC BY 4.0",
+      "tokens": 7092,
+      "windows": 27,
+      "false_highlight_tokens": 180,
+      "false_highlight_fraction": 0.025380710659898477,
+      "any_false_highlight": true,
+      "max_window_averaged_margin": -1.40283203125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 180,
+          "any_false_highlight": true
+        }
+      }
+    },
+    {
+      "source_id": "PMC8314282",
+      "publication_date": "2020-06-18",
+      "journal": "European Journal of Investigation in Health, Psychology and Education",
+      "license": "CC BY 4.0",
+      "tokens": 7639,
+      "windows": 29,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.75,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9637620",
+      "publication_date": "2021-11-16",
+      "journal": "European Archives of Paediatric Dentistry",
+      "license": "CC BY 4.0",
+      "tokens": 20489,
+      "windows": 80,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.1806640625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9639862",
+      "publication_date": "2021-03-15",
+      "journal": "ACS Nano",
+      "license": "CC BY 4.0",
+      "tokens": 16514,
+      "windows": 64,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.3984375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623625",
+      "publication_date": "2021-10-22",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 6362,
+      "windows": 24,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.6171875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623784",
+      "publication_date": "2021-11-25",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 5852,
+      "windows": 22,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.849273681640625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9462267",
+      "publication_date": "2021-01-29",
+      "journal": "IUCrData",
+      "license": "CC BY 4.0",
+      "tokens": 997,
+      "windows": 3,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.3359375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623778",
+      "publication_date": "2021-10-22",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 6325,
+      "windows": 24,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.0625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623780",
+      "publication_date": "2021-10-22",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 3519,
+      "windows": 13,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.8046875,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623623",
+      "publication_date": "2021-03-26",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 4332,
+      "windows": 16,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.48828125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623636",
+      "publication_date": "2021-03-19",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 5182,
+      "windows": 20,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.18359375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623745",
+      "publication_date": "2021-01-22",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 2477,
+      "windows": 9,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.203125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9462372",
+      "publication_date": "2021-09-17",
+      "journal": "IUCrData",
+      "license": "CC BY 4.0",
+      "tokens": 1707,
+      "windows": 6,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -4.98828125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623713",
+      "publication_date": "2021-04-05",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 3926,
+      "windows": 15,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.3203125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC9623685",
+      "publication_date": "2021-06-23",
+      "journal": "JDS Communications",
+      "license": "CC BY 4.0",
+      "tokens": 6909,
+      "windows": 26,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -2.7890625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC10685770",
+      "publication_date": "2022-09-01",
+      "journal": "Archives of Iranian medicine",
+      "license": "CC BY 4.0",
+      "tokens": 5276,
+      "windows": 20,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.7265625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC10685870",
+      "publication_date": "2022-10-01",
+      "journal": "Archives of Iranian medicine",
+      "license": "CC BY 4.0",
+      "tokens": 1945,
+      "windows": 7,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.6328125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC10846856",
+      "publication_date": "2022-08-26",
+      "journal": "International journal of sports and exercise medicine",
+      "license": "CC BY 4.0",
+      "tokens": 2950,
+      "windows": 11,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -7.4140625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC10845813",
+      "publication_date": "2022-10-21",
+      "journal": "Scandinavian Journal of Public Health",
+      "license": "CC BY 4.0",
+      "tokens": 4116,
+      "windows": 16,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.287109375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC10848954",
+      "publication_date": "2022-09-02",
+      "journal": "Science Advances",
+      "license": "CC BY 4.0",
+      "tokens": 8074,
+      "windows": 31,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -3.42578125,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC10831654",
+      "publication_date": "2022-08-05",
+      "journal": "Journal of Abdominal Wall Surgery",
+      "license": "CC BY 4.0",
+      "tokens": 3982,
+      "windows": 15,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -6.15234375,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    },
+    {
+      "source_id": "PMC10830079",
+      "publication_date": "2022-05-18",
+      "journal": "Porto Biomedical Journal",
+      "license": "CC BY 4.0",
+      "tokens": 4532,
+      "windows": 17,
+      "false_highlight_tokens": 0,
+      "false_highlight_fraction": 0.0,
+      "any_false_highlight": false,
+      "max_window_averaged_margin": -5.81640625,
+      "operating_points": {
+        "val_fpr_le_0.005": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.010": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        },
+        "val_fpr_le_0.020": {
+          "false_highlight_tokens": 0,
+          "any_false_highlight": false
+        }
+      }
+    }
+  ]
+}

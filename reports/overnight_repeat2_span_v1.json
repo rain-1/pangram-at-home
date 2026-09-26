@@ -1,0 +1,318 @@
+[
+  {
+    "run": "qwen3_hpo_single_local_v1",
+    "config": {
+      "base_model": "/mnt/f/pangram-at-home/models/Qwen3-1.7B",
+      "train_file": "/mnt/f/pangram-at-home/data/diverse_pyramid_v1/train_full.parquet",
+      "val_file": "/mnt/f/pangram-at-home/data/diverse_pyramid_v1/val_full.parquet",
+      "train_counts": [
+        5000,
+        5000
+      ],
+      "max_length": 512,
+      "epochs": 6,
+      "hours": 9.91666666417221,
+      "seed": 42,
+      "task": "binary_segment_classification",
+      "dataset_folder": "diverse_pyramid_v1",
+      "learning_rate": 7.607757094022466e-05,
+      "report_to": "wandb",
+      "eval_steps": 400,
+      "lora_rank": 32,
+      "lora_alpha": 64,
+      "lora_dropout": 0.068837366330751,
+      "weight_decay": 0.01,
+      "warmup_ratio": 0.05,
+      "lr_scheduler_type": "cosine",
+      "train_batch_size": 1,
+      "gradient_accumulation_steps": 8,
+      "effective_batch_size": 8,
+      "max_steps": 3200,
+      "selection_metric": "partial_auc_fpr_5pct",
+      "quantization": "none",
+      "repeat2": false,
+      "max_model_tokens": 512,
+      "eval_batch_size": 1,
+      "early_stopping": false,
+      "train_sha256": "9f1b9f77c43bae62ee40c191e9e880d95e77531b2f2dbb6914a8ec1e753baf5c",
+      "val_sha256": "10f85b1e572376dd0f23c187eb4371b4f2aed62e0736c763553367bc9e3e7c2b",
+      "dataset_manifest_sha256": "f5e6d5488a3a306867b93a2649204931304d25850f8278422c3e3bd2276eded1",
+      "label_0": "human",
+      "label_1": "ai_generated"
+    },
+    "training": {
+      "best_metric": 0.9700641025641026,
+      "best_checkpoint": "/mnt/f/pangram-at-home/runs/qwen3_hpo_single_local_v1/checkpoint-2800",
+      "global_step": 3200,
+      "train_runtime_seconds": 9601.9265,
+      "peak_allocated_gb": 3.9048690795898438
+    },
+    "best_checkpoint_validation": {
+      "step": 2800,
+      "eval_loss": 0.19659194350242615,
+      "eval_roc_auc": 0.99375,
+      "eval_partial_auc_fpr_5pct": 0.9700641025641026,
+      "eval_ai_recall_at_fpr_2pct": 0.95,
+      "eval_worst_domain_ai_recall_at_fpr_2pct": 0.9,
+      "eval_runtime": 59.2338,
+      "eval_samples_per_second": 13.506,
+      "eval_steps_per_second": 13.506,
+      "epoch": 2.24
+    },
+    "span_validation": {
+      "run_name": "qwen3_hpo_single_local_v1",
+      "role": "synthetic validation calibration diagnostics; not a blind test",
+      "task": "sequence",
+      "repeat2": false,
+      "window_size": 512,
+      "window_stride": 256,
+      "threshold": 2.6113281250000004,
+      "threshold_source": "same validation pure-human control tokens; target 2% token FPR",
+      "overall": {
+        "documents": 240,
+        "tokens": 50499,
+        "fpr": 0.2805976017298997,
+        "ai_recall": 0.6313038621129907,
+        "precision": 0.6891550522648083,
+        "roc_auc": 0.7458218860640684
+      },
+      "human_character_false_highlight_rate": 0.27853530244790614,
+      "pure_human_document_any_false_highlight_rate": 0.08333333333333333,
+      "document_ai_character_fraction_mae": 0.261485360307606,
+      "by_kind": {
+        "human": {
+          "documents": 60,
+          "tokens": 6550,
+          "fpr": 0.014809160305343511,
+          "ai_recall": null,
+          "precision": 0.0,
+          "roc_auc": null
+        },
+        "ai": {
+          "documents": 60,
+          "tokens": 7562,
+          "fpr": null,
+          "ai_recall": 0.9519968262364454,
+          "precision": 1.0,
+          "roc_auc": null
+        },
+        "mixed": {
+          "documents": 120,
+          "tokens": 36387,
+          "fpr": 0.37278263171829495,
+          "ai_recall": 0.4927436864358359,
+          "precision": 0.550561797752809,
+          "roc_auc": 0.5929023278613462
+        }
+      },
+      "by_domain": {
+        "creative": {
+          "documents": 39,
+          "tokens": 8516,
+          "fpr": 0.15573318632855568,
+          "ai_recall": 0.6374795417348609,
+          "precision": 0.8465091007878294,
+          "roc_auc": 0.8014838050388233
+        },
+        "news": {
+          "documents": 7,
+          "tokens": 1926,
+          "fpr": 0.05442176870748299,
+          "ai_recall": 0.539272030651341,
+          "precision": 0.9214402618657938,
+          "roc_auc": 0.8719380153082944
+        },
+        "paper": {
+          "documents": 99,
+          "tokens": 23329,
+          "fpr": 0.31093712550930735,
+          "ai_recall": 0.6261561228264891,
+          "precision": 0.6349652973175764,
+          "roc_auc": 0.7183843624169465
+        },
+        "reference_education": {
+          "documents": 41,
+          "tokens": 9580,
+          "fpr": 0.4080568720379147,
+          "ai_recall": 0.7341417910447762,
+          "precision": 0.6955983736963055,
+          "roc_auc": 0.759488553971847
+        },
+        "reviews": {
+          "documents": 28,
+          "tokens": 3312,
+          "fpr": 0.13068181818181818,
+          "ai_recall": 0.4816666666666667,
+          "precision": 0.6768149882903981,
+          "roc_auc": 0.7255470722853535
+        },
+        "social_qa": {
+          "documents": 26,
+          "tokens": 3836,
+          "fpr": 0.30539499036608864,
+          "ai_recall": 0.48920454545454545,
+          "precision": 0.5759197324414715,
+          "roc_auc": 0.6315039849360659
+        }
+      }
+    }
+  },
+  {
+    "run": "qwen3_hpo_repeat2_local_v1",
+    "config": {
+      "base_model": "/mnt/f/pangram-at-home/models/Qwen3-1.7B",
+      "train_file": "/mnt/f/pangram-at-home/data/diverse_pyramid_v1/train_full.parquet",
+      "val_file": "/mnt/f/pangram-at-home/data/diverse_pyramid_v1/val_full.parquet",
+      "train_counts": [
+        5000,
+        5000
+      ],
+      "max_length": 512,
+      "epochs": 6,
+      "hours": 6.794682707919015,
+      "seed": 42,
+      "task": "binary_segment_classification",
+      "dataset_folder": "diverse_pyramid_v1",
+      "learning_rate": 7.607757094022466e-05,
+      "report_to": "wandb",
+      "eval_steps": 400,
+      "lora_rank": 32,
+      "lora_alpha": 64,
+      "lora_dropout": 0.068837366330751,
+      "weight_decay": 0.01,
+      "warmup_ratio": 0.05,
+      "lr_scheduler_type": "cosine",
+      "train_batch_size": 1,
+      "gradient_accumulation_steps": 8,
+      "effective_batch_size": 8,
+      "max_steps": 3200,
+      "selection_metric": "partial_auc_fpr_5pct",
+      "quantization": "none",
+      "repeat2": true,
+      "max_model_tokens": 1024,
+      "eval_batch_size": 1,
+      "early_stopping": false,
+      "train_sha256": "9f1b9f77c43bae62ee40c191e9e880d95e77531b2f2dbb6914a8ec1e753baf5c",
+      "val_sha256": "10f85b1e572376dd0f23c187eb4371b4f2aed62e0736c763553367bc9e3e7c2b",
+      "dataset_manifest_sha256": "f5e6d5488a3a306867b93a2649204931304d25850f8278422c3e3bd2276eded1",
+      "label_0": "human",
+      "label_1": "ai_generated"
+    },
+    "training": {
+      "best_metric": 0.9750961538461538,
+      "best_checkpoint": "/mnt/f/pangram-at-home/runs/qwen3_hpo_repeat2_local_v1/checkpoint-2400",
+      "global_step": 3200,
+      "train_runtime_seconds": 9557.5772,
+      "peak_allocated_gb": 4.06600284576416
+    },
+    "best_checkpoint_validation": {
+      "step": 2400,
+      "eval_loss": 0.13940851390361786,
+      "eval_roc_auc": 0.995028125,
+      "eval_partial_auc_fpr_5pct": 0.9750961538461538,
+      "eval_ai_recall_at_fpr_2pct": 0.9575,
+      "eval_worst_domain_ai_recall_at_fpr_2pct": 0.9,
+      "eval_runtime": 57.5421,
+      "eval_samples_per_second": 13.903,
+      "eval_steps_per_second": 13.903,
+      "epoch": 1.92
+    },
+    "span_validation": {
+      "run_name": "qwen3_hpo_repeat2_local_v1",
+      "role": "synthetic validation calibration diagnostics; not a blind test",
+      "task": "sequence",
+      "repeat2": true,
+      "window_size": 512,
+      "window_stride": 256,
+      "threshold": 8.015625000000002,
+      "threshold_source": "same validation pure-human control tokens; target 2% token FPR",
+      "overall": {
+        "documents": 240,
+        "tokens": 50499,
+        "fpr": 0.18246510713583644,
+        "ai_recall": 0.5167571018193425,
+        "precision": 0.736201898482351,
+        "roc_auc": 0.7576431675190655
+      },
+      "human_character_false_highlight_rate": 0.18438195427877807,
+      "pure_human_document_any_false_highlight_rate": 0.0,
+      "document_ai_character_fraction_mae": 0.2730542475091839,
+      "by_kind": {
+        "human": {
+          "documents": 60,
+          "tokens": 6550,
+          "fpr": 0.0,
+          "ai_recall": null,
+          "precision": null,
+          "roc_auc": null
+        },
+        "ai": {
+          "documents": 60,
+          "tokens": 7562,
+          "fpr": null,
+          "ai_recall": 0.8362866966411002,
+          "precision": 1.0,
+          "roc_auc": null
+        },
+        "mixed": {
+          "documents": 120,
+          "tokens": 36387,
+          "fpr": 0.24575059571088165,
+          "ai_recall": 0.37869957719117814,
+          "precision": 0.5881622149259029,
+          "roc_auc": 0.6107335529897608
+        }
+      },
+      "by_domain": {
+        "creative": {
+          "documents": 39,
+          "tokens": 8516,
+          "fpr": 0.09371554575523705,
+          "ai_recall": 0.5718085106382979,
+          "precision": 0.8915470494417863,
+          "roc_auc": 0.8054420958917458
+        },
+        "news": {
+          "documents": 7,
+          "tokens": 1926,
+          "fpr": 0.05442176870748299,
+          "ai_recall": 0.539272030651341,
+          "precision": 0.9214402618657938,
+          "roc_auc": 0.8659041841513105
+        },
+        "paper": {
+          "documents": 99,
+          "tokens": 23329,
+          "fpr": 0.2220979467923624,
+          "ai_recall": 0.5305216426193119,
+          "precision": 0.6735556599342414,
+          "roc_auc": 0.7350309313702583
+        },
+        "reference_education": {
+          "documents": 41,
+          "tokens": 9580,
+          "fpr": 0.17511848341232228,
+          "ai_recall": 0.5207089552238806,
+          "precision": 0.7906515580736544,
+          "roc_auc": 0.7875271671854
+        },
+        "reviews": {
+          "documents": 28,
+          "tokens": 3312,
+          "fpr": 0.10464015151515152,
+          "ai_recall": 0.3725,
+          "precision": 0.6691616766467066,
+          "roc_auc": 0.7232589567550506
+        },
+        "social_qa": {
+          "documents": 26,
+          "tokens": 3836,
+          "fpr": 0.24710982658959538,
+          "ai_recall": 0.3522727272727273,
+          "precision": 0.5472197705207414,
+          "roc_auc": 0.6346511538798387
+        }
+      }
+    }
+  }
+]

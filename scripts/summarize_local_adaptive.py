@@ -47,12 +47,36 @@ def main():
     lines += ["", "The window scores use synthetic joins and a threshold calibrated on that same development set.",
               "They are localization diagnostics, not a measured real-world span error rate.", ""]
     lines += ["Validation operating points were recalibrated after correcting float32 threshold rounding.",
-              "The saved training-time AI recall values used one extra human validation example at the threshold;",
+              "The saved training-time recall-at-2%-FPR metric used a threshold that admitted one extra human validation example;",
               "partial AUROC and the selected checkpoints were unaffected.", ""]
     decision = status.get("decision")
     if decision:
         lines += [f"Short-window pilot chosen: **{decision['short_window_run']}**.",
                   "Its 1,600-step result is exploratory and has a smaller training budget than the full runs.", ""]
+    vast = runs["vast_hpo_selected_v3"]["holdout"]
+    single = runs["qwen3_hpo_single_local_v1"]["holdout"]
+    repeat = runs["qwen3_hpo_repeat2_local_v1"]["holdout"]
+    if vast and single and repeat:
+        v, s, r = [item["splits"]["test"] for item in (vast, single, repeat)]
+        social_v = v["by_domain"]["social_qa"]
+        social_r = r["by_domain"]["social_qa"]
+        strict_v = vast["operating_points"]["val_fpr_le_0.005"]["test"]
+        strict_r = repeat["operating_points"]["val_fpr_le_0.005"]["test"]
+        lines += ["## Readout", "",
+                  f"Repeat2 improved development pAUC, but on the frozen diverse test its "
+                  f"FPR/AI recall was {pct(r['fpr'])}/{pct(r['tpr'])}; "
+                  f"single-copy was {pct(s['fpr'])}/{pct(s['tpr'])}, "
+                  f"and the Vast checkpoint was {pct(v['fpr'])}/{pct(v['tpr'])}.", "",
+                  f"On the social/Q&A test category, Repeat2 flagged {social_r['fp']} "
+                  f"of {social_r['human']} human passages; Vast flagged {social_v['fp']} "
+                  f"of {social_v['human']}. This category is small, but the difference "
+                  "matches the broader false-positive concern.", "",
+                  f"At a stricter 0.5% validation-FPR threshold, frozen test "
+                  f"FPR/AI recall was {pct(strict_r['fpr'])}/{pct(strict_r['tpr'])} "
+                  f"for Repeat2 and {pct(strict_v['fpr'])}/{pct(strict_v['tpr'])} for Vast.", "",
+                  f"The external paraphrase set remains difficult: AI recall was "
+                  f"{pct(repeat['splits']['paraphrase']['tpr'])} for Repeat2 and "
+                  f"{pct(vast['splits']['paraphrase']['tpr'])} for Vast.", ""]
     for name, item in runs.items():
         report = item.get("holdout")
         if not report:
@@ -69,7 +93,8 @@ def main():
     if audited:
         lines += ["## Whole-paper human audit", "",
                   "Held-out pre-2023 PMC bodies, scored in overlapping windows with",
-                  "the passage-calibrated threshold. The same documents are used for each model.", "",
+                  "the passage-calibrated threshold. The same documents are used for each model.",
+                  "False highlights come from averaged window scores; no token head was trained.", "",
                   "| Run | Papers | Tokens | False-highlight tokens (2% val) | False-highlight tokens (0.5% val) | Papers with any false highlight (2% val) |",
                   "| --- | ---: | ---: | ---: | ---: | ---: |"]
         for name, audit in audited:
