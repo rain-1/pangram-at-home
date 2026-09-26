@@ -101,6 +101,8 @@ def export(root: Path, status: Path) -> dict:
         raise RuntimeError("No run artifacts to export")
     if (root / "span_v4_train.log").exists():
         paths.append(root / "span_v4_train.log")
+    if (root / "span_v4_bootstrap.log").exists():
+        paths.append(root / "span_v4_bootstrap.log")
     snapshot = root / "span_v4_status_snapshot.json"
     atomic_json(snapshot, json.loads(status.read_text()))
     paths.append(snapshot)

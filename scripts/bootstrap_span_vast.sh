@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd /workspace/pangram-at-home
+# This disposable PyTorch image uses Debian's externally-managed Python.
+export PIP_BREAK_SYSTEM_PACKAGES=1
 python - <<'PY'
 import hashlib
 import json

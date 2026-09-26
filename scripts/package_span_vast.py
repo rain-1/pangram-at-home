@@ -12,7 +12,7 @@ REPO = Path(__file__).resolve().parents[1]
 
 def main():
     files = []
-    code = ['requirements-span.txt', 'scripts/bootstrap_span_vast.sh',
+    code = ['requirements-span.txt', 'scripts/bootstrap_span_vast.sh', 'scripts/launch_span_vast.sh',
             'scripts/train_token_lora.py', 'scripts/train_segment_lora.py',
             'scripts/span_data.py', 'scripts/span_metrics.py', 'scripts/evaluate_span_pilot.py',
             'scripts/run_span_v4_experiment.py', 'scripts/report_span_v4.py']
@@ -23,7 +23,7 @@ def main():
                 'span_human_eval_v2': ['calibration.jsonl', 'test.jsonl']}
     realistic = ROOT / 'data/span_realistic_eval_v1'
     if (realistic / 'manifest.json').exists():
-        datasets[realistic.name] = [p.name for p in realistic.glob('*.jsonl')]
+        datasets[realistic.name] = ['test.jsonl']
     for folder, names in datasets.items():
         for name in names + ['manifest.json']:
             path = ROOT / 'data' / folder / name

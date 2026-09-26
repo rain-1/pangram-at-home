@@ -61,7 +61,7 @@ def safe_member(name: str) -> Path:
     allowed_report = (len(path.parts) == 3 and path.parts[:2] == ("reports", "span_v4")
                       and path.suffix in {".md", ".json", ".pdf", ".log"})
     if name not in (MANIFEST_NAME, STATUS_NAME, "span_v4_train.log",
-                    "span_v4_status_snapshot.json") and not (allowed_run or allowed_report):
+                    "span_v4_status_snapshot.json", "span_v4_bootstrap.log") and not (allowed_run or allowed_report):
         raise ValueError(f"Unexpected archive member: {name!r}")
     if any(part.startswith(".") or part.lower() in {".env", "secrets", "credentials"}
            for part in path.parts):
