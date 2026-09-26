@@ -1,6 +1,6 @@
 # Span detection and long-document roadmap
 
-Status: design recorded from the user's research review; not implemented or deployed by this document. Current tuning and mixture experiments remain binary passage experiments.
+Status update (2026-09-26): a **binary human/AI token-labeling pilot** is implemented and evaluated on known-origin synthetic spans. See [the pilot report](token_span_pilot_v3.md). It uses Repeat2 first-copy masking, 512-token source windows with stride 256, and a character-offset span predictor. The AI-assisted class and realistic reviewed mixed-document data remain future work. The audit below describes the earlier passage-only state and the longer-term design.
 
 ## Verified current implementation
 

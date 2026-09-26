@@ -1,0 +1,121 @@
+{
+  "role": "diagnostic operating point; 5% pure-human-document target calibrated on synthetic validation",
+  "models": {
+    "qwen3_token_single_v3_pilot1": {
+      "calibration_pure_human_documents": 67,
+      "allowed_validation_documents_with_any_false_highlight": 3,
+      "threshold_doc_5pct": 2.968750238418579,
+      "threshold_token_2pct": 0.8896484375000001,
+      "doc_5pct": {
+        "validation": {
+          "documents": 400,
+          "threshold": 2.968750238418579,
+          "human_token_fpr": 0.004896161934805468,
+          "ai_token_recall": 0.5454514163769663,
+          "pure_human_documents_with_any_false_highlight": 0.04477611940298507,
+          "pure_human_documents": 67
+        },
+        "confirmation": {
+          "documents": 500,
+          "threshold": 2.968750238418579,
+          "human_token_fpr": 0.0047508923633804235,
+          "ai_token_recall": 0.5077166909166494,
+          "pure_human_documents_with_any_false_highlight": 0.05952380952380952,
+          "pure_human_documents": 84
+        },
+        "long_composite": {
+          "documents": 120,
+          "threshold": 2.968750238418579,
+          "human_token_fpr": 0.006201459397069468,
+          "ai_token_recall": 0.4524777151581831,
+          "pure_human_documents_with_any_false_highlight": 0.5666666666666667,
+          "pure_human_documents": 30
+        }
+      },
+      "token_2pct": {
+        "validation": {
+          "documents": 400,
+          "threshold": 0.8896484375000001,
+          "human_token_fpr": 0.0367705047318612,
+          "ai_token_recall": 0.7259835473100884,
+          "pure_human_documents_with_any_false_highlight": 0.47761194029850745,
+          "pure_human_documents": 67
+        },
+        "confirmation": {
+          "documents": 500,
+          "threshold": 0.8896484375000001,
+          "human_token_fpr": 0.04072193454326077,
+          "ai_token_recall": 0.7184577011016421,
+          "pure_human_documents_with_any_false_highlight": 0.4642857142857143,
+          "pure_human_documents": 84
+        },
+        "long_composite": {
+          "documents": 120,
+          "threshold": 0.8896484375000001,
+          "human_token_fpr": 0.04335152688929319,
+          "ai_token_recall": 0.6324853492601658,
+          "pure_human_documents_with_any_false_highlight": 1.0,
+          "pure_human_documents": 30
+        }
+      }
+    },
+    "qwen3_token_repeat2_v3_pilot1": {
+      "calibration_pure_human_documents": 67,
+      "allowed_validation_documents_with_any_false_highlight": 3,
+      "threshold_doc_5pct": 1.8671876192092896,
+      "threshold_token_2pct": 0.9375000000000001,
+      "doc_5pct": {
+        "validation": {
+          "documents": 400,
+          "threshold": 1.8671876192092896,
+          "human_token_fpr": 0.017317297581493165,
+          "ai_token_recall": 0.8269369772484769,
+          "pure_human_documents_with_any_false_highlight": 0.04477611940298507,
+          "pure_human_documents": 67
+        },
+        "confirmation": {
+          "documents": 500,
+          "threshold": 1.8671876192092896,
+          "human_token_fpr": 0.01674123975667387,
+          "ai_token_recall": 0.8415350239035544,
+          "pure_human_documents_with_any_false_highlight": 0.07142857142857142,
+          "pure_human_documents": 84
+        },
+        "long_composite": {
+          "documents": 120,
+          "threshold": 1.8671876192092896,
+          "human_token_fpr": 0.006397089031046423,
+          "ai_token_recall": 0.6921885174124885,
+          "pure_human_documents_with_any_false_highlight": 0.1,
+          "pure_human_documents": 30
+        }
+      },
+      "token_2pct": {
+        "validation": {
+          "documents": 400,
+          "threshold": 0.9375000000000001,
+          "human_token_fpr": 0.030691377497371188,
+          "ai_token_recall": 0.8678966027604722,
+          "pure_human_documents_with_any_false_highlight": 0.11940298507462686,
+          "pure_human_documents": 67
+        },
+        "confirmation": {
+          "documents": 500,
+          "threshold": 0.9375000000000001,
+          "human_token_fpr": 0.03632296013272334,
+          "ai_token_recall": 0.8926158802743712,
+          "pure_human_documents_with_any_false_highlight": 0.17857142857142858,
+          "pure_human_documents": 84
+        },
+        "long_composite": {
+          "documents": 120,
+          "threshold": 0.9375000000000001,
+          "human_token_fpr": 0.01355713363460297,
+          "ai_token_recall": 0.7538675707838427,
+          "pure_human_documents_with_any_false_highlight": 0.3333333333333333,
+          "pure_human_documents": 30
+        }
+      }
+    }
+  }
+}

@@ -24,7 +24,7 @@ def main():
         raise SystemExit(f"Refusing to overwrite {output}")
     test_file = parent / "test_full.parquet"
     test = pq.read_table(test_file).to_pylist()
-    for key in ("text_sha256", "group_id"):
+    for key in ("text_sha256", "group_id", "source_id"):
         test_values = {row[key] for row in test}
         for split in ("train", "val"):
             earlier = pq.read_table(parent / f"{split}_full.parquet", columns=[key]).to_pydict()[key]

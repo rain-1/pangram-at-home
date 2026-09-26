@@ -138,7 +138,7 @@ def main():
         raise SystemExit(f"Refusing to overwrite {output}")
     inputs = {split: pq.read_table(parent / f"{split}_full.parquet").to_pylist()
               for split in ("train", "val")}
-    for key in ("text_sha256", "group_id"):
+    for key in ("text_sha256", "group_id", "source_id"):
         assert not ({row[key] for row in inputs["train"]}
                     & {row[key] for row in inputs["val"]}), key
     output.mkdir(parents=True)

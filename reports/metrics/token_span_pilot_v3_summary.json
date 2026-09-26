@@ -1,0 +1,1736 @@
+{
+  "role": "aggregate synthetic token-pilot diagnostics; no raw text",
+  "models": {
+    "Vast window": {
+      "Validation": {
+        "run_name": "vast_hpo_selected_v3",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_pilot_v3",
+        "validation_sha256": "af5621ad7681af96590d8aa485a1181f8b9a0bad3e57783635179cc15694f57f",
+        "task": "sequence",
+        "repeat2": false,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 3.9570312500000004,
+        "threshold_source": "same validation pure-human control tokens; target 2% token FPR",
+        "overall": {
+          "documents": 400,
+          "tokens": 59485,
+          "fpr": 0.3099697686645636,
+          "ai_recall": 0.5973221354077032,
+          "precision": 0.6478515697913166,
+          "roc_auc": 0.6968424295125015
+        },
+        "human_character_false_highlight_rate": 0.3133159268929504,
+        "pure_human_document_any_false_highlight_rate": 0.04477611940298507,
+        "document_ai_character_fraction_mae": 0.3410334288833346,
+        "mixed_document_ai_character_fraction_mae": 0.4489224494486234,
+        "mixed_ai_spans": 314,
+        "mixed_ai_span_recall_any_highlight": 0.5,
+        "mixed_ai_span_recall_half_covered": 0.5,
+        "by_kind": {
+          "human": {
+            "documents": 67,
+            "tokens": 7626,
+            "fpr": 0.015211119853134015,
+            "ai_recall": null,
+            "precision": 0.0,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 67,
+            "tokens": 7098,
+            "fpr": null,
+            "ai_recall": 0.8391096083403776,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 266,
+            "tokens": 44761,
+            "fpr": 0.4085328422344997,
+            "ai_recall": 0.5191528125711683,
+            "precision": 0.550229302437847,
+            "roc_auc": 0.5764311664657802
+          }
+        },
+        "by_construction": {
+          "matched_source_pair": {
+            "documents": 200,
+            "tokens": 36075,
+            "fpr": 0.41690156114483956,
+            "ai_recall": 0.5500085096726612,
+            "precision": 0.5576325779362705,
+            "roc_auc": 0.5832638995871419
+          },
+          "unaltered_source_excerpt": {
+            "documents": 134,
+            "tokens": 14724,
+            "fpr": 0.015211119853134015,
+            "ai_recall": 0.8391096083403776,
+            "precision": 0.9808959156785244,
+            "roc_auc": 0.987515201550183
+          },
+          "unmatched_same_source_join": {
+            "documents": 66,
+            "tokens": 8686,
+            "fpr": 0.3731069297843047,
+            "ai_recall": 0.39348428835489835,
+            "precision": 0.5115650345449084,
+            "roc_auc": 0.5391166912954185
+          }
+        },
+        "by_source_family": {
+          "editlens": {
+            "documents": 203,
+            "tokens": 35329,
+            "fpr": 0.3110914714980115,
+            "ai_recall": 0.5601161103047896,
+            "precision": 0.631413612565445,
+            "roc_auc": 0.6841164579173901
+          },
+          "mage": {
+            "documents": 121,
+            "tokens": 11608,
+            "fpr": 0.12223003869152303,
+            "ai_recall": 0.5893279297534617,
+            "precision": 0.8339307048984468,
+            "roc_auc": 0.8340710720192612
+          },
+          "paper": {
+            "documents": 76,
+            "tokens": 12548,
+            "fpr": 0.4676302318578741,
+            "ai_recall": 0.7138503217067389,
+            "precision": 0.5757989620322316,
+            "roc_auc": 0.6625902947237321
+          }
+        },
+        "by_construction_family": {
+          "matched_source_pair:editlens": {
+            "documents": 144,
+            "tokens": 26374,
+            "fpr": 0.37069805803404066,
+            "ai_recall": 0.4965866380302217,
+            "precision": 0.5669994745139254,
+            "roc_auc": 0.5848512957931737
+          },
+          "matched_source_pair:paper": {
+            "documents": 56,
+            "tokens": 9701,
+            "fpr": 0.5374682058305615,
+            "ai_recall": 0.7017429193899782,
+            "precision": 0.5397117962466488,
+            "roc_auc": 0.5918264634056409
+          },
+          "unaltered_source_excerpt:editlens": {
+            "documents": 40,
+            "tokens": 6133,
+            "fpr": 0.022667059169855754,
+            "ai_recall": 0.9375,
+            "precision": 0.9708554125662378,
+            "roc_auc": 0.99777161909287
+          },
+          "unaltered_source_excerpt:mage": {
+            "documents": 82,
+            "tokens": 7098,
+            "fpr": 0.011450381679389313,
+            "ai_recall": 0.7369989165763814,
+            "precision": 0.9858695652173913,
+            "roc_auc": 0.9603693914696454
+          },
+          "unaltered_source_excerpt:paper": {
+            "documents": 12,
+            "tokens": 1493,
+            "fpr": 0.0,
+            "ai_recall": 1.0,
+            "precision": 1.0,
+            "roc_auc": 1.0
+          },
+          "unmatched_same_source_join:editlens": {
+            "documents": 19,
+            "tokens": 2822,
+            "fpr": 0.445985401459854,
+            "ai_recall": 0.4194214876033058,
+            "precision": 0.49918032786885247,
+            "roc_auc": 0.48784862560575903
+          },
+          "unmatched_same_source_join:mage": {
+            "documents": 39,
+            "tokens": 4510,
+            "fpr": 0.28771929824561404,
+            "ai_recall": 0.34484304932735427,
+            "precision": 0.5396491228070175,
+            "roc_auc": 0.5683986311069152
+          },
+          "unmatched_same_source_join:paper": {
+            "documents": 8,
+            "tokens": 1354,
+            "fpr": 0.5070621468926554,
+            "ai_recall": 0.5030959752321982,
+            "precision": 0.47514619883040937,
+            "roc_auc": 0.5611116212765213
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 60,
+            "tokens": 9353,
+            "fpr": 0.1859476392929067,
+            "ai_recall": 0.49324324324324326,
+            "precision": 0.7435185185185185,
+            "roc_auc": 0.7242728550067998
+          },
+          "news": {
+            "documents": 61,
+            "tokens": 9964,
+            "fpr": 0.4948453608247423,
+            "ai_recall": 0.7800805987334485,
+            "precision": 0.6334735857877513,
+            "roc_auc": 0.706176159666129
+          },
+          "paper": {
+            "documents": 85,
+            "tokens": 13657,
+            "fpr": 0.4379791894852136,
+            "ai_recall": 0.7147804186998269,
+            "precision": 0.5866925064599483,
+            "roc_auc": 0.6804081766443016
+          },
+          "reference_education": {
+            "documents": 72,
+            "tokens": 11987,
+            "fpr": 0.21735267989339652,
+            "ai_recall": 0.5371679724823237,
+            "precision": 0.6569291890628651,
+            "roc_auc": 0.7390959012136878
+          },
+          "reviews": {
+            "documents": 97,
+            "tokens": 12504,
+            "fpr": 0.23963363863447126,
+            "ai_recall": 0.49022926604092937,
+            "precision": 0.6888648648648649,
+            "roc_auc": 0.6732881853725271
+          },
+          "social_qa": {
+            "documents": 25,
+            "tokens": 2020,
+            "fpr": 0.12554489973844812,
+            "ai_recall": 0.3917525773195876,
+            "precision": 0.7037037037037037,
+            "roc_auc": 0.7395861108864102
+          }
+        }
+      },
+      "Confirmation": {
+        "run_name": "vast_hpo_selected_v3",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_test_probe_v1",
+        "validation_sha256": "218f54ce4386c782475f65ae8ec687b1f5a093d2de336ec1e3c40e90534c1019",
+        "task": "sequence",
+        "repeat2": false,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 3.9570312500000004,
+        "threshold_source": "provided frozen threshold from separate calibration evaluation",
+        "overall": {
+          "documents": 500,
+          "tokens": 78270,
+          "fpr": 0.28306771906892564,
+          "ai_recall": 0.6051236749116607,
+          "precision": 0.6740760035888975,
+          "roc_auc": 0.724181762545177
+        },
+        "human_character_false_highlight_rate": 0.29274082825995396,
+        "pure_human_document_any_false_highlight_rate": 0.05952380952380952,
+        "document_ai_character_fraction_mae": 0.3419484202269019,
+        "mixed_document_ai_character_fraction_mae": 0.45474159672726194,
+        "mixed_ai_spans": 381,
+        "mixed_ai_span_recall_any_highlight": 0.4540682414698163,
+        "mixed_ai_span_recall_half_covered": 0.4540682414698163,
+        "by_kind": {
+          "human": {
+            "documents": 84,
+            "tokens": 10504,
+            "fpr": 0.020753998476770754,
+            "ai_recall": null,
+            "precision": 0.0,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 84,
+            "tokens": 10719,
+            "fpr": null,
+            "ai_recall": 0.903255900737009,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 332,
+            "tokens": 57047,
+            "fpr": 0.377177402828062,
+            "ai_recall": 0.49004285354171917,
+            "precision": 0.552026286966046,
+            "roc_auc": 0.5775673105733723
+          }
+        },
+        "by_construction": {
+          "matched_source_pair": {
+            "documents": 249,
+            "tokens": 46167,
+            "fpr": 0.366588452191402,
+            "ai_recall": 0.49365499304963906,
+            "precision": 0.5571920234841583,
+            "roc_auc": 0.5833954615134718
+          },
+          "unaltered_source_excerpt": {
+            "documents": 168,
+            "tokens": 21223,
+            "fpr": 0.020753998476770754,
+            "ai_recall": 0.903255900737009,
+            "precision": 0.977979797979798,
+            "roc_auc": 0.9918317293526162
+          },
+          "unmatched_same_source_join": {
+            "documents": 83,
+            "tokens": 10880,
+            "fpr": 0.4238728750923873,
+            "ai_recall": 0.4753108997805413,
+            "precision": 0.5311669732270591,
+            "roc_auc": 0.5462733928396675
+          }
+        },
+        "by_source_family": {
+          "editlens": {
+            "documents": 231,
+            "tokens": 42585,
+            "fpr": 0.29669343622414646,
+            "ai_recall": 0.5540500591249508,
+            "precision": 0.6296897748908052,
+            "roc_auc": 0.6981365149283361
+          },
+          "mage": {
+            "documents": 154,
+            "tokens": 16058,
+            "fpr": 0.2377737980438077,
+            "ai_recall": 0.7089441982043414,
+            "precision": 0.7832747363134104,
+            "roc_auc": 0.8328562537343276
+          },
+          "paper": {
+            "documents": 115,
+            "tokens": 19627,
+            "fpr": 0.2855188587062732,
+            "ai_recall": 0.6182263387629086,
+            "precision": 0.6652537518616107,
+            "roc_auc": 0.7165478968544032
+          }
+        },
+        "by_construction_family": {
+          "matched_source_pair:editlens": {
+            "documents": 169,
+            "tokens": 31850,
+            "fpr": 0.3945811273746496,
+            "ai_recall": 0.49654954099398546,
+            "precision": 0.5531809846240655,
+            "roc_auc": 0.5690385879734993
+          },
+          "matched_source_pair:paper": {
+            "documents": 80,
+            "tokens": 14317,
+            "fpr": 0.3090513378568685,
+            "ai_recall": 0.4866277282508454,
+            "precision": 0.5673835125448029,
+            "roc_auc": 0.6166633535600102
+          },
+          "unaltered_source_excerpt:editlens": {
+            "documents": 45,
+            "tokens": 8275,
+            "fpr": 0.01351082853169084,
+            "ai_recall": 0.9364589759407773,
+            "precision": 0.9780927835051546,
+            "roc_auc": 0.998873934193484
+          },
+          "unaltered_source_excerpt:mage": {
+            "documents": 99,
+            "tokens": 9392,
+            "fpr": 0.03723008190618019,
+            "ai_recall": 0.8450494126421779,
+            "precision": 0.9679624092268262,
+            "roc_auc": 0.9714684146871597
+          },
+          "unaltered_source_excerpt:paper": {
+            "documents": 24,
+            "tokens": 3556,
+            "fpr": 0.0,
+            "ai_recall": 1.0,
+            "precision": 1.0,
+            "roc_auc": 0.9999999999999999
+          },
+          "unmatched_same_source_join:editlens": {
+            "documents": 17,
+            "tokens": 2460,
+            "fpr": 0.17485428809325562,
+            "ai_recall": 0.2907069102462272,
+            "precision": 0.6354166666666666,
+            "roc_auc": 0.6017476831261214
+          },
+          "unmatched_same_source_join:mage": {
+            "documents": 55,
+            "tokens": 6666,
+            "fpr": 0.48792569659442725,
+            "ai_recall": 0.49650756693830034,
+            "precision": 0.5198049969530774,
+            "roc_auc": 0.5234970644099807
+          },
+          "unmatched_same_source_join:paper": {
+            "documents": 11,
+            "tokens": 1754,
+            "fpr": 0.5178389398572885,
+            "ai_recall": 0.6817593790426908,
+            "precision": 0.5091787439613527,
+            "roc_auc": 0.6092695232707339
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 78,
+            "tokens": 11637,
+            "fpr": 0.16015552675430475,
+            "ai_recall": 0.5166773572803078,
+            "precision": 0.7883533153902618,
+            "roc_auc": 0.7487608161556095
+          },
+          "news": {
+            "documents": 61,
+            "tokens": 12683,
+            "fpr": 0.2803921568627451,
+            "ai_recall": 0.7193356696632638,
+            "precision": 0.7334161876650613,
+            "roc_auc": 0.7880578161987534
+          },
+          "paper": {
+            "documents": 130,
+            "tokens": 21854,
+            "fpr": 0.28608758334835105,
+            "ai_recall": 0.6509854964670881,
+            "precision": 0.6880220104156431,
+            "roc_auc": 0.7333694057425844
+          },
+          "reference_education": {
+            "documents": 90,
+            "tokens": 15082,
+            "fpr": 0.42348377997179126,
+            "ai_recall": 0.6814724672954061,
+            "precision": 0.5542496597797847,
+            "roc_auc": 0.6884587336616487
+          },
+          "reviews": {
+            "documents": 106,
+            "tokens": 13647,
+            "fpr": 0.21124412789816638,
+            "ai_recall": 0.4296254256526674,
+            "precision": 0.6847580280416101,
+            "roc_auc": 0.6678261690150489
+          },
+          "social_qa": {
+            "documents": 35,
+            "tokens": 3367,
+            "fpr": 0.24708171206225682,
+            "ai_recall": 0.6384439359267735,
+            "precision": 0.6223048327137547,
+            "roc_auc": 0.775893962193591
+          }
+        }
+      },
+      "Long composite": {
+        "run_name": "vast_hpo_selected_v3",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_long_probe_v1",
+        "validation_sha256": "4cd03507e38281a56ba72662aec093c482d640fe747a43bf2ecac190f456826d",
+        "task": "sequence",
+        "repeat2": false,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 3.9570312500000004,
+        "threshold_source": "provided frozen threshold from separate calibration evaluation",
+        "overall": {
+          "documents": 120,
+          "tokens": 95654,
+          "fpr": 0.14304438836394937,
+          "ai_recall": 0.604531064059097,
+          "precision": 0.7864236476223858,
+          "roc_auc": 0.818763326247554
+        },
+        "human_character_false_highlight_rate": 0.15083375223171724,
+        "pure_human_document_any_false_highlight_rate": 0.0,
+        "document_ai_character_fraction_mae": 0.19101097179441115,
+        "mixed_document_ai_character_fraction_mae": 0.3172410708260548,
+        "mixed_ai_spans": 334,
+        "mixed_ai_span_recall_any_highlight": 0.37425149700598803,
+        "mixed_ai_span_recall_half_covered": 0.3592814371257485,
+        "by_kind": {
+          "human": {
+            "documents": 30,
+            "tokens": 23455,
+            "fpr": 0.0,
+            "ai_recall": null,
+            "precision": null,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 30,
+            "tokens": 19225,
+            "fpr": null,
+            "ai_recall": 0.8666840052015604,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 60,
+            "tokens": 52974,
+            "fpr": 0.2643337430409949,
+            "ai_recall": 0.40542035398230086,
+            "precision": 0.5839308068737908,
+            "roc_auc": 0.5974174226697736
+          }
+        },
+        "by_construction": {
+          "same-domain composite of span_pilot_v3 validation rows": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.14304438836394937,
+            "ai_recall": 0.604531064059097,
+            "precision": 0.7864236476223858,
+            "roc_auc": 0.818763326247554
+          }
+        },
+        "by_source_family": {
+          "composite": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.14304438836394937,
+            "ai_recall": 0.604531064059097,
+            "precision": 0.7864236476223858,
+            "roc_auc": 0.818763326247554
+          }
+        },
+        "by_construction_family": {
+          "same-domain composite of span_pilot_v3 validation rows:composite": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.14304438836394937,
+            "ai_recall": 0.604531064059097,
+            "precision": 0.7864236476223858,
+            "roc_auc": 0.818763326247554
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 26,
+            "tokens": 24443,
+            "fpr": 0.040591992139523456,
+            "ai_recall": 0.6294889079544062,
+            "precision": 0.88597550457133,
+            "roc_auc": 0.9276451990226549
+          },
+          "news": {
+            "documents": 28,
+            "tokens": 26764,
+            "fpr": 0.2687600644122383,
+            "ai_recall": 0.7398215281650864,
+            "precision": 0.7607168458781361,
+            "roc_auc": 0.8127872118311236
+          },
+          "paper": {
+            "documents": 16,
+            "tokens": 12645,
+            "fpr": 0.20539171879654453,
+            "ai_recall": 0.8270106221547799,
+            "precision": 0.7805537873965627,
+            "roc_auc": 0.905221121740247
+          },
+          "reference_education": {
+            "documents": 15,
+            "tokens": 13502,
+            "fpr": 0.1837449933244326,
+            "ai_recall": 0.40199733688415445,
+            "precision": 0.7327669902912621,
+            "roc_auc": 0.6688379668230522
+          },
+          "reviews": {
+            "documents": 12,
+            "tokens": 7111,
+            "fpr": 0.14321154713576906,
+            "ai_recall": 0.5293238700037355,
+            "precision": 0.6905458089668616,
+            "roc_auc": 0.7134731973143985
+          },
+          "social_qa": {
+            "documents": 23,
+            "tokens": 11189,
+            "fpr": 0.037549781907832355,
+            "ai_recall": 0.3101757944557133,
+            "precision": 0.9026069847515986,
+            "roc_auc": 0.6686060437502491
+          }
+        }
+      }
+    },
+    "Token single": {
+      "Validation": {
+        "run_name": "qwen3_token_single_v3_pilot1",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_pilot_v3",
+        "validation_sha256": "af5621ad7681af96590d8aa485a1181f8b9a0bad3e57783635179cc15694f57f",
+        "task": "token",
+        "repeat2": false,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 0.8896484375000001,
+        "threshold_source": "same validation pure-human control tokens; target 2% token FPR",
+        "overall": {
+          "documents": 400,
+          "tokens": 59485,
+          "fpr": 0.03667192429022082,
+          "ai_recall": 0.7259835473100884,
+          "precision": 0.9497478386167147,
+          "roc_auc": 0.9310586420379767
+        },
+        "human_character_false_highlight_rate": 0.040409501924431386,
+        "pure_human_document_any_false_highlight_rate": 0.47761194029850745,
+        "document_ai_character_fraction_mae": 0.17143941638540633,
+        "mixed_document_ai_character_fraction_mae": 0.12093525413986676,
+        "mixed_ai_spans": 314,
+        "mixed_ai_span_recall_any_highlight": 0.964968152866242,
+        "mixed_ai_span_recall_half_covered": 0.7993630573248408,
+        "by_kind": {
+          "human": {
+            "documents": 67,
+            "tokens": 7626,
+            "fpr": 0.01993181222134802,
+            "ai_recall": null,
+            "precision": 0.0,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 67,
+            "tokens": 7098,
+            "fpr": null,
+            "ai_recall": 0.5826993519301211,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 266,
+            "tokens": 44761,
+            "fpr": 0.04226957818118039,
+            "ai_recall": 0.7723069915736734,
+            "precision": 0.9462053571428571,
+            "roc_auc": 0.9447882851270746
+          }
+        },
+        "by_construction": {
+          "matched_source_pair": {
+            "documents": 200,
+            "tokens": 36075,
+            "fpr": 0.0398959236773634,
+            "ai_recall": 0.8274805695807568,
+            "precision": 0.9519644954966715,
+            "roc_auc": 0.9608652910207184
+          },
+          "unaltered_source_excerpt": {
+            "documents": 134,
+            "tokens": 14724,
+            "fpr": 0.01993181222134802,
+            "ai_recall": 0.5826993519301211,
+            "precision": 0.9645522388059702,
+            "roc_auc": 0.8884768665604471
+          },
+          "unmatched_same_source_join": {
+            "documents": 66,
+            "tokens": 8686,
+            "fpr": 0.05231757687012391,
+            "ai_recall": 0.5475970425138632,
+            "precision": 0.9122401847575058,
+            "roc_auc": 0.8561794963095045
+          }
+        },
+        "by_source_family": {
+          "editlens": {
+            "documents": 203,
+            "tokens": 35329,
+            "fpr": 0.03524083075563411,
+            "ai_recall": 0.8303628447024674,
+            "precision": 0.9572987082524597,
+            "roc_auc": 0.965286655331845
+          },
+          "mage": {
+            "documents": 121,
+            "tokens": 11608,
+            "fpr": 0.04132958142806894,
+            "ai_recall": 0.2966903073286052,
+            "precision": 0.8820281124497992,
+            "roc_auc": 0.7313420996580828
+          },
+          "paper": {
+            "documents": 76,
+            "tokens": 12548,
+            "fpr": 0.036585365853658534,
+            "ai_recall": 0.8520149001015916,
+            "precision": 0.9539336492890995,
+            "roc_auc": 0.9691346298269394
+          }
+        },
+        "by_construction_family": {
+          "matched_source_pair:editlens": {
+            "documents": 144,
+            "tokens": 26374,
+            "fpr": 0.037789607857839094,
+            "ai_recall": 0.8234256347319169,
+            "precision": 0.955156152682623,
+            "roc_auc": 0.9605630887649181
+          },
+          "matched_source_pair:paper": {
+            "documents": 56,
+            "tokens": 9701,
+            "fpr": 0.045392291136763845,
+            "ai_recall": 0.8389978213507625,
+            "precision": 0.9431790350232672,
+            "roc_auc": 0.9623628859791923
+          },
+          "unaltered_source_excerpt:editlens": {
+            "documents": 40,
+            "tokens": 6133,
+            "fpr": 0.020900794818957905,
+            "ai_recall": 0.8852339181286549,
+            "precision": 0.9715202567188127,
+            "roc_auc": 0.9894919859628465
+          },
+          "unaltered_source_excerpt:mage": {
+            "documents": 82,
+            "tokens": 7098,
+            "fpr": 0.022607163828537873,
+            "ai_recall": 0.29442036836403035,
+            "precision": 0.9338487972508591,
+            "roc_auc": 0.7487415458921831
+          },
+          "unaltered_source_excerpt:paper": {
+            "documents": 12,
+            "tokens": 1493,
+            "fpr": 0.004860267314702308,
+            "ai_recall": 0.935820895522388,
+            "precision": 0.993660855784469,
+            "roc_auc": 0.9951478935819081
+          },
+          "unmatched_same_source_join:editlens": {
+            "documents": 19,
+            "tokens": 2822,
+            "fpr": 0.04598540145985401,
+            "ai_recall": 0.7892561983471075,
+            "precision": 0.9478908188585607,
+            "roc_auc": 0.9530908789286361
+          },
+          "unmatched_same_source_join:mage": {
+            "documents": 39,
+            "tokens": 4510,
+            "fpr": 0.06929824561403508,
+            "ai_recall": 0.3004484304932735,
+            "precision": 0.8091787439613527,
+            "roc_auc": 0.7083105184485878
+          },
+          "unmatched_same_source_join:paper": {
+            "documents": 8,
+            "tokens": 1354,
+            "fpr": 0.009887005649717515,
+            "ai_recall": 0.8575851393188855,
+            "precision": 0.9875222816399287,
+            "roc_auc": 0.98543076909622
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 60,
+            "tokens": 9353,
+            "fpr": 0.03982993958379951,
+            "ai_recall": 0.6392301392301393,
+            "precision": 0.946060606060606,
+            "roc_auc": 0.8952427579637247
+          },
+          "news": {
+            "documents": 61,
+            "tokens": 9964,
+            "fpr": 0.04102671996633705,
+            "ai_recall": 0.7633851468048359,
+            "precision": 0.9532710280373832,
+            "roc_auc": 0.9427059430149924
+          },
+          "paper": {
+            "documents": 85,
+            "tokens": 13657,
+            "fpr": 0.043948521358159916,
+            "ai_recall": 0.818668345663466,
+            "precision": 0.9418688880840276,
+            "roc_auc": 0.9546097401353622
+          },
+          "reference_education": {
+            "documents": 72,
+            "tokens": 11987,
+            "fpr": 0.036274800118448323,
+            "ai_recall": 0.6132237722147907,
+            "precision": 0.9290677475390852,
+            "roc_auc": 0.8905720122764799
+          },
+          "reviews": {
+            "documents": 97,
+            "tokens": 12504,
+            "fpr": 0.02447960033305579,
+            "ai_recall": 0.8142791198645946,
+            "precision": 0.972972972972973,
+            "roc_auc": 0.9659464550941611
+          },
+          "social_qa": {
+            "documents": 25,
+            "tokens": 2020,
+            "fpr": 0.026155187445510025,
+            "ai_recall": 0.3321878579610538,
+            "precision": 0.90625,
+            "roc_auc": 0.8232517519181969
+          }
+        }
+      },
+      "Confirmation": {
+        "run_name": "qwen3_token_single_v3_pilot1",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_test_probe_v1",
+        "validation_sha256": "218f54ce4386c782475f65ae8ec687b1f5a093d2de336ec1e3c40e90534c1019",
+        "task": "token",
+        "repeat2": false,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 0.8896484375000001,
+        "threshold_source": "provided frozen threshold from separate calibration evaluation",
+        "overall": {
+          "documents": 500,
+          "tokens": 78270,
+          "fpr": 0.04069679754662913,
+          "ai_recall": 0.7184317189773436,
+          "precision": 0.9446873932353946,
+          "roc_auc": 0.9314957310576899
+        },
+        "human_character_false_highlight_rate": 0.04472231794636166,
+        "pure_human_document_any_false_highlight_rate": 0.4642857142857143,
+        "document_ai_character_fraction_mae": 0.1746545858912371,
+        "mixed_document_ai_character_fraction_mae": 0.134446330806249,
+        "mixed_ai_spans": 381,
+        "mixed_ai_span_recall_any_highlight": 0.9606299212598425,
+        "mixed_ai_span_recall_half_covered": 0.8083989501312336,
+        "by_kind": {
+          "human": {
+            "documents": 84,
+            "tokens": 10504,
+            "fpr": 0.023514851485148515,
+            "ai_recall": null,
+            "precision": 0.0,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 84,
+            "tokens": 10719,
+            "fpr": null,
+            "ai_recall": 0.6488478402836085,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 332,
+            "tokens": 57047,
+            "fpr": 0.046861124393742744,
+            "ai_recall": 0.7452915121178292,
+            "precision": 0.9378285299981874,
+            "roc_auc": 0.9362945589501549
+          }
+        },
+        "by_construction": {
+          "matched_source_pair": {
+            "documents": 249,
+            "tokens": 46167,
+            "fpr": 0.043073828877901614,
+            "ai_recall": 0.8128783462624994,
+            "precision": 0.946335351847985,
+            "roc_auc": 0.9576941523494219
+          },
+          "unaltered_source_excerpt": {
+            "documents": 168,
+            "tokens": 21223,
+            "fpr": 0.023514851485148515,
+            "ai_recall": 0.6488478402836085,
+            "precision": 0.9657039711191335,
+            "roc_auc": 0.9199925179658701
+          },
+          "unmatched_same_source_join": {
+            "documents": 83,
+            "tokens": 10880,
+            "fpr": 0.06356245380635625,
+            "ai_recall": 0.46964155084125825,
+            "precision": 0.8818681318681318,
+            "roc_auc": 0.8121309577297409
+          }
+        },
+        "by_source_family": {
+          "editlens": {
+            "documents": 231,
+            "tokens": 42585,
+            "fpr": 0.037013773610301046,
+            "ai_recall": 0.7940973590855341,
+            "precision": 0.9513044504781017,
+            "roc_auc": 0.9545895087577556
+          },
+          "mage": {
+            "documents": 154,
+            "tokens": 16058,
+            "fpr": 0.05262432841989255,
+            "ai_recall": 0.376861006932606,
+            "precision": 0.8967009194159005,
+            "roc_auc": 0.7764627193653
+          },
+          "paper": {
+            "documents": 115,
+            "tokens": 19627,
+            "fpr": 0.04025796365057651,
+            "ai_recall": 0.874906845523262,
+            "precision": 0.9522595596755504,
+            "roc_auc": 0.9757952321926893
+          }
+        },
+        "by_construction_family": {
+          "matched_source_pair:editlens": {
+            "documents": 169,
+            "tokens": 31850,
+            "fpr": 0.043039551541575835,
+            "ai_recall": 0.7869578980690092,
+            "precision": 0.9473363310723268,
+            "roc_auc": 0.9490545823754586
+          },
+          "matched_source_pair:paper": {
+            "documents": 80,
+            "tokens": 14317,
+            "fpr": 0.04314428370247087,
+            "ai_recall": 0.8758069474331387,
+            "precision": 0.9441590720795361,
+            "roc_auc": 0.9756184112649353
+          },
+          "unaltered_source_excerpt:editlens": {
+            "documents": 45,
+            "tokens": 8275,
+            "fpr": 0.01867673355851381,
+            "ai_recall": 0.8164713140037014,
+            "precision": 0.9657059467347683,
+            "roc_auc": 0.9734577819702731
+          },
+          "unaltered_source_excerpt:mage": {
+            "documents": 99,
+            "tokens": 9392,
+            "fpr": 0.03449987589972698,
+            "ai_recall": 0.4495618124184225,
+            "precision": 0.9454901960784313,
+            "roc_auc": 0.8259092306120919
+          },
+          "unaltered_source_excerpt:paper": {
+            "documents": 24,
+            "tokens": 3556,
+            "fpr": 0.009708737864077669,
+            "ai_recall": 0.8973509933774835,
+            "precision": 0.9926739926739927,
+            "roc_auc": 0.9887325694760641
+          },
+          "unmatched_same_source_join:editlens": {
+            "documents": 17,
+            "tokens": 2460,
+            "fpr": 0.03330557868442964,
+            "ai_recall": 0.8260524225575854,
+            "precision": 0.9629629629629629,
+            "roc_auc": 0.9669738416291958
+          },
+          "unmatched_same_source_join:mage": {
+            "documents": 55,
+            "tokens": 6666,
+            "fpr": 0.07523219814241486,
+            "ai_recall": 0.26338766006984865,
+            "precision": 0.7883275261324042,
+            "roc_auc": 0.6977125284278285
+          },
+          "unmatched_same_source_join:paper": {
+            "documents": 11,
+            "tokens": 1754,
+            "fpr": 0.06218144750254842,
+            "ai_recall": 0.8059508408796895,
+            "precision": 0.9108187134502924,
+            "roc_auc": 0.9441866353339583
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 78,
+            "tokens": 11637,
+            "fpr": 0.050175893353082764,
+            "ai_recall": 0.6063181526619628,
+            "precision": 0.9331194471865746,
+            "roc_auc": 0.8854109524535108
+          },
+          "news": {
+            "documents": 61,
+            "tokens": 12683,
+            "fpr": 0.051797385620915036,
+            "ai_recall": 0.7293920463202803,
+            "precision": 0.9378918495297806,
+            "roc_auc": 0.925880032545295
+          },
+          "paper": {
+            "documents": 130,
+            "tokens": 21854,
+            "fpr": 0.042440079293566406,
+            "ai_recall": 0.830885087393083,
+            "precision": 0.9499362244897959,
+            "roc_auc": 0.965244446330642
+          },
+          "reference_education": {
+            "documents": 90,
+            "tokens": 15082,
+            "fpr": 0.03314527503526093,
+            "ai_recall": 0.6724977182841497,
+            "precision": 0.9400382734424835,
+            "roc_auc": 0.9217546677376893
+          },
+          "reviews": {
+            "documents": 106,
+            "tokens": 13647,
+            "fpr": 0.02182148810425822,
+            "ai_recall": 0.7569523269012486,
+            "precision": 0.973717831721117,
+            "roc_auc": 0.9471355813722678
+          },
+          "social_qa": {
+            "documents": 35,
+            "tokens": 3367,
+            "fpr": 0.0651750972762646,
+            "ai_recall": 0.2974828375286041,
+            "precision": 0.7442748091603053,
+            "roc_auc": 0.7361338657928869
+          }
+        }
+      },
+      "Long composite": {
+        "run_name": "qwen3_token_single_v3_pilot1",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_long_probe_v1",
+        "validation_sha256": "4cd03507e38281a56ba72662aec093c482d640fe747a43bf2ecac190f456826d",
+        "task": "token",
+        "repeat2": false,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 0.8896484375000001,
+        "threshold_source": "provided frozen threshold from separate calibration evaluation",
+        "overall": {
+          "documents": 120,
+          "tokens": 95654,
+          "fpr": 0.04335152688929319,
+          "ai_recall": 0.6324628960190404,
+          "precision": 0.9270668773038442,
+          "roc_auc": 0.8893871762099446
+        },
+        "human_character_false_highlight_rate": 0.04787575185037528,
+        "pure_human_document_any_false_highlight_rate": 1.0,
+        "document_ai_character_fraction_mae": 0.19313526913900775,
+        "mixed_document_ai_character_fraction_mae": 0.13387859773477212,
+        "mixed_ai_spans": 334,
+        "mixed_ai_span_recall_any_highlight": 0.8712574850299402,
+        "mixed_ai_span_recall_half_covered": 0.655688622754491,
+        "by_kind": {
+          "human": {
+            "documents": 30,
+            "tokens": 23455,
+            "fpr": 0.035600085269665314,
+            "ai_recall": null,
+            "precision": 0.0,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 30,
+            "tokens": 19225,
+            "fpr": null,
+            "ai_recall": 0.5715994798439532,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 60,
+            "tokens": 52974,
+            "fpr": 0.04992408358036295,
+            "ai_recall": 0.6786899494310998,
+            "precision": 0.9255926724137931,
+            "roc_auc": 0.9013423172181145
+          }
+        },
+        "by_construction": {
+          "same-domain composite of span_pilot_v3 validation rows": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.04335152688929319,
+            "ai_recall": 0.6324628960190404,
+            "precision": 0.9270668773038442,
+            "roc_auc": 0.8893871762099446
+          }
+        },
+        "by_source_family": {
+          "composite": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.04335152688929319,
+            "ai_recall": 0.6324628960190404,
+            "precision": 0.9270668773038442,
+            "roc_auc": 0.8893871762099446
+          }
+        },
+        "by_construction_family": {
+          "same-domain composite of span_pilot_v3 validation rows:composite": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.04335152688929319,
+            "ai_recall": 0.6324628960190404,
+            "precision": 0.9270668773038442,
+            "roc_auc": 0.8893871762099446
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 26,
+            "tokens": 24443,
+            "fpr": 0.017440432326209777,
+            "ai_recall": 0.6445642848388283,
+            "precision": 0.9487642071080642,
+            "roc_auc": 0.9114944513955606
+          },
+          "news": {
+            "documents": 28,
+            "tokens": 26764,
+            "fpr": 0.045732689210950084,
+            "ai_recall": 0.74079754601227,
+            "precision": 0.9492585313560836,
+            "roc_auc": 0.9193444542562641
+          },
+          "paper": {
+            "documents": 16,
+            "tokens": 12645,
+            "fpr": 0.05987488829311886,
+            "ai_recall": 0.804586073174844,
+            "precision": 0.9223038268264399,
+            "roc_auc": 0.9297125462328243
+          },
+          "reference_education": {
+            "documents": 15,
+            "tokens": 13502,
+            "fpr": 0.04372496662216288,
+            "ai_recall": 0.4758988015978695,
+            "precision": 0.9316996871741398,
+            "roc_auc": 0.8454606808189881
+          },
+          "reviews": {
+            "documents": 12,
+            "tokens": 7111,
+            "fpr": 0.05480378890392422,
+            "ai_recall": 0.7740007471049682,
+            "precision": 0.8950323974082074,
+            "roc_auc": 0.9116122083758993
+          },
+          "social_qa": {
+            "documents": 23,
+            "tokens": 11189,
+            "fpr": 0.0866679309690878,
+            "ai_recall": 0.3152467883705206,
+            "precision": 0.8031869078380707,
+            "roc_auc": 0.7357856697090706
+          }
+        }
+      }
+    },
+    "Token Repeat2": {
+      "Validation": {
+        "run_name": "qwen3_token_repeat2_v3_pilot1",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_pilot_v3",
+        "validation_sha256": "af5621ad7681af96590d8aa485a1181f8b9a0bad3e57783635179cc15694f57f",
+        "task": "token",
+        "repeat2": true,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 0.9375000000000001,
+        "threshold_source": "same validation pure-human control tokens; target 2% token FPR",
+        "overall": {
+          "documents": 400,
+          "tokens": 59485,
+          "fpr": 0.03062565720294427,
+          "ai_recall": 0.867793343200358,
+          "precision": 0.9643512851897185,
+          "roc_auc": 0.9804354305085782
+        },
+        "human_character_false_highlight_rate": 0.030136382068994955,
+        "pure_human_document_any_false_highlight_rate": 0.11940298507462686,
+        "document_ai_character_fraction_mae": 0.0963076200829984,
+        "mixed_document_ai_character_fraction_mae": 0.06500335243944677,
+        "mixed_ai_spans": 314,
+        "mixed_ai_span_recall_any_highlight": 0.964968152866242,
+        "mixed_ai_span_recall_half_covered": 0.8980891719745223,
+        "by_kind": {
+          "human": {
+            "documents": 67,
+            "tokens": 7626,
+            "fpr": 0.01980068187778652,
+            "ai_recall": null,
+            "precision": 0.0,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 67,
+            "tokens": 7098,
+            "fpr": null,
+            "ai_recall": 0.7627500704423781,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 266,
+            "tokens": 44761,
+            "fpr": 0.03424537402437955,
+            "ai_recall": 0.9017535868822592,
+            "precision": 0.9620486904125565,
+            "roc_auc": 0.9848156471067346
+          }
+        },
+        "by_construction": {
+          "matched_source_pair": {
+            "documents": 200,
+            "tokens": 36075,
+            "fpr": 0.027753686036426712,
+            "ai_recall": 0.9248879559766268,
+            "precision": 0.9695509961344038,
+            "roc_auc": 0.9903336582622723
+          },
+          "unaltered_source_excerpt": {
+            "documents": 134,
+            "tokens": 14724,
+            "fpr": 0.01980068187778652,
+            "ai_recall": 0.7627500704423781,
+            "precision": 0.9728661275831088,
+            "roc_auc": 0.9662288283982285
+          },
+          "unmatched_same_source_join": {
+            "documents": 66,
+            "tokens": 8686,
+            "fpr": 0.0617255621844883,
+            "ai_recall": 0.8075323475046211,
+            "precision": 0.9285334750265675,
+            "roc_auc": 0.9434164673886766
+          }
+        },
+        "by_source_family": {
+          "editlens": {
+            "documents": 203,
+            "tokens": 35329,
+            "fpr": 0.025353513035793196,
+            "ai_recall": 0.9428737300435414,
+            "precision": 0.9725149700598802,
+            "roc_auc": 0.9921312516554889
+          },
+          "mage": {
+            "documents": 121,
+            "tokens": 11608,
+            "fpr": 0.06260991909954274,
+            "ai_recall": 0.5947315096251267,
+            "precision": 0.9082001031459516,
+            "roc_auc": 0.8694000877630323
+          },
+          "paper": {
+            "documents": 76,
+            "tokens": 12548,
+            "fpr": 0.017615176151761516,
+            "ai_recall": 0.9226210633254318,
+            "precision": 0.9789795185052103,
+            "roc_auc": 0.9939996791039137
+          }
+        },
+        "by_construction_family": {
+          "matched_source_pair:editlens": {
+            "documents": 144,
+            "tokens": 26374,
+            "fpr": 0.029616855364774687,
+            "ai_recall": 0.92996855104702,
+            "precision": 0.9684479591021647,
+            "roc_auc": 0.9900652291855454
+          },
+          "matched_source_pair:paper": {
+            "documents": 56,
+            "tokens": 9701,
+            "fpr": 0.022891801995695557,
+            "ai_recall": 0.9104575163398693,
+            "precision": 0.9727653631284916,
+            "roc_auc": 0.9912575038928809
+          },
+          "unaltered_source_excerpt:editlens": {
+            "documents": 40,
+            "tokens": 6133,
+            "fpr": 0.012363850456284957,
+            "ai_recall": 0.981359649122807,
+            "precision": 0.9845984598459846,
+            "roc_auc": 0.9987217285806017
+          },
+          "unaltered_source_excerpt:mage": {
+            "documents": 82,
+            "tokens": 7098,
+            "fpr": 0.032002348796241926,
+            "ai_recall": 0.5687973997833152,
+            "precision": 0.9506564056133997,
+            "roc_auc": 0.897198335230226
+          },
+          "unaltered_source_excerpt:paper": {
+            "documents": 12,
+            "tokens": 1493,
+            "fpr": 0.0,
+            "ai_recall": 0.9388059701492537,
+            "precision": 1.0,
+            "roc_auc": 1.0
+          },
+          "unmatched_same_source_join:editlens": {
+            "documents": 19,
+            "tokens": 2822,
+            "fpr": 0.016058394160583942,
+            "ai_recall": 0.9862258953168044,
+            "precision": 0.984869325997249,
+            "roc_auc": 0.9983365506424564
+          },
+          "unmatched_same_source_join:mage": {
+            "documents": 39,
+            "tokens": 4510,
+            "fpr": 0.10833333333333334,
+            "ai_recall": 0.6376681614349776,
+            "precision": 0.8520071899340923,
+            "roc_auc": 0.8346620053496971
+          },
+          "unmatched_same_source_join:paper": {
+            "documents": 8,
+            "tokens": 1354,
+            "fpr": 0.0,
+            "ai_recall": 0.9922600619195047,
+            "precision": 1.0,
+            "roc_auc": 1.0
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 60,
+            "tokens": 9353,
+            "fpr": 0.048556724099351085,
+            "ai_recall": 0.7872645372645373,
+            "precision": 0.9465780403741999,
+            "roc_auc": 0.9471912844311591
+          },
+          "news": {
+            "documents": 61,
+            "tokens": 9964,
+            "fpr": 0.03723963812329055,
+            "ai_recall": 0.9059681443101132,
+            "precision": 0.9638628011433238,
+            "roc_auc": 0.9892013984400685
+          },
+          "paper": {
+            "documents": 85,
+            "tokens": 13657,
+            "fpr": 0.023001095290251915,
+            "ai_recall": 0.9140563513300802,
+            "precision": 0.9718828451882845,
+            "roc_auc": 0.9914260845450977
+          },
+          "reference_education": {
+            "documents": 72,
+            "tokens": 11987,
+            "fpr": 0.039236008291382886,
+            "ai_recall": 0.7876934836613797,
+            "precision": 0.9395942557556417,
+            "roc_auc": 0.9636932422603847
+          },
+          "reviews": {
+            "documents": 97,
+            "tokens": 12504,
+            "fpr": 0.008992506244796004,
+            "ai_recall": 0.925065394676104,
+            "precision": 0.9910979228486647,
+            "roc_auc": 0.9933511323525211
+          },
+          "social_qa": {
+            "documents": 25,
+            "tokens": 2020,
+            "fpr": 0.044463818657367045,
+            "ai_recall": 0.8075601374570447,
+            "precision": 0.9325396825396826,
+            "roc_auc": 0.9685473634592358
+          }
+        }
+      },
+      "Confirmation": {
+        "run_name": "qwen3_token_repeat2_v3_pilot1",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_test_probe_v1",
+        "validation_sha256": "218f54ce4386c782475f65ae8ec687b1f5a093d2de336ec1e3c40e90534c1019",
+        "task": "token",
+        "repeat2": true,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 0.9375000000000001,
+        "threshold_source": "provided frozen threshold from separate calibration evaluation",
+        "overall": {
+          "documents": 500,
+          "tokens": 78270,
+          "fpr": 0.03632296013272334,
+          "ai_recall": 0.8925898981500727,
+          "precision": 0.9596357440151959,
+          "roc_auc": 0.9833948241649059
+        },
+        "human_character_false_highlight_rate": 0.036949517823834765,
+        "pure_human_document_any_false_highlight_rate": 0.17857142857142858,
+        "document_ai_character_fraction_mae": 0.08758046422901021,
+        "mixed_document_ai_character_fraction_mae": 0.06515125394775476,
+        "mixed_ai_spans": 381,
+        "mixed_ai_span_recall_any_highlight": 0.973753280839895,
+        "mixed_ai_span_recall_half_covered": 0.9396325459317585,
+        "by_kind": {
+          "human": {
+            "documents": 84,
+            "tokens": 10504,
+            "fpr": 0.020563594821020565,
+            "ai_recall": null,
+            "precision": 0.0,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 84,
+            "tokens": 10719,
+            "fpr": null,
+            "ai_recall": 0.8623005877413937,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 332,
+            "tokens": 57047,
+            "fpr": 0.04197691099118792,
+            "ai_recall": 0.9042817530339587,
+            "precision": 0.95334092634776,
+            "roc_auc": 0.9837727819606953
+          }
+        },
+        "by_construction": {
+          "matched_source_pair": {
+            "documents": 249,
+            "tokens": 46167,
+            "fpr": 0.019274281404508507,
+            "ai_recall": 0.9354737455719474,
+            "precision": 0.9784260388331301,
+            "roc_auc": 0.9930961907765121
+          },
+          "unaltered_source_excerpt": {
+            "documents": 168,
+            "tokens": 21223,
+            "fpr": 0.020563594821020565,
+            "ai_recall": 0.8623005877413937,
+            "precision": 0.9771646051379639,
+            "roc_auc": 0.9839065080214668
+          },
+          "unmatched_same_source_join": {
+            "documents": 83,
+            "tokens": 10880,
+            "fpr": 0.14209164818920916,
+            "ai_recall": 0.7770665691294806,
+            "precision": 0.8467516939019529,
+            "roc_auc": 0.9025225919696185
+          }
+        },
+        "by_source_family": {
+          "editlens": {
+            "documents": 231,
+            "tokens": 42585,
+            "fpr": 0.016734712189869442,
+            "ai_recall": 0.928508080409933,
+            "precision": 0.9805911124986991,
+            "roc_auc": 0.9927187400354248
+          },
+          "mage": {
+            "documents": 154,
+            "tokens": 16058,
+            "fpr": 0.12839234054277449,
+            "ai_recall": 0.7359927264461871,
+            "precision": 0.8741900647948164,
+            "roc_auc": 0.8947284536100133
+          },
+          "paper": {
+            "documents": 115,
+            "tokens": 19627,
+            "fpr": 0.013679890560875513,
+            "ai_recall": 0.9616735867135101,
+            "precision": 0.9847378175079037,
+            "roc_auc": 0.9971791038282909
+          }
+        },
+        "by_construction_family": {
+          "matched_source_pair:editlens": {
+            "documents": 169,
+            "tokens": 31850,
+            "fpr": 0.020180629087511677,
+            "ai_recall": 0.9245963912630579,
+            "precision": 0.9782958199356914,
+            "roc_auc": 0.9915029463553634
+          },
+          "matched_source_pair:paper": {
+            "documents": 80,
+            "tokens": 14317,
+            "fpr": 0.017411342977851747,
+            "ai_recall": 0.9618813403012604,
+            "precision": 0.9787300594307163,
+            "roc_auc": 0.9965927082346567
+          },
+          "unaltered_source_excerpt:editlens": {
+            "documents": 45,
+            "tokens": 8275,
+            "fpr": 0.00337770713292271,
+            "ai_recall": 0.9339913633559531,
+            "precision": 0.9944170771756978,
+            "roc_auc": 0.9971350713912482
+          },
+          "unaltered_source_excerpt:mage": {
+            "documents": 99,
+            "tokens": 9392,
+            "fpr": 0.04939190866219906,
+            "ai_recall": 0.7775498787991796,
+            "precision": 0.9544518196383612,
+            "roc_auc": 0.9524437710988398
+          },
+          "unaltered_source_excerpt:paper": {
+            "documents": 24,
+            "tokens": 3556,
+            "fpr": 0.0,
+            "ai_recall": 0.967360454115421,
+            "precision": 1.0,
+            "roc_auc": 0.999929306899253
+          },
+          "unmatched_same_source_join:editlens": {
+            "documents": 17,
+            "tokens": 2460,
+            "fpr": 0.026644462947543714,
+            "ai_recall": 0.9634630659253376,
+            "precision": 0.97429718875502,
+            "roc_auc": 0.9952693644890841
+          },
+          "unmatched_same_source_join:mage": {
+            "documents": 55,
+            "tokens": 6666,
+            "fpr": 0.22693498452012384,
+            "ai_recall": 0.6711292200232829,
+            "precision": 0.7588022375781507,
+            "roc_auc": 0.7932411598914425
+          },
+          "unmatched_same_source_join:paper": {
+            "documents": 11,
+            "tokens": 1754,
+            "fpr": 0.004077471967380225,
+            "ai_recall": 0.944372574385511,
+            "precision": 0.9945504087193461,
+            "roc_auc": 0.9945358974460414
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 78,
+            "tokens": 11637,
+            "fpr": 0.09535271246065544,
+            "ai_recall": 0.8135022450288647,
+            "precision": 0.9078382247673586,
+            "roc_auc": 0.95114945275974
+          },
+          "news": {
+            "documents": 61,
+            "tokens": 12683,
+            "fpr": 0.02516339869281046,
+            "ai_recall": 0.8986743867133933,
+            "precision": 0.9745538664904164,
+            "roc_auc": 0.9909053925801109
+          },
+          "paper": {
+            "documents": 130,
+            "tokens": 21854,
+            "fpr": 0.013515948819607137,
+            "ai_recall": 0.9488657493492004,
+            "precision": 0.9855156431054461,
+            "roc_auc": 0.9965951604224336
+          },
+          "reference_education": {
+            "documents": 90,
+            "tokens": 15082,
+            "fpr": 0.03302773859896568,
+            "ai_recall": 0.9029510191664132,
+            "precision": 0.9548013511339875,
+            "roc_auc": 0.9792369489500674
+          },
+          "reviews": {
+            "documents": 106,
+            "tokens": 13647,
+            "fpr": 0.01621457796635854,
+            "ai_recall": 0.8955732122587968,
+            "precision": 0.9833307368749026,
+            "roc_auc": 0.9847402002917582
+          },
+          "social_qa": {
+            "documents": 35,
+            "tokens": 3367,
+            "fpr": 0.11575875486381323,
+            "ai_recall": 0.7086193745232647,
+            "precision": 0.7960582690659811,
+            "roc_auc": 0.9004226063806107
+          }
+        }
+      },
+      "Long composite": {
+        "run_name": "qwen3_token_repeat2_v3_pilot1",
+        "role": "synthetic validation calibration diagnostics; not a blind test",
+        "dataset_folder": "span_long_probe_v1",
+        "validation_sha256": "4cd03507e38281a56ba72662aec093c482d640fe747a43bf2ecac190f456826d",
+        "task": "token",
+        "repeat2": true,
+        "window_size": 512,
+        "window_stride": 256,
+        "threshold": 0.9375000000000001,
+        "threshold_source": "provided frozen threshold from separate calibration evaluation",
+        "overall": {
+          "documents": 120,
+          "tokens": 95654,
+          "fpr": 0.013537570671205274,
+          "ai_recall": 0.7537553045782158,
+          "precision": 0.9798026968653318,
+          "roc_auc": 0.9569554673857154
+        },
+        "human_character_false_highlight_rate": 0.014894004264096653,
+        "pure_human_document_any_false_highlight_rate": 0.3333333333333333,
+        "document_ai_character_fraction_mae": 0.13009271942771453,
+        "mixed_document_ai_character_fraction_mae": 0.11592229077824764,
+        "mixed_ai_spans": 334,
+        "mixed_ai_span_recall_any_highlight": 0.8053892215568862,
+        "mixed_ai_span_recall_half_covered": 0.7005988023952096,
+        "by_kind": {
+          "human": {
+            "documents": 30,
+            "tokens": 23455,
+            "fpr": 0.0026433596248134727,
+            "ai_recall": null,
+            "precision": 0.0,
+            "roc_auc": null
+          },
+          "ai": {
+            "documents": 30,
+            "tokens": 19225,
+            "fpr": null,
+            "ai_recall": 0.7342002600780234,
+            "precision": 1.0,
+            "roc_auc": null
+          },
+          "mixed": {
+            "documents": 60,
+            "tokens": 52974,
+            "fpr": 0.022774925891114163,
+            "ai_recall": 0.7686077749683944,
+            "precision": 0.9686333084391336,
+            "roc_auc": 0.9547468524061131
+          }
+        },
+        "by_construction": {
+          "same-domain composite of span_pilot_v3 validation rows": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.013537570671205274,
+            "ai_recall": 0.7537553045782158,
+            "precision": 0.9798026968653318,
+            "roc_auc": 0.9569554673857154
+          }
+        },
+        "by_source_family": {
+          "composite": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.013537570671205274,
+            "ai_recall": 0.7537553045782158,
+            "precision": 0.9798026968653318,
+            "roc_auc": 0.9569554673857154
+          }
+        },
+        "by_construction_family": {
+          "same-domain composite of span_pilot_v3 validation rows:composite": {
+            "documents": 120,
+            "tokens": 95654,
+            "fpr": 0.013537570671205274,
+            "ai_recall": 0.7537553045782158,
+            "precision": 0.9798026968653318,
+            "roc_auc": 0.9569554673857154
+          }
+        },
+        "by_domain": {
+          "creative": {
+            "documents": 26,
+            "tokens": 24443,
+            "fpr": 0.010992385163350528,
+            "ai_recall": 0.7385709032969726,
+            "precision": 0.9711522965350524,
+            "roc_auc": 0.9648532035954889
+          },
+          "news": {
+            "documents": 28,
+            "tokens": 26764,
+            "fpr": 0.01537842190016103,
+            "ai_recall": 0.836377579475739,
+            "precision": 0.9843288480472596,
+            "roc_auc": 0.9554803980275772
+          },
+          "paper": {
+            "documents": 16,
+            "tokens": 12645,
+            "fpr": 0.011468573130771521,
+            "ai_recall": 0.8855167762603271,
+            "precision": 0.9855507599924939,
+            "roc_auc": 0.9928111947911358
+          },
+          "reference_education": {
+            "documents": 15,
+            "tokens": 13502,
+            "fpr": 0.015520694259012017,
+            "ai_recall": 0.6846870838881491,
+            "precision": 0.9822349570200573,
+            "roc_auc": 0.9584726483958194
+          },
+          "reviews": {
+            "documents": 12,
+            "tokens": 7111,
+            "fpr": 0.005187189896256202,
+            "ai_recall": 0.8001494209936496,
+            "precision": 0.9893764434180139,
+            "roc_auc": 0.9226708025346303
+          },
+          "social_qa": {
+            "documents": 23,
+            "tokens": 11189,
+            "fpr": 0.02446425184904229,
+            "ai_recall": 0.5089587559161596,
+            "precision": 0.9589171974522293,
+            "roc_auc": 0.8866027796445259
+          }
+        }
+      }
+    }
+  }
+}

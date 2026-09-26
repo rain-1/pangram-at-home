@@ -106,6 +106,15 @@ def main():
         "by_kind":{k:summarize([r for r in results if r["row"]["kind"]==k]) for k in ("human","ai","mixed")},
         "by_construction":{c:summarize([r for r in results if r["row"]["construction"]==c])
                            for c in sorted({r["row"]["construction"] for r in results})},
+        "by_source_family":{f:summarize([r for r in results if r["row"]["source"].split(":")[0]==f])
+                            for f in sorted({r["row"]["source"].split(":")[0] for r in results})},
+        "by_construction_family":{
+            f"{construction}:{family}":summarize([
+                r for r in results if r["row"]["construction"]==construction
+                and r["row"]["source"].split(":")[0]==family])
+            for construction,family in sorted({(r["row"]["construction"],
+                                                r["row"]["source"].split(":")[0])
+                                               for r in results})},
         "by_domain":{d:summarize([r for r in results if r["row"]["domain"]==d]) for d in sorted({r["row"]["domain"] for r in results})}}
     (run/f"{args.output_name}.json").write_text(json.dumps(report,indent=2)+"\n")
     (run/f"{args.output_name}_predictions.jsonl").write_text("".join(json.dumps(x)+"\n" for x in predictions))
