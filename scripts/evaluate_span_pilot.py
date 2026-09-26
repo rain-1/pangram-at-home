@@ -111,15 +111,15 @@ def main():
         "by_length":{band:summarize([r for r in results if length_band(len(r["label"]))==band])
                      for band in sorted({length_band(len(r["label"])) for r in results})},
         "by_kind":{k:summarize([r for r in results if r["row"]["kind"]==k]) for k in ("human","ai","mixed")},
-        "by_construction":{c:summarize([r for r in results if r["row"]["construction"]==c])
-                           for c in sorted({r["row"]["construction"] for r in results})},
+        "by_construction":{c:summarize([r for r in results if r["row"].get("construction","unspecified_source")==c])
+                           for c in sorted({r["row"].get("construction","unspecified_source") for r in results})},
         "by_source_family":{f:summarize([r for r in results if r["row"]["source"].split(":")[0]==f])
                             for f in sorted({r["row"]["source"].split(":")[0] for r in results})},
         "by_construction_family":{
             f"{construction}:{family}":summarize([
-                r for r in results if r["row"]["construction"]==construction
+                r for r in results if r["row"].get("construction","unspecified_source")==construction
                 and r["row"]["source"].split(":")[0]==family])
-            for construction,family in sorted({(r["row"]["construction"],
+            for construction,family in sorted({(r["row"].get("construction","unspecified_source"),
                                                 r["row"]["source"].split(":")[0])
                                                for r in results})},
         "by_domain":{d:summarize([r for r in results if r["row"]["domain"]==d]) for d in sorted({r["row"]["domain"] for r in results})}}

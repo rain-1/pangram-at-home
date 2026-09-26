@@ -108,6 +108,27 @@ def main():
         ax.grid(alpha=.15);ax.legend(loc='lower right',frameon=False)
         fig.tight_layout(rect=(.04,.04,.98,.9));pdf.savefig(fig);plt.close(fig)
 
+        fig,ax=plt.subplots(figsize=(11.7,8.3))
+        fig.suptitle('Human article false alarms by publication',fontsize=18,weight='bold',y=.97)
+        rows=old_pure['External articles']['rows']
+        models=combined(old_pure,new_pure,'External articles')
+        names=['Associated Press','Discover','National Geographic','New York Times',
+               "Reader's Digest",'Scientific American','Smithsonian Magazine','Wall Street Journal']
+        aliases={"Readers Digest":"Reader's Digest","Reader's Digest":"Reader's Digest"}
+        groups=[[j for j,row in enumerate(rows) if row['kind']=='human' and
+                 aliases.get(row.get('publication'),row.get('publication'))==name] for name in names]
+        y=np.arange(len(names));width=.17
+        for i,model in enumerate(models):
+            values=[100*sum(model['score'][j]>=model['threshold'] for j in group)/len(group)
+                    for group in groups]
+            ax.barh(y+(i-1.5)*width,values,width,color=COLORS[i],label=NAMES[i])
+        ax.set_yticks(y,names);ax.invert_yaxis();ax.set_xlim(0,100)
+        ax.set_xlabel('Attributed-human articles falsely flagged (%)')
+        ax.grid(axis='x',alpha=.2);ax.set_axisbelow(True)
+        ax.legend(loc='lower right',ncol=2,frameon=False)
+        fig.text(.055,.08,'The external articles remain a frozen stress set. Their named authors do not independently verify AI-free writing workflows.',fontsize=9)
+        fig.tight_layout(rect=(.04,.13,.98,.91));pdf.savefig(fig);plt.close(fig)
+
     old=old_pure['External articles']['models'][0];new=new_pure['External articles']['models'][0]
     lines=['# Source-balanced retrain evaluation','',f'Old Qwen threshold: `{old_threshold:.4f}`; '
            f'new Qwen threshold: `{new_threshold:.4f}`. Both are independently calibrated to 5% document '
@@ -131,7 +152,19 @@ def main():
             f"Published human articles: old Qwen {old['fp']}/{old['human']} false alarms; "
             f"balanced Qwen {new['fp']}/{new['human']}. AI article recall: "
             f"{old['tp']}/{old['ai']} old; {new['tp']}/{new['ai']} balanced.",'',
+            f"Article AUROC: {old['auroc']:.4f} old versus {new['auroc']:.4f} balanced.",'',
             'The 150 external human articles have attributed human authors but their production workflows were not independently verified as AI-free. EditLens baseline span scores are coarse window broadcasts, not native token heads.']
+    lines+=['','## Article publication breakdown','',
+            '| Publication | Human articles | Qwen old false alarms | Qwen balanced false alarms | Pangram RoBERTa | Pangram Llama |',
+            '| --- | ---: | ---: | ---: | ---: | ---: |']
+    rows=old_pure['External articles']['rows'];models=combined(old_pure,new_pure,'External articles')
+    aliases={"Readers Digest":"Reader's Digest","Reader's Digest":"Reader's Digest"}
+    for name in ['Associated Press','Discover','National Geographic','New York Times',
+                 "Reader's Digest",'Scientific American','Smithsonian Magazine','Wall Street Journal']:
+        indices=[j for j,row in enumerate(rows) if row['kind']=='human' and
+                 aliases.get(row.get('publication'),row.get('publication'))==name]
+        counts=[sum(m['score'][j]>=m['threshold'] for j in indices) for m in models]
+        lines.append(f"| {name} | {len(indices)} | "+' | '.join(f'{x}/{len(indices)}' for x in counts)+' |')
     (OUT/'balanced_retrain_v6.md').write_text('\n'.join(lines)+'\n')
     print(output)
 
