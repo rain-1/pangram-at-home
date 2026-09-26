@@ -150,6 +150,33 @@ def main():
                  'verification of AI-free workflows is unavailable.',fontsize=9)
         pages.savefig(fig);plt.close(fig)
 
+        manifest=json.loads((ROOT/'data/span_publication_hardneg_v8/manifest.json').read_text())
+        audit=json.loads((ROOT/'data/span_publication_hardneg_v8/exposure_audit.json').read_text())
+        names=['DAMASHA','mage:sci','editlens:fineweb_edu',
+               'editlens:reddit_writing_prompts','paper:acl_anthology','paper:pmc_oa',
+               'mage:wp','LLMTrace']
+        docs=manifest['source_documents']
+        tokens=audit['source_supervised_token_fraction']
+        labels=[*names,'All other sources']
+        doc_share=[docs[name]/manifest['documents'] for name in names]
+        token_share=[tokens[name] for name in names]
+        doc_share.append(1-sum(doc_share));token_share.append(1-sum(token_share))
+        fig,axes=plt.subplots(1,2,figsize=(11.7,8.3),sharey=True)
+        fig.suptitle('Training mix: no one source dominates',fontsize=18,weight='bold',y=.97)
+        y=np.arange(len(labels))
+        colors=['#d46b28' if name=='LLMTrace' else '#169c86' for name in labels]
+        for ax,values,title in zip(axes,[doc_share,token_share],
+                                   ['Share of 20,000 documents','Share of supervised token positions']):
+            ax.barh(y,np.array(values)*100,color=colors)
+            ax.set_xlim(0,50);ax.set_yticks(y,labels);ax.invert_yaxis()
+            ax.set_xlabel('Share (%)');ax.set_title(title)
+            ax.grid(axis='x',alpha=.2);ax.set_axisbelow(True)
+            for j,value in enumerate(values):
+                ax.text(value*100+.5,j,f'{100*value:.1f}%',va='center',fontsize=8)
+        fig.text(.06,.08,'LLMTrace: 600 documents = 3.0%; 0.92% of supervised token positions. '
+                 'The remaining token labels are 57.1% human and 42.9% AI.',fontsize=9)
+        fig.tight_layout(rect=(.03,.12,.98,.91));pages.savefig(fig);plt.close(fig)
+
         fig,axes=plt.subplots(2,1,figsize=(11.7,8.3))
         fig.suptitle('Did publication hard negatives lower false alarms?',fontsize=19,weight='bold',y=.97)
         fig.text(.055,.91,'Each Qwen threshold was calibrated to 5% false alarms on the same separate 1,120 human controls.',fontsize=9)
@@ -214,6 +241,7 @@ def main():
 
     lines=['# Publication hard-negative pilot v8','',
            'The v8 model changes 500 of 20,000 training documents from DAMASHA mixed examples to dated, attributed human publication prose from five CC BY publishers. The architecture, tuned hyperparameters, and initialization match v6. Original article stress results have guided this experiment and are now development evidence, not an untouched final test.','',
+           'LLMTrace is 600/20,000 documents (3.0%), 2.32% of training windows, and 0.92% of supervised token positions. DAMASHA is the largest source at 24.5% of documents and 27.1% of supervised positions. The final token supervision is 57.1% human and 42.9% AI.','',
            '## Plain-language verdict','',
            f'**Published articles: {article_verdict}.** At the separately calibrated threshold, v8 falsely flags {article_v8["fp"]}/150 attributed-human articles ({100*article_fpr:.1f}%), versus {article_v6["fp"]}/150 for v6. It catches {article_v8["tp"]}/150 AI articles ({100*article_recall:.1f}%). The stated goal is at most 10% human false alarms with at least 95% AI recall.','',
            f'The any-highlight document rule includes small isolated errors. A stricter descriptive view counts articles with at least 10% of tokens falsely highlighted: v6 {substantial_v6}/150; v8 {substantial_v8}/150. This is not a recalibrated operating threshold.','',
