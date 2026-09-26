@@ -22,11 +22,14 @@ def main():
     p.add_argument("--model",type=Path,default=Path("/mnt/f/pangram-at-home/models/Qwen3-1.7B"))
     p.add_argument("--init-adapter",type=Path)
     p.add_argument("--run-name",default="qwen3_token_repeat2_pilot_v1")
+    p.add_argument("--dataset-folder",default="span_pilot_v3")
+    p.add_argument("--max-source-tokens",type=int,default=512)
+    p.add_argument("--stride",type=int,default=256)
     p.add_argument("--max-steps",type=int,default=800);p.add_argument("--eval-steps",type=int,default=200)
     p.add_argument("--learning-rate",type=float,default=7.607757094022466e-5)
     p.add_argument("--lora-rank",type=int,default=32);p.add_argument("--lora-alpha",type=int,default=64)
     p.add_argument("--lora-dropout",type=float,default=.068837366330751)
-    p.add_argument("--batch-size",type=int,default=1);p.add_argument("--accumulation",type=int,default=8)
+    p.add_argument("--batch-size",type=int,default=2);p.add_argument("--accumulation",type=int,default=4)
     p.add_argument("--hours",type=float,default=3);p.add_argument("--seed",type=int,default=42)
     p.add_argument("--report-to",choices=["none","wandb"],default="wandb")
     p.add_argument("--single-copy",action="store_true")
@@ -34,11 +37,13 @@ def main():
     output=args.root/"runs"/args.run_name
     output.mkdir(parents=True,exist_ok=False)
     tokenizer=AutoTokenizer.from_pretrained(args.model);tokenizer.pad_token=tokenizer.eos_token
-    folder=args.root/"data/span_pilot_v1"
-    train=SpanDataset(folder/"train.jsonl",tokenizer,repeat2=not args.single_copy)
-    val=SpanDataset(folder/"val.jsonl",tokenizer,repeat2=not args.single_copy)
+    folder=args.root/"data"/args.dataset_folder
+    train=SpanDataset(folder/"train.jsonl",tokenizer,size=args.max_source_tokens,
+                      stride=args.stride,repeat2=not args.single_copy)
+    val=SpanDataset(folder/"val.jsonl",tokenizer,size=args.max_source_tokens,
+                    stride=args.stride,repeat2=not args.single_copy)
     model=AutoModelForTokenClassification.from_pretrained(args.model,num_labels=2,dtype=torch.bfloat16,
-        device_map={"":0},classifier_dropout=0.1,
+        device_map={"":0},
         id2label={0:"human",1:"ai_generated"},label2id={"human":0,"ai_generated":1})
     model.config.use_cache=False;model.config.pad_token_id=tokenizer.pad_token_id
     model=get_peft_model(model,LoraConfig(task_type=TaskType.TOKEN_CLS,r=args.lora_rank,lora_alpha=args.lora_alpha,
@@ -61,11 +66,13 @@ def main():
             raise RuntimeError(f"Adapter transfer mismatch: {loaded}")
         init_sha=hashlib.sha256(weights.read_bytes()).hexdigest()
     config={**vars(args),"task":"binary_token_classification","repeat2":not args.single_copy,
-        "max_source_tokens":512,"stride":256,"first_copy_loss_masked":not args.single_copy,
+        "base_model":str(args.model),"max_length":args.max_source_tokens,
+        "first_copy_loss_masked":not args.single_copy,
         "classifier_dropout":0.1,"quantization":"none","effective_batch_size":args.batch_size*args.accumulation,
         "assisted_supported":False,"train_windows":len(train),"val_windows":len(val),
         "init_adapter_sha256":init_sha,"train_sha256":hashlib.sha256((folder/"train.jsonl").read_bytes()).hexdigest(),
-        "val_sha256":hashlib.sha256((folder/"val.jsonl").read_bytes()).hexdigest()}
+        "val_sha256":hashlib.sha256((folder/"val.jsonl").read_bytes()).hexdigest(),
+        "dataset_manifest_sha256":hashlib.sha256((folder/"manifest.json").read_bytes()).hexdigest()}
     config=json.loads(json.dumps(config,default=str))
     (output/"run_config.json").write_text(json.dumps(config,indent=2)+"\n")
     def metrics(pred):
