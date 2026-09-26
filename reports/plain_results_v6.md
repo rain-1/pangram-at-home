@@ -11,6 +11,8 @@ See [the four-page chart](plain_results_v6.pdf). The charts compare the **existi
 
 The external 150-human/150-AI article set has attributed human authors, but its writing workflows were not independently verified as AI-free. It remains a frozen stress test, not calibration or training material. The mixed-span baseline scores come from window classifiers broadcast to tokens, so their localization is inherently coarse.
 
+A diagnostic check on the old checkpoint shows that changing the whole-document score aggregator does not by itself repair this failure. With each aggregator calibrated to 5% false alarms on the same independent human controls, using the maximum, 95th percentile, 90th percentile, or mean token score falsely flags 74, 75, 74, or 72 of the 150 human articles respectively; all four catch 150/150 AI articles. This is evidence of a broad source/style error rather than a few stray high-scoring tokens. These aggregators were inspected on the article stress set and are **not** new validated operating rules.
+
 ## What we changed in the data
 
 The old 20,000-document mix used 15,036 LLMTrace documents (75.2%), accounting for 71.1% of its training windows. The new [source-capped builder](../scripts/build_span_balanced_v6.py) produced a fresh 20,000-document mixture:
