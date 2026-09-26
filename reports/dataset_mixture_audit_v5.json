@@ -1,0 +1,1505 @@
+{
+  "run": "qwen3_token_repeat2_v5_20k_e1_local",
+  "rule": "uniform shuffled windows, 512 source tokens, 256 stride; Repeat2 first copy masked",
+  "training_steps": 3269,
+  "effective_batch_size": 8,
+  "planned_window_draws": 26152,
+  "initialization_overlap": {
+    "v4_documents": 4964,
+    "v4_documents_with_any_initialization_group": 4964,
+    "v4_documents_with_all_groups_in_initialization": 4964,
+    "v4_exact_text_hashes_in_initialization": 1,
+    "v4_unique_source_groups": 8102,
+    "v4_source_groups_in_initialization": 8102
+  },
+  "total": {
+    "documents": 20000,
+    "windows": 26145,
+    "source_tokens": 7168539,
+    "source_human_tokens": 3886739,
+    "source_ai_tokens": 3259137,
+    "supervised_human_tokens": 5033985,
+    "supervised_ai_tokens": 4190748,
+    "processed_tokens_repeat2": 18505540
+  },
+  "groups": {
+    "family": {
+      "LLMTrace": {
+        "documents": 15036,
+        "windows": 18582,
+        "source_tokens": 5130928,
+        "source_human_tokens": 2859963,
+        "source_ai_tokens": 2251407,
+        "supervised_human_tokens": 3562381,
+        "supervised_ai_tokens": 2764105,
+        "processed_tokens_repeat2": 12699518
+      },
+      "earlier v4 composites": {
+        "documents": 4964,
+        "windows": 7563,
+        "source_tokens": 2037611,
+        "source_human_tokens": 1026776,
+        "source_ai_tokens": 1007730,
+        "supervised_human_tokens": 1471604,
+        "supervised_ai_tokens": 1426643,
+        "processed_tokens_repeat2": 5806022
+      }
+    },
+    "source": {
+      "LLMTrace_detection": {
+        "documents": 15036,
+        "windows": 18582,
+        "source_tokens": 5130928,
+        "source_human_tokens": 2859963,
+        "source_ai_tokens": 2251407,
+        "supervised_human_tokens": 3562381,
+        "supervised_ai_tokens": 2764105,
+        "processed_tokens_repeat2": 12699518
+      },
+      "editlens:amazon_reviews": {
+        "documents": 264,
+        "windows": 438,
+        "source_tokens": 119057,
+        "source_human_tokens": 56535,
+        "source_ai_tokens": 62338,
+        "supervised_human_tokens": 81450,
+        "supervised_ai_tokens": 94725,
+        "processed_tokens_repeat2": 352888
+      },
+      "editlens:fineweb_edu": {
+        "documents": 430,
+        "windows": 723,
+        "source_tokens": 198373,
+        "source_human_tokens": 101570,
+        "source_ai_tokens": 96367,
+        "supervised_human_tokens": 148118,
+        "supervised_ai_tokens": 140821,
+        "processed_tokens_repeat2": 579238
+      },
+      "editlens:google_reviews": {
+        "documents": 257,
+        "windows": 427,
+        "source_tokens": 113868,
+        "source_human_tokens": 51042,
+        "source_ai_tokens": 62664,
+        "supervised_human_tokens": 76108,
+        "supervised_ai_tokens": 95345,
+        "processed_tokens_repeat2": 343374
+      },
+      "editlens:news": {
+        "documents": 143,
+        "windows": 276,
+        "source_tokens": 77364,
+        "source_human_tokens": 38479,
+        "source_ai_tokens": 38696,
+        "supervised_human_tokens": 59484,
+        "supervised_ai_tokens": 58965,
+        "processed_tokens_repeat2": 237500
+      },
+      "editlens:reddit_writing_prompts": {
+        "documents": 426,
+        "windows": 721,
+        "source_tokens": 196782,
+        "source_human_tokens": 91485,
+        "source_ai_tokens": 104855,
+        "supervised_human_tokens": 131979,
+        "supervised_ai_tokens": 154532,
+        "processed_tokens_repeat2": 574402
+      },
+      "mage:cmv": {
+        "documents": 368,
+        "windows": 490,
+        "source_tokens": 123445,
+        "source_human_tokens": 62183,
+        "source_ai_tokens": 61096,
+        "supervised_human_tokens": 87719,
+        "supervised_ai_tokens": 85256,
+        "processed_tokens_repeat2": 346448
+      },
+      "mage:eli5": {
+        "documents": 283,
+        "windows": 292,
+        "source_tokens": 78935,
+        "source_human_tokens": 39122,
+        "source_ai_tokens": 39743,
+        "supervised_human_tokens": 42482,
+        "supervised_ai_tokens": 40771,
+        "processed_tokens_repeat2": 166650
+      },
+      "mage:roct": {
+        "documents": 286,
+        "windows": 287,
+        "source_tokens": 70366,
+        "source_human_tokens": 34519,
+        "source_ai_tokens": 35822,
+        "supervised_human_tokens": 34519,
+        "supervised_ai_tokens": 36298,
+        "processed_tokens_repeat2": 141684
+      },
+      "mage:sci": {
+        "documents": 602,
+        "windows": 1102,
+        "source_tokens": 307308,
+        "source_human_tokens": 147150,
+        "source_ai_tokens": 159741,
+        "supervised_human_tokens": 231426,
+        "supervised_ai_tokens": 249095,
+        "processed_tokens_repeat2": 962412
+      },
+      "mage:squad": {
+        "documents": 281,
+        "windows": 333,
+        "source_tokens": 93247,
+        "source_human_tokens": 48518,
+        "source_ai_tokens": 44680,
+        "supervised_human_tokens": 64368,
+        "supervised_ai_tokens": 52361,
+        "processed_tokens_repeat2": 233568
+      },
+      "mage:tldr": {
+        "documents": 375,
+        "windows": 404,
+        "source_tokens": 97031,
+        "source_human_tokens": 47941,
+        "source_ai_tokens": 49030,
+        "supervised_human_tokens": 56280,
+        "supervised_ai_tokens": 54701,
+        "processed_tokens_repeat2": 222098
+      },
+      "mage:wp": {
+        "documents": 284,
+        "windows": 595,
+        "source_tokens": 166413,
+        "source_human_tokens": 89220,
+        "source_ai_tokens": 76935,
+        "supervised_human_tokens": 145458,
+        "supervised_ai_tokens": 123966,
+        "processed_tokens_repeat2": 539748
+      },
+      "mage:xsum": {
+        "documents": 103,
+        "windows": 120,
+        "source_tokens": 35732,
+        "source_human_tokens": 18505,
+        "source_ai_tokens": 17204,
+        "supervised_human_tokens": 24000,
+        "supervised_ai_tokens": 19274,
+        "processed_tokens_repeat2": 86600
+      },
+      "mage:yelp": {
+        "documents": 218,
+        "windows": 218,
+        "source_tokens": 44588,
+        "source_human_tokens": 22054,
+        "source_ai_tokens": 22487,
+        "supervised_human_tokens": 22054,
+        "supervised_ai_tokens": 22487,
+        "processed_tokens_repeat2": 89176
+      },
+      "paper:acl_anthology": {
+        "documents": 376,
+        "windows": 654,
+        "source_tokens": 176025,
+        "source_human_tokens": 95874,
+        "source_ai_tokens": 79835,
+        "supervised_human_tokens": 142939,
+        "supervised_ai_tokens": 118140,
+        "processed_tokens_repeat2": 523148
+      },
+      "paper:pmc_oa": {
+        "documents": 268,
+        "windows": 483,
+        "source_tokens": 139077,
+        "source_human_tokens": 82579,
+        "source_ai_tokens": 56237,
+        "supervised_human_tokens": 123220,
+        "supervised_ai_tokens": 79906,
+        "processed_tokens_repeat2": 407088
+      }
+    },
+    "domain": {
+      "article": {
+        "documents": 2000,
+        "windows": 2888,
+        "source_tokens": 813296,
+        "source_human_tokens": 489942,
+        "source_ai_tokens": 319963,
+        "supervised_human_tokens": 678808,
+        "supervised_ai_tokens": 407135,
+        "processed_tokens_repeat2": 2180394
+      },
+      "creative": {
+        "documents": 996,
+        "windows": 1603,
+        "source_tokens": 433561,
+        "source_human_tokens": 215224,
+        "source_ai_tokens": 217612,
+        "supervised_human_tokens": 311956,
+        "supervised_ai_tokens": 314796,
+        "processed_tokens_repeat2": 1255834
+      },
+      "factual": {
+        "documents": 1960,
+        "windows": 2445,
+        "source_tokens": 720965,
+        "source_human_tokens": 431024,
+        "source_ai_tokens": 287593,
+        "supervised_human_tokens": 542664,
+        "supervised_ai_tokens": 357054,
+        "processed_tokens_repeat2": 1804986
+      },
+      "news": {
+        "documents": 2039,
+        "windows": 2795,
+        "source_tokens": 813428,
+        "source_human_tokens": 491666,
+        "source_ai_tokens": 318385,
+        "supervised_human_tokens": 655259,
+        "supervised_ai_tokens": 415312,
+        "processed_tokens_repeat2": 2149668
+      },
+      "paper": {
+        "documents": 1246,
+        "windows": 2239,
+        "source_tokens": 622410,
+        "source_human_tokens": 325603,
+        "source_ai_tokens": 295813,
+        "supervised_human_tokens": 497585,
+        "supervised_ai_tokens": 447141,
+        "processed_tokens_repeat2": 1892648
+      },
+      "paper_abstract": {
+        "documents": 1880,
+        "windows": 1998,
+        "source_tokens": 508241,
+        "source_human_tokens": 227054,
+        "source_ai_tokens": 279769,
+        "supervised_human_tokens": 229020,
+        "supervised_ai_tokens": 323100,
+        "processed_tokens_repeat2": 1107078
+      },
+      "poetry": {
+        "documents": 1541,
+        "windows": 1645,
+        "source_tokens": 452866,
+        "source_human_tokens": 267848,
+        "source_ai_tokens": 183502,
+        "supervised_human_tokens": 284298,
+        "supervised_ai_tokens": 209247,
+        "processed_tokens_repeat2": 990178
+      },
+      "question": {
+        "documents": 1869,
+        "windows": 2192,
+        "source_tokens": 613811,
+        "source_human_tokens": 358395,
+        "source_ai_tokens": 252574,
+        "supervised_human_tokens": 437179,
+        "supervised_ai_tokens": 297050,
+        "processed_tokens_repeat2": 1474940
+      },
+      "reference_education": {
+        "documents": 994,
+        "windows": 1348,
+        "source_tokens": 370555,
+        "source_human_tokens": 189210,
+        "source_ai_tokens": 180790,
+        "supervised_human_tokens": 254968,
+        "supervised_ai_tokens": 233953,
+        "processed_tokens_repeat2": 979456
+      },
+      "review": {
+        "documents": 1193,
+        "windows": 1230,
+        "source_tokens": 273249,
+        "source_human_tokens": 122581,
+        "source_ai_tokens": 149656,
+        "supervised_human_tokens": 122581,
+        "supervised_ai_tokens": 163429,
+        "processed_tokens_repeat2": 574044
+      },
+      "reviews": {
+        "documents": 739,
+        "windows": 1083,
+        "source_tokens": 277513,
+        "source_human_tokens": 129631,
+        "source_ai_tokens": 147489,
+        "supervised_human_tokens": 179612,
+        "supervised_ai_tokens": 212557,
+        "processed_tokens_repeat2": 785438
+      },
+      "short_form": {
+        "documents": 701,
+        "windows": 784,
+        "source_tokens": 182044,
+        "source_human_tokens": 55422,
+        "source_ai_tokens": 126277,
+        "supervised_human_tokens": 56532,
+        "supervised_ai_tokens": 156621,
+        "processed_tokens_repeat2": 427006
+      },
+      "social_qa": {
+        "documents": 743,
+        "windows": 894,
+        "source_tokens": 220476,
+        "source_human_tokens": 110124,
+        "source_ai_tokens": 110126,
+        "supervised_human_tokens": 143999,
+        "supervised_ai_tokens": 139957,
+        "processed_tokens_repeat2": 568546
+      },
+      "story": {
+        "documents": 2099,
+        "windows": 3001,
+        "source_tokens": 866124,
+        "source_human_tokens": 473015,
+        "source_ai_tokens": 389588,
+        "supervised_human_tokens": 639524,
+        "supervised_ai_tokens": 513396,
+        "processed_tokens_repeat2": 2315324
+      }
+    },
+    "kind": {
+      "ai": {
+        "documents": 5743,
+        "windows": 7111,
+        "source_tokens": 1864458,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 1863823,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 2356971,
+        "processed_tokens_repeat2": 4715972
+      },
+      "human": {
+        "documents": 4907,
+        "windows": 6788,
+        "source_tokens": 1898959,
+        "source_human_tokens": 1898363,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 2524045,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 5050042
+      },
+      "mixed": {
+        "documents": 9350,
+        "windows": 12246,
+        "source_tokens": 3405122,
+        "source_human_tokens": 1988376,
+        "source_ai_tokens": 1395314,
+        "supervised_human_tokens": 2509940,
+        "supervised_ai_tokens": 1833777,
+        "processed_tokens_repeat2": 8739526
+      }
+    },
+    "construction": {
+      "create": {
+        "documents": 1705,
+        "windows": 2378,
+        "source_tokens": 640639,
+        "source_human_tokens": 164722,
+        "source_ai_tokens": 475334,
+        "supervised_human_tokens": 257257,
+        "supervised_ai_tokens": 605259,
+        "processed_tokens_repeat2": 1726562
+      },
+      "delete": {
+        "documents": 1362,
+        "windows": 1393,
+        "source_tokens": 319501,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 319501,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 332982,
+        "processed_tokens_repeat2": 665964
+      },
+      "expand": {
+        "documents": 2034,
+        "windows": 2616,
+        "source_tokens": 755781,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 755781,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 973622,
+        "processed_tokens_repeat2": 1947244
+      },
+      "fill_gaps": {
+        "documents": 5954,
+        "windows": 6882,
+        "source_tokens": 1891137,
+        "source_human_tokens": 1241669,
+        "source_ai_tokens": 631005,
+        "supervised_human_tokens": 1424381,
+        "supervised_ai_tokens": 767369,
+        "processed_tokens_repeat2": 4427302
+      },
+      "human_modification": {
+        "documents": 295,
+        "windows": 345,
+        "source_tokens": 86569,
+        "source_human_tokens": 16271,
+        "source_ai_tokens": 69786,
+        "supervised_human_tokens": 18422,
+        "supervised_ai_tokens": 84873,
+        "processed_tokens_repeat2": 207804
+      },
+      "matched_pair_short_mix": {
+        "documents": 1080,
+        "windows": 1081,
+        "source_tokens": 255347,
+        "source_human_tokens": 127514,
+        "source_ai_tokens": 127234,
+        "supervised_human_tokens": 127762,
+        "supervised_ai_tokens": 127482,
+        "processed_tokens_repeat2": 511686
+      },
+      "same_label_long_join": {
+        "documents": 1000,
+        "windows": 2138,
+        "source_tokens": 665996,
+        "source_human_tokens": 323559,
+        "source_ai_tokens": 341414,
+        "supervised_human_tokens": 516892,
+        "supervised_ai_tokens": 528529,
+        "processed_tokens_repeat2": 2094402
+      },
+      "same_label_short_join": {
+        "documents": 500,
+        "windows": 502,
+        "source_tokens": 109587,
+        "source_human_tokens": 58664,
+        "source_ai_tokens": 50715,
+        "supervised_human_tokens": 59628,
+        "supervised_ai_tokens": 50715,
+        "processed_tokens_repeat2": 221108
+      },
+      "same_source_long_mix": {
+        "documents": 1250,
+        "windows": 2677,
+        "source_tokens": 837985,
+        "source_human_tokens": 425880,
+        "source_ai_tokens": 410863,
+        "supervised_human_tokens": 669798,
+        "supervised_ai_tokens": 636715,
+        "processed_tokens_repeat2": 2617308
+      },
+      "same_source_short_mix": {
+        "documents": 170,
+        "windows": 170,
+        "source_tokens": 24730,
+        "source_human_tokens": 12320,
+        "source_ai_tokens": 12377,
+        "supervised_human_tokens": 12320,
+        "supervised_ai_tokens": 12377,
+        "processed_tokens_repeat2": 49460
+      },
+      "source_human": {
+        "documents": 3686,
+        "windows": 4968,
+        "source_tokens": 1437301,
+        "source_human_tokens": 1437301,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 1862321,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 3724642
+      },
+      "unaltered_source": {
+        "documents": 964,
+        "windows": 995,
+        "source_tokens": 143966,
+        "source_human_tokens": 78839,
+        "source_ai_tokens": 65127,
+        "supervised_human_tokens": 85204,
+        "supervised_ai_tokens": 70825,
+        "processed_tokens_repeat2": 312058
+      }
+    },
+    "family_domain": {
+      "LLMTrace / article": {
+        "documents": 2000,
+        "windows": 2888,
+        "source_tokens": 813296,
+        "source_human_tokens": 489942,
+        "source_ai_tokens": 319963,
+        "supervised_human_tokens": 678808,
+        "supervised_ai_tokens": 407135,
+        "processed_tokens_repeat2": 2180394
+      },
+      "LLMTrace / factual": {
+        "documents": 1960,
+        "windows": 2445,
+        "source_tokens": 720965,
+        "source_human_tokens": 431024,
+        "source_ai_tokens": 287593,
+        "supervised_human_tokens": 542664,
+        "supervised_ai_tokens": 357054,
+        "processed_tokens_repeat2": 1804986
+      },
+      "LLMTrace / news": {
+        "documents": 1793,
+        "windows": 2399,
+        "source_tokens": 700332,
+        "source_human_tokens": 434682,
+        "source_ai_tokens": 262485,
+        "supervised_human_tokens": 571775,
+        "supervised_ai_tokens": 337073,
+        "processed_tokens_repeat2": 1825568
+      },
+      "LLMTrace / paper_abstract": {
+        "documents": 1880,
+        "windows": 1998,
+        "source_tokens": 508241,
+        "source_human_tokens": 227054,
+        "source_ai_tokens": 279769,
+        "supervised_human_tokens": 229020,
+        "supervised_ai_tokens": 323100,
+        "processed_tokens_repeat2": 1107078
+      },
+      "LLMTrace / poetry": {
+        "documents": 1541,
+        "windows": 1645,
+        "source_tokens": 452866,
+        "source_human_tokens": 267848,
+        "source_ai_tokens": 183502,
+        "supervised_human_tokens": 284298,
+        "supervised_ai_tokens": 209247,
+        "processed_tokens_repeat2": 990178
+      },
+      "LLMTrace / question": {
+        "documents": 1869,
+        "windows": 2192,
+        "source_tokens": 613811,
+        "source_human_tokens": 358395,
+        "source_ai_tokens": 252574,
+        "supervised_human_tokens": 437179,
+        "supervised_ai_tokens": 297050,
+        "processed_tokens_repeat2": 1474940
+      },
+      "LLMTrace / review": {
+        "documents": 1193,
+        "windows": 1230,
+        "source_tokens": 273249,
+        "source_human_tokens": 122581,
+        "source_ai_tokens": 149656,
+        "supervised_human_tokens": 122581,
+        "supervised_ai_tokens": 163429,
+        "processed_tokens_repeat2": 574044
+      },
+      "LLMTrace / short_form": {
+        "documents": 701,
+        "windows": 784,
+        "source_tokens": 182044,
+        "source_human_tokens": 55422,
+        "source_ai_tokens": 126277,
+        "supervised_human_tokens": 56532,
+        "supervised_ai_tokens": 156621,
+        "processed_tokens_repeat2": 427006
+      },
+      "LLMTrace / story": {
+        "documents": 2099,
+        "windows": 3001,
+        "source_tokens": 866124,
+        "source_human_tokens": 473015,
+        "source_ai_tokens": 389588,
+        "supervised_human_tokens": 639524,
+        "supervised_ai_tokens": 513396,
+        "processed_tokens_repeat2": 2315324
+      },
+      "earlier v4 composites / creative": {
+        "documents": 996,
+        "windows": 1603,
+        "source_tokens": 433561,
+        "source_human_tokens": 215224,
+        "source_ai_tokens": 217612,
+        "supervised_human_tokens": 311956,
+        "supervised_ai_tokens": 314796,
+        "processed_tokens_repeat2": 1255834
+      },
+      "earlier v4 composites / news": {
+        "documents": 246,
+        "windows": 396,
+        "source_tokens": 113096,
+        "source_human_tokens": 56984,
+        "source_ai_tokens": 55900,
+        "supervised_human_tokens": 83484,
+        "supervised_ai_tokens": 78239,
+        "processed_tokens_repeat2": 324100
+      },
+      "earlier v4 composites / paper": {
+        "documents": 1246,
+        "windows": 2239,
+        "source_tokens": 622410,
+        "source_human_tokens": 325603,
+        "source_ai_tokens": 295813,
+        "supervised_human_tokens": 497585,
+        "supervised_ai_tokens": 447141,
+        "processed_tokens_repeat2": 1892648
+      },
+      "earlier v4 composites / reference_education": {
+        "documents": 994,
+        "windows": 1348,
+        "source_tokens": 370555,
+        "source_human_tokens": 189210,
+        "source_ai_tokens": 180790,
+        "supervised_human_tokens": 254968,
+        "supervised_ai_tokens": 233953,
+        "processed_tokens_repeat2": 979456
+      },
+      "earlier v4 composites / reviews": {
+        "documents": 739,
+        "windows": 1083,
+        "source_tokens": 277513,
+        "source_human_tokens": 129631,
+        "source_ai_tokens": 147489,
+        "supervised_human_tokens": 179612,
+        "supervised_ai_tokens": 212557,
+        "processed_tokens_repeat2": 785438
+      },
+      "earlier v4 composites / social_qa": {
+        "documents": 743,
+        "windows": 894,
+        "source_tokens": 220476,
+        "source_human_tokens": 110124,
+        "source_ai_tokens": 110126,
+        "supervised_human_tokens": 143999,
+        "supervised_ai_tokens": 139957,
+        "processed_tokens_repeat2": 568546
+      }
+    },
+    "family_kind": {
+      "LLMTrace / ai": {
+        "documents": 4500,
+        "windows": 5296,
+        "source_tokens": 1406567,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 1406567,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 1706902,
+        "processed_tokens_repeat2": 3413804
+      },
+      "LLMTrace / human": {
+        "documents": 3686,
+        "windows": 4968,
+        "source_tokens": 1437301,
+        "source_human_tokens": 1437301,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 1862321,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 3724642
+      },
+      "LLMTrace / mixed": {
+        "documents": 6850,
+        "windows": 8318,
+        "source_tokens": 2287060,
+        "source_human_tokens": 1422662,
+        "source_ai_tokens": 844840,
+        "supervised_human_tokens": 1700060,
+        "supervised_ai_tokens": 1057203,
+        "processed_tokens_repeat2": 5561072
+      },
+      "earlier v4 composites / ai": {
+        "documents": 1243,
+        "windows": 1815,
+        "source_tokens": 457891,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 457256,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 650069,
+        "processed_tokens_repeat2": 1302168
+      },
+      "earlier v4 composites / human": {
+        "documents": 1221,
+        "windows": 1820,
+        "source_tokens": 461658,
+        "source_human_tokens": 461062,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 661724,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 1325400
+      },
+      "earlier v4 composites / mixed": {
+        "documents": 2500,
+        "windows": 3928,
+        "source_tokens": 1118062,
+        "source_human_tokens": 565714,
+        "source_ai_tokens": 550474,
+        "supervised_human_tokens": 809880,
+        "supervised_ai_tokens": 776574,
+        "processed_tokens_repeat2": 3178454
+      }
+    },
+    "source_kind": {
+      "LLMTrace_detection / ai": {
+        "documents": 4500,
+        "windows": 5296,
+        "source_tokens": 1406567,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 1406567,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 1706902,
+        "processed_tokens_repeat2": 3413804
+      },
+      "LLMTrace_detection / human": {
+        "documents": 3686,
+        "windows": 4968,
+        "source_tokens": 1437301,
+        "source_human_tokens": 1437301,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 1862321,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 3724642
+      },
+      "LLMTrace_detection / mixed": {
+        "documents": 6850,
+        "windows": 8318,
+        "source_tokens": 2287060,
+        "source_human_tokens": 1422662,
+        "source_ai_tokens": 844840,
+        "supervised_human_tokens": 1700060,
+        "supervised_ai_tokens": 1057203,
+        "processed_tokens_repeat2": 5561072
+      },
+      "editlens:amazon_reviews / ai": {
+        "documents": 63,
+        "windows": 101,
+        "source_tokens": 26707,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 26672,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 39421,
+        "processed_tokens_repeat2": 78948
+      },
+      "editlens:amazon_reviews / human": {
+        "documents": 62,
+        "windows": 98,
+        "source_tokens": 26213,
+        "source_human_tokens": 26172,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 38294,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 76730
+      },
+      "editlens:amazon_reviews / mixed": {
+        "documents": 139,
+        "windows": 239,
+        "source_tokens": 66137,
+        "source_human_tokens": 30363,
+        "source_ai_tokens": 35666,
+        "supervised_human_tokens": 43156,
+        "supervised_ai_tokens": 55304,
+        "processed_tokens_repeat2": 197210
+      },
+      "editlens:fineweb_edu / ai": {
+        "documents": 49,
+        "windows": 124,
+        "source_tokens": 36789,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 36717,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 60264,
+        "processed_tokens_repeat2": 120802
+      },
+      "editlens:fineweb_edu / human": {
+        "documents": 71,
+        "windows": 143,
+        "source_tokens": 42883,
+        "source_human_tokens": 42799,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 66309,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 132900
+      },
+      "editlens:fineweb_edu / mixed": {
+        "documents": 310,
+        "windows": 456,
+        "source_tokens": 118701,
+        "source_human_tokens": 58771,
+        "source_ai_tokens": 59650,
+        "supervised_human_tokens": 81809,
+        "supervised_ai_tokens": 80557,
+        "processed_tokens_repeat2": 325536
+      },
+      "editlens:google_reviews / ai": {
+        "documents": 64,
+        "windows": 113,
+        "source_tokens": 30916,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 30873,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 47629,
+        "processed_tokens_repeat2": 95394
+      },
+      "editlens:google_reviews / human": {
+        "documents": 44,
+        "windows": 72,
+        "source_tokens": 19080,
+        "source_human_tokens": 19061,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 28791,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 57640
+      },
+      "editlens:google_reviews / mixed": {
+        "documents": 149,
+        "windows": 242,
+        "source_tokens": 63872,
+        "source_human_tokens": 31981,
+        "source_ai_tokens": 31791,
+        "supervised_human_tokens": 47317,
+        "supervised_ai_tokens": 47716,
+        "processed_tokens_repeat2": 190340
+      },
+      "editlens:news / ai": {
+        "documents": 22,
+        "windows": 49,
+        "source_tokens": 13776,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 13749,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 22664,
+        "processed_tokens_repeat2": 45414
+      },
+      "editlens:news / human": {
+        "documents": 20,
+        "windows": 50,
+        "source_tokens": 15360,
+        "source_human_tokens": 15335,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 24660,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 49406
+      },
+      "editlens:news / mixed": {
+        "documents": 101,
+        "windows": 177,
+        "source_tokens": 48228,
+        "source_human_tokens": 23144,
+        "source_ai_tokens": 24947,
+        "supervised_human_tokens": 34824,
+        "supervised_ai_tokens": 36301,
+        "processed_tokens_repeat2": 142680
+      },
+      "editlens:reddit_writing_prompts / ai": {
+        "documents": 48,
+        "windows": 123,
+        "source_tokens": 36819,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 36746,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 59701,
+        "processed_tokens_repeat2": 119666
+      },
+      "editlens:reddit_writing_prompts / human": {
+        "documents": 53,
+        "windows": 108,
+        "source_tokens": 31549,
+        "source_human_tokens": 31486,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 48794,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 97814
+      },
+      "editlens:reddit_writing_prompts / mixed": {
+        "documents": 325,
+        "windows": 490,
+        "source_tokens": 128414,
+        "source_human_tokens": 59999,
+        "source_ai_tokens": 68109,
+        "supervised_human_tokens": 83185,
+        "supervised_ai_tokens": 94831,
+        "processed_tokens_repeat2": 356922
+      },
+      "mage:cmv / ai": {
+        "documents": 103,
+        "windows": 128,
+        "source_tokens": 30453,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 30417,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 40828,
+        "processed_tokens_repeat2": 81758
+      },
+      "mage:cmv / human": {
+        "documents": 98,
+        "windows": 127,
+        "source_tokens": 31074,
+        "source_human_tokens": 31037,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 42890,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 85884
+      },
+      "mage:cmv / mixed": {
+        "documents": 167,
+        "windows": 235,
+        "source_tokens": 61918,
+        "source_human_tokens": 31146,
+        "source_ai_tokens": 30679,
+        "supervised_human_tokens": 44829,
+        "supervised_ai_tokens": 44428,
+        "processed_tokens_repeat2": 178806
+      },
+      "mage:eli5 / ai": {
+        "documents": 93,
+        "windows": 94,
+        "source_tokens": 19341,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 19329,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 19817,
+        "processed_tokens_repeat2": 39658
+      },
+      "mage:eli5 / human": {
+        "documents": 88,
+        "windows": 93,
+        "source_tokens": 19250,
+        "source_human_tokens": 19227,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 21666,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 43382
+      },
+      "mage:eli5 / mixed": {
+        "documents": 102,
+        "windows": 105,
+        "source_tokens": 40344,
+        "source_human_tokens": 19895,
+        "source_ai_tokens": 20414,
+        "supervised_human_tokens": 20816,
+        "supervised_ai_tokens": 20954,
+        "processed_tokens_repeat2": 83610
+      },
+      "mage:roct / ai": {
+        "documents": 91,
+        "windows": 92,
+        "source_tokens": 19493,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 19480,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 19956,
+        "processed_tokens_repeat2": 39938
+      },
+      "mage:roct / human": {
+        "documents": 105,
+        "windows": 105,
+        "source_tokens": 19979,
+        "source_human_tokens": 19978,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 19978,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 39958
+      },
+      "mage:roct / mixed": {
+        "documents": 90,
+        "windows": 90,
+        "source_tokens": 30894,
+        "source_human_tokens": 14541,
+        "source_ai_tokens": 16342,
+        "supervised_human_tokens": 14541,
+        "supervised_ai_tokens": 16342,
+        "processed_tokens_repeat2": 61788
+      },
+      "mage:sci / ai": {
+        "documents": 216,
+        "windows": 334,
+        "source_tokens": 85980,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 85867,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 127663,
+        "processed_tokens_repeat2": 255688
+      },
+      "mage:sci / human": {
+        "documents": 182,
+        "windows": 283,
+        "source_tokens": 71022,
+        "source_human_tokens": 70925,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 105288,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 210874
+      },
+      "mage:sci / mixed": {
+        "documents": 204,
+        "windows": 485,
+        "source_tokens": 150306,
+        "source_human_tokens": 76225,
+        "source_ai_tokens": 73874,
+        "supervised_human_tokens": 126138,
+        "supervised_ai_tokens": 121432,
+        "processed_tokens_repeat2": 495850
+      },
+      "mage:squad / ai": {
+        "documents": 93,
+        "windows": 98,
+        "source_tokens": 22343,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 22318,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 24644,
+        "processed_tokens_repeat2": 49344
+      },
+      "mage:squad / human": {
+        "documents": 86,
+        "windows": 106,
+        "source_tokens": 23705,
+        "source_human_tokens": 23703,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 32425,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 64854
+      },
+      "mage:squad / mixed": {
+        "documents": 102,
+        "windows": 129,
+        "source_tokens": 47199,
+        "source_human_tokens": 24815,
+        "source_ai_tokens": 22362,
+        "supervised_human_tokens": 31943,
+        "supervised_ai_tokens": 27717,
+        "processed_tokens_repeat2": 119370
+      },
+      "mage:tldr / ai": {
+        "documents": 108,
+        "windows": 113,
+        "source_tokens": 24311,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 24294,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 26749,
+        "processed_tokens_repeat2": 53536
+      },
+      "mage:tldr / human": {
+        "documents": 86,
+        "windows": 97,
+        "source_tokens": 20730,
+        "source_human_tokens": 20727,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 25888,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 51782
+      },
+      "mage:tldr / mixed": {
+        "documents": 181,
+        "windows": 194,
+        "source_tokens": 51990,
+        "source_human_tokens": 27214,
+        "source_ai_tokens": 24736,
+        "supervised_human_tokens": 30392,
+        "supervised_ai_tokens": 27952,
+        "processed_tokens_repeat2": 116780
+      },
+      "mage:wp / ai": {
+        "documents": 100,
+        "windows": 163,
+        "source_tokens": 41279,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 41221,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 63383,
+        "processed_tokens_repeat2": 126960
+      },
+      "mage:wp / human": {
+        "documents": 94,
+        "windows": 181,
+        "source_tokens": 50287,
+        "source_human_tokens": 50208,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 77742,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 155764
+      },
+      "mage:wp / mixed": {
+        "documents": 90,
+        "windows": 251,
+        "source_tokens": 74847,
+        "source_human_tokens": 39012,
+        "source_ai_tokens": 35714,
+        "supervised_human_tokens": 67716,
+        "supervised_ai_tokens": 60583,
+        "processed_tokens_repeat2": 257024
+      },
+      "mage:xsum / ai": {
+        "documents": 36,
+        "windows": 36,
+        "source_tokens": 8848,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 8842,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 8842,
+        "processed_tokens_repeat2": 17696
+      },
+      "mage:xsum / human": {
+        "documents": 28,
+        "windows": 33,
+        "source_tokens": 8866,
+        "source_human_tokens": 8860,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 10937,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 21886
+      },
+      "mage:xsum / mixed": {
+        "documents": 39,
+        "windows": 51,
+        "source_tokens": 18018,
+        "source_human_tokens": 9645,
+        "source_ai_tokens": 8362,
+        "supervised_human_tokens": 13063,
+        "supervised_ai_tokens": 10432,
+        "processed_tokens_repeat2": 47018
+      },
+      "mage:yelp / ai": {
+        "documents": 72,
+        "windows": 72,
+        "source_tokens": 11790,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 11776,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 11776,
+        "processed_tokens_repeat2": 23580
+      },
+      "mage:yelp / human": {
+        "documents": 70,
+        "windows": 70,
+        "source_tokens": 9805,
+        "source_human_tokens": 9797,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 9797,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 19610
+      },
+      "mage:yelp / mixed": {
+        "documents": 76,
+        "windows": 76,
+        "source_tokens": 22993,
+        "source_human_tokens": 12257,
+        "source_ai_tokens": 10711,
+        "supervised_human_tokens": 12257,
+        "supervised_ai_tokens": 10711,
+        "processed_tokens_repeat2": 45986
+      },
+      "paper:acl_anthology / ai": {
+        "documents": 57,
+        "windows": 116,
+        "source_tokens": 32227,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 32167,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 50392,
+        "processed_tokens_repeat2": 100996
+      },
+      "paper:acl_anthology / human": {
+        "documents": 81,
+        "windows": 150,
+        "source_tokens": 41076,
+        "source_human_tokens": 41018,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 62458,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 125118
+      },
+      "paper:acl_anthology / mixed": {
+        "documents": 238,
+        "windows": 388,
+        "source_tokens": 102722,
+        "source_human_tokens": 54856,
+        "source_ai_tokens": 47668,
+        "supervised_human_tokens": 80481,
+        "supervised_ai_tokens": 67748,
+        "processed_tokens_repeat2": 297034
+      },
+      "paper:pmc_oa / ai": {
+        "documents": 28,
+        "windows": 59,
+        "source_tokens": 16819,
+        "source_human_tokens": 0,
+        "source_ai_tokens": 16788,
+        "supervised_human_tokens": 0,
+        "supervised_ai_tokens": 26340,
+        "processed_tokens_repeat2": 52790
+      },
+      "paper:pmc_oa / human": {
+        "documents": 53,
+        "windows": 104,
+        "source_tokens": 30779,
+        "source_human_tokens": 30729,
+        "source_ai_tokens": 0,
+        "supervised_human_tokens": 45807,
+        "supervised_ai_tokens": 0,
+        "processed_tokens_repeat2": 91798
+      },
+      "paper:pmc_oa / mixed": {
+        "documents": 187,
+        "windows": 320,
+        "source_tokens": 91479,
+        "source_human_tokens": 51850,
+        "source_ai_tokens": 39449,
+        "supervised_human_tokens": 77413,
+        "supervised_ai_tokens": 53566,
+        "processed_tokens_repeat2": 262500
+      }
+    },
+    "source_domain": {
+      "LLMTrace_detection / article": {
+        "documents": 2000,
+        "windows": 2888,
+        "source_tokens": 813296,
+        "source_human_tokens": 489942,
+        "source_ai_tokens": 319963,
+        "supervised_human_tokens": 678808,
+        "supervised_ai_tokens": 407135,
+        "processed_tokens_repeat2": 2180394
+      },
+      "LLMTrace_detection / factual": {
+        "documents": 1960,
+        "windows": 2445,
+        "source_tokens": 720965,
+        "source_human_tokens": 431024,
+        "source_ai_tokens": 287593,
+        "supervised_human_tokens": 542664,
+        "supervised_ai_tokens": 357054,
+        "processed_tokens_repeat2": 1804986
+      },
+      "LLMTrace_detection / news": {
+        "documents": 1793,
+        "windows": 2399,
+        "source_tokens": 700332,
+        "source_human_tokens": 434682,
+        "source_ai_tokens": 262485,
+        "supervised_human_tokens": 571775,
+        "supervised_ai_tokens": 337073,
+        "processed_tokens_repeat2": 1825568
+      },
+      "LLMTrace_detection / paper_abstract": {
+        "documents": 1880,
+        "windows": 1998,
+        "source_tokens": 508241,
+        "source_human_tokens": 227054,
+        "source_ai_tokens": 279769,
+        "supervised_human_tokens": 229020,
+        "supervised_ai_tokens": 323100,
+        "processed_tokens_repeat2": 1107078
+      },
+      "LLMTrace_detection / poetry": {
+        "documents": 1541,
+        "windows": 1645,
+        "source_tokens": 452866,
+        "source_human_tokens": 267848,
+        "source_ai_tokens": 183502,
+        "supervised_human_tokens": 284298,
+        "supervised_ai_tokens": 209247,
+        "processed_tokens_repeat2": 990178
+      },
+      "LLMTrace_detection / question": {
+        "documents": 1869,
+        "windows": 2192,
+        "source_tokens": 613811,
+        "source_human_tokens": 358395,
+        "source_ai_tokens": 252574,
+        "supervised_human_tokens": 437179,
+        "supervised_ai_tokens": 297050,
+        "processed_tokens_repeat2": 1474940
+      },
+      "LLMTrace_detection / review": {
+        "documents": 1193,
+        "windows": 1230,
+        "source_tokens": 273249,
+        "source_human_tokens": 122581,
+        "source_ai_tokens": 149656,
+        "supervised_human_tokens": 122581,
+        "supervised_ai_tokens": 163429,
+        "processed_tokens_repeat2": 574044
+      },
+      "LLMTrace_detection / short_form": {
+        "documents": 701,
+        "windows": 784,
+        "source_tokens": 182044,
+        "source_human_tokens": 55422,
+        "source_ai_tokens": 126277,
+        "supervised_human_tokens": 56532,
+        "supervised_ai_tokens": 156621,
+        "processed_tokens_repeat2": 427006
+      },
+      "LLMTrace_detection / story": {
+        "documents": 2099,
+        "windows": 3001,
+        "source_tokens": 866124,
+        "source_human_tokens": 473015,
+        "source_ai_tokens": 389588,
+        "supervised_human_tokens": 639524,
+        "supervised_ai_tokens": 513396,
+        "processed_tokens_repeat2": 2315324
+      },
+      "editlens:amazon_reviews / reviews": {
+        "documents": 264,
+        "windows": 438,
+        "source_tokens": 119057,
+        "source_human_tokens": 56535,
+        "source_ai_tokens": 62338,
+        "supervised_human_tokens": 81450,
+        "supervised_ai_tokens": 94725,
+        "processed_tokens_repeat2": 352888
+      },
+      "editlens:fineweb_edu / reference_education": {
+        "documents": 430,
+        "windows": 723,
+        "source_tokens": 198373,
+        "source_human_tokens": 101570,
+        "source_ai_tokens": 96367,
+        "supervised_human_tokens": 148118,
+        "supervised_ai_tokens": 140821,
+        "processed_tokens_repeat2": 579238
+      },
+      "editlens:google_reviews / reviews": {
+        "documents": 257,
+        "windows": 427,
+        "source_tokens": 113868,
+        "source_human_tokens": 51042,
+        "source_ai_tokens": 62664,
+        "supervised_human_tokens": 76108,
+        "supervised_ai_tokens": 95345,
+        "processed_tokens_repeat2": 343374
+      },
+      "editlens:news / news": {
+        "documents": 143,
+        "windows": 276,
+        "source_tokens": 77364,
+        "source_human_tokens": 38479,
+        "source_ai_tokens": 38696,
+        "supervised_human_tokens": 59484,
+        "supervised_ai_tokens": 58965,
+        "processed_tokens_repeat2": 237500
+      },
+      "editlens:reddit_writing_prompts / creative": {
+        "documents": 426,
+        "windows": 721,
+        "source_tokens": 196782,
+        "source_human_tokens": 91485,
+        "source_ai_tokens": 104855,
+        "supervised_human_tokens": 131979,
+        "supervised_ai_tokens": 154532,
+        "processed_tokens_repeat2": 574402
+      },
+      "mage:cmv / social_qa": {
+        "documents": 368,
+        "windows": 490,
+        "source_tokens": 123445,
+        "source_human_tokens": 62183,
+        "source_ai_tokens": 61096,
+        "supervised_human_tokens": 87719,
+        "supervised_ai_tokens": 85256,
+        "processed_tokens_repeat2": 346448
+      },
+      "mage:eli5 / reference_education": {
+        "documents": 283,
+        "windows": 292,
+        "source_tokens": 78935,
+        "source_human_tokens": 39122,
+        "source_ai_tokens": 39743,
+        "supervised_human_tokens": 42482,
+        "supervised_ai_tokens": 40771,
+        "processed_tokens_repeat2": 166650
+      },
+      "mage:roct / creative": {
+        "documents": 286,
+        "windows": 287,
+        "source_tokens": 70366,
+        "source_human_tokens": 34519,
+        "source_ai_tokens": 35822,
+        "supervised_human_tokens": 34519,
+        "supervised_ai_tokens": 36298,
+        "processed_tokens_repeat2": 141684
+      },
+      "mage:sci / paper": {
+        "documents": 602,
+        "windows": 1102,
+        "source_tokens": 307308,
+        "source_human_tokens": 147150,
+        "source_ai_tokens": 159741,
+        "supervised_human_tokens": 231426,
+        "supervised_ai_tokens": 249095,
+        "processed_tokens_repeat2": 962412
+      },
+      "mage:squad / reference_education": {
+        "documents": 281,
+        "windows": 333,
+        "source_tokens": 93247,
+        "source_human_tokens": 48518,
+        "source_ai_tokens": 44680,
+        "supervised_human_tokens": 64368,
+        "supervised_ai_tokens": 52361,
+        "processed_tokens_repeat2": 233568
+      },
+      "mage:tldr / social_qa": {
+        "documents": 375,
+        "windows": 404,
+        "source_tokens": 97031,
+        "source_human_tokens": 47941,
+        "source_ai_tokens": 49030,
+        "supervised_human_tokens": 56280,
+        "supervised_ai_tokens": 54701,
+        "processed_tokens_repeat2": 222098
+      },
+      "mage:wp / creative": {
+        "documents": 284,
+        "windows": 595,
+        "source_tokens": 166413,
+        "source_human_tokens": 89220,
+        "source_ai_tokens": 76935,
+        "supervised_human_tokens": 145458,
+        "supervised_ai_tokens": 123966,
+        "processed_tokens_repeat2": 539748
+      },
+      "mage:xsum / news": {
+        "documents": 103,
+        "windows": 120,
+        "source_tokens": 35732,
+        "source_human_tokens": 18505,
+        "source_ai_tokens": 17204,
+        "supervised_human_tokens": 24000,
+        "supervised_ai_tokens": 19274,
+        "processed_tokens_repeat2": 86600
+      },
+      "mage:yelp / reviews": {
+        "documents": 218,
+        "windows": 218,
+        "source_tokens": 44588,
+        "source_human_tokens": 22054,
+        "source_ai_tokens": 22487,
+        "supervised_human_tokens": 22054,
+        "supervised_ai_tokens": 22487,
+        "processed_tokens_repeat2": 89176
+      },
+      "paper:acl_anthology / paper": {
+        "documents": 376,
+        "windows": 654,
+        "source_tokens": 176025,
+        "source_human_tokens": 95874,
+        "source_ai_tokens": 79835,
+        "supervised_human_tokens": 142939,
+        "supervised_ai_tokens": 118140,
+        "processed_tokens_repeat2": 523148
+      },
+      "paper:pmc_oa / paper": {
+        "documents": 268,
+        "windows": 483,
+        "source_tokens": 139077,
+        "source_human_tokens": 82579,
+        "source_ai_tokens": 56237,
+        "supervised_human_tokens": 123220,
+        "supervised_ai_tokens": 79906,
+        "processed_tokens_repeat2": 407088
+      }
+    }
+  },
+  "lengths": {
+    "LLMTrace": {
+      "median_source_tokens": 287.0,
+      "p90_source_tokens": 562
+    },
+    "earlier v4 composites": {
+      "median_source_tokens": 304.0,
+      "p90_source_tokens": 901
+    }
+  }
+}
