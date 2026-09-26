@@ -47,6 +47,8 @@ Some very short character spans contain no complete model token and cannot contr
 
 CoAuthor is an observed GPT-3 era collaboration corpus with relatively short surviving AI inserts. AITDNA uses recent generators and contains long AI passages alongside tiny edits. In AITDNA, 81.5% of AI characters are in spans of at least 320 characters; in CoAuthor, only 7.4% are. That difference, along with generator, task, participant and provenance differences, plausibly contributes to the large recall gap. It is not a controlled causal test.
 
+The [CoAuthor paper](https://cs.stanford.edu/~minalee/pdf/chi2022-coauthor.pdf) says the system generated at most 30 GPT-3 word pieces and displayed only the first sentence of each suggestion. That makes this a test of short assisted completions, not the primary target of substantial, open-ended LLM prose. Keep its result as a separately named stress test, and do not average it into the main benchmark score without an explicit task weight.
+
 The mixed-document AUROC gap (0.676 versus 0.918) persists across thresholds. Therefore CoAuthor's low recall cannot be explained solely by choosing a conservative threshold. The model's ranking of short, integrated AI inserts is substantially weaker on this benchmark. Neither benchmark alone estimates broad real-world accuracy.
 
 [ROC and span-length chart](real_collaboration_v4.pdf). Source descriptions: [CoAuthor](https://coauthor.stanford.edu/) and [AITDNA](https://huggingface.co/datasets/UKPLab/AITDNA).
