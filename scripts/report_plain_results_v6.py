@@ -98,20 +98,51 @@ def main():
         fig.tight_layout(rect=(.04,.12,.98,.86));pdf.savefig(fig);plt.close(fig)
 
         fig,ax=plt.subplots(figsize=(11.7,8.3))
-        title(fig,'4. Human-publication false alarms',
-              'Our Qwen flags attributed-human published articles across several publications, not just one source.')
+        title(fig,'4. Human-publication false alarms by source',
+              'Share of attributed-human articles falsely flagged by each model.')
         names=['Associated Press','Discover','National Geographic','New York Times',
                "Reader’s Digest",'Scientific American','Smithsonian','Wall Street Journal']
-        counts=[(4,15),(8,20),(17,25),(7,20),(10,15),(5,15),(15,25),(8,15)]
-        y=np.arange(len(names));vals=[100*a/b for a,b in counts]
-        bars=ax.barh(y,vals,color=COLORS[0],height=.6)
+        totals=[15,20,25,20,15,15,25,15]
+        errors=[[4,8,17,7,10,5,15,8],
+                [0,0,1,0,0,0,0,0],
+                [0,1,4,0,1,0,0,1]]
+        y=np.arange(len(names));height=.22
+        for i in range(3):
+            vals=[100*a/b for a,b in zip(errors[i],totals)]
+            ax.barh(y+(i-1)*height,vals,color=COLORS[i],height=height,label=NAMES[i])
         ax.set_yticks(y,names);ax.invert_yaxis();ax.set_xlim(0,100)
         ax.set_xlabel('Human articles falsely flagged (%)');ax.grid(axis='x',alpha=.2);ax.set_axisbelow(True)
-        for bar,(a,b) in zip(bars,counts):
-            ax.text(bar.get_width()+1,bar.get_y()+bar.get_height()/2,f'{a}/{b}',va='center',fontsize=9)
+        ax.legend(frameon=False,ncol=3,loc='lower right')
         fig.text(.055,.075,'These articles have named human authors; their production workflows were not independently verified as AI-free.\n'
                  'This 150-article set stays frozen for evaluation. It will not be used to set a new threshold or as training text.',fontsize=10)
         fig.tight_layout(rect=(.04,.14,.98,.86));pdf.savefig(fig);plt.close(fig)
+
+        fig,axes=plt.subplots(2,1,figsize=(11.7,8.3))
+        title(fig,'5. Which mixed-text categories fail?',
+              'LLMTrace held-out source categories. In each row, AI recall is the share of AI tokens found; false marks are human tokens wrongly highlighted.')
+        llmt=mixed['LLMTrace test'];categories=sorted({r['domain'] for r in llmt['rows'] if r['kind']=='mixed'})
+        ai_values=[[],[],[]];human_values=[[],[],[]]
+        for category in categories:
+            indices=[j for j,row in enumerate(llmt['rows']) if row['kind']=='mixed' and row['domain']==category]
+            rows=[llmt['rows'][j] for j in indices]
+            for i in range(3):
+                model=llmt['models'][i]
+                tokens=[model['tokens'][j] for j in indices]
+                stats=d.mixed_stats(rows,tokens,model['threshold'])
+                ai_values[i].append(100*stats['ai_recall'])
+                human_values[i].append(100*stats['human_fpr'])
+        x=np.arange(len(categories));width=.24
+        for ax,values,ylabel in [(axes[0],ai_values,'AI tokens found (%)'),
+                                  (axes[1],human_values,'Human tokens falsely marked (%)')]:
+            for i in range(3):ax.bar(x+(i-1)*width,values[i],width,color=COLORS[i],label=NAMES[i])
+            ax.set_xticks(x,[v.replace('_','\n') for v in categories],fontsize=8)
+            ax.set_ylim(0,105 if ax is axes[0] else 30)
+            ax.set_ylabel(ylabel);ax.grid(axis='y',alpha=.2);ax.set_axisbelow(True)
+            ax.spines[['top','right']].set_visible(False)
+        fig.legend([Patch(facecolor=c) for c in COLORS],NAMES,loc='upper left',
+                   bbox_to_anchor=(.055,.885),ncol=3,frameon=False,fontsize=9)
+        fig.text(.055,.025,'Our Qwen misses especially many AI tokens in questions, reviews, and stories. Its very low false-mark rate here comes with that low recall.',fontsize=10)
+        fig.tight_layout(rect=(.04,.055,.98,.86));pdf.savefig(fig);plt.close(fig)
     print(OUT)
 
 

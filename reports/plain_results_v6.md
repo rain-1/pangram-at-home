@@ -1,6 +1,6 @@
 # What the current detector does, and the source-balanced retrain
 
-See [the four-page chart](plain_results_v6.pdf). The charts compare the **existing Qwen 20k checkpoint** with Pangram EditLens RoBERTa and Llama at thresholds fixed on an independent 1,120-document human calibration set. They are not results from the new training run.
+See [the five-page chart](plain_results_v6.pdf). The charts compare the **existing Qwen 20k checkpoint** with Pangram EditLens RoBERTa and Llama at thresholds fixed on an independent 1,120-document human calibration set. They include whole-document errors, mixed-text highlighting, ROC curves, publication-specific false alarms, and mixed-text category breakdowns. They are not results from the new training run.
 
 ## Plain-language verdict
 
