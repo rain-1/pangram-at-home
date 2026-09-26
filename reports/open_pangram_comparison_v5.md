@@ -2,6 +2,8 @@
 
 Open Pangram EditLens RoBERTa-large and Llama-3.2-3B are four-bucket models that score the extent of AI intervention. Their score is the expected bucket divided by three, following Pangram’s inference code. We average scores across overlapping native-token windows (512 for RoBERTa; 1024 for Llama). The checkpoints are licensed CC BY-NC-SA 4.0 for noncommercial use.
 
+**Interpretation limit:** Our 20k run trained on 15,036 LLMTrace training records, and this benchmark uses 2,000 LLMTrace test records. The test is split-disjoint, with zero shared exact text hashes and zero shared LLMTrace group IDs against train and validation, but it is still the same source corpus and construction pipeline. Pangram’s published EditLens training corpus and objective differ. This comparison measures performance on an in-corpus holdout for our model, not general superiority across unseen sources.
+
 Every model’s threshold is chosen on the same separate 1,120-document pure-human calibration set to allow at most 5% document-level false alarms. On our token model, a document is positive if any token is highlighted; on EditLens, its mean window score must cross the threshold. Both are then evaluated without retuning.
 
 | Model | AI detected (516) | Human falsely flagged (720) | Pure-document AUROC | Locked human falsely flagged (3,579) |
