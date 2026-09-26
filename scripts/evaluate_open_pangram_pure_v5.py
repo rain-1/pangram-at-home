@@ -116,13 +116,19 @@ def read_rows(path: Path, kinds: set[str], limit: int | None) -> list[dict]:
 
 def score_dataset(name: str, rows: list[dict], tokenizer, model, max_length: int,
                   batch_size: int, output: Path) -> list[dict]:
-    body_width = max_length - tokenizer.num_special_tokens_to_add(pair=False)
+    probe = tokenizer('window', add_special_tokens=False)['input_ids']
+    with_special = tokenizer('window', add_special_tokens=True)['input_ids']
+    probe_start = next(i for i in range(len(with_special) - len(probe) + 1)
+                       if with_special[i:i + len(probe)] == probe)
+    prefix = with_special[:probe_start]
+    suffix = with_special[probe_start + len(probe):]
+    body_width = max_length - len(prefix) - len(suffix)
     window_ids: list[list[int]] = []
     owner: list[int] = []
     for index, row in enumerate(rows):
         ids = tokenizer(clean_text(row['text']), add_special_tokens=False)['input_ids']
         for start in starts(len(ids), body_width, body_width // 2):
-            window_ids.append(tokenizer.build_inputs_with_special_tokens(ids[start:start + body_width]))
+            window_ids.append(prefix + ids[start:start + body_width] + suffix)
             owner.append(index)
     sums = np.zeros(len(rows), dtype=np.float64)
     counts = np.zeros(len(rows), dtype=np.int32)
