@@ -91,10 +91,18 @@ def main():
         data_collator=DataCollatorForTokenClassification(tokenizer,pad_to_multiple_of=8,label_pad_token_id=-100),
         compute_metrics=metrics,callbacks=[DeadlineCallback(time.monotonic()+args.hours*3600),SavedEvalCallback(output/"sweep_metrics.jsonl"),RunMetadataCallback(config)])
     training_result=trainer.train();trainer.save_model(output/"best_adapter");tokenizer.save_pretrained(output/"best_adapter")
+    wandb_run_id=None
+    wandb_run_url=None
+    if args.report_to=="wandb":
+        import wandb
+        if wandb.run is not None:
+            wandb_run_id=wandb.run.id
+            wandb_run_url=wandb.run.url
     (output/"train_summary.json").write_text(json.dumps({"best_metric":trainer.state.best_metric,
         "best_checkpoint":trainer.state.best_model_checkpoint,"global_step":trainer.state.global_step,
         "train_runtime_seconds":training_result.metrics.get("train_runtime"),
-        "peak_allocated_gb":torch.cuda.max_memory_allocated()/2**30},indent=2)+"\n")
+        "peak_allocated_gb":torch.cuda.max_memory_allocated()/2**30,
+        "wandb_run_id":wandb_run_id,"wandb_run_url":wandb_run_url},indent=2)+"\n")
     if args.report_to=="wandb":
         import wandb
         if wandb.run is not None:wandb.finish()

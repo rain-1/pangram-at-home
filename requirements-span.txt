@@ -1,0 +1,12 @@
+# Match the successful local token pilot; torch is supplied by the pinned image.
+transformers==5.4.0
+peft==0.18.1
+accelerate==1.13.0
+numpy==1.26.4
+scikit-learn==1.8.0
+wandb==0.26.1
+safetensors==0.7.0
+huggingface_hub==1.5.0
+pyarrow==23.0.1
+matplotlib==3.10.8
+python-dotenv==1.2.2
