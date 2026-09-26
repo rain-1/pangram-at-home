@@ -110,6 +110,32 @@ def main() -> None:
     fig.tight_layout()
     fig.savefig(REPORTS / "span_size_curve_v5_roc.pdf")
     plt.close(fig)
+
+    if old is not None:
+        domains = sorted(old["by_domain"])
+        domain_models = [("Previous v4", old)] + [(label, data[label]["LLMTrace heldout"]) for label in labels]
+        recall_grid = np.array([[100 * (report["by_domain"][domain].get("ai_recall") or 0)
+                                 for label, report in domain_models] for domain in domains])
+        fpr_grid = np.array([[100 * (report["by_domain"][domain].get("fpr") or 0)
+                              for label, report in domain_models] for domain in domains])
+        fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+        for ax, grid, title, cmap, fmt in ((axes[0], recall_grid, "AI token recall", "Blues", ".1f"),
+                                            (axes[1], fpr_grid, "Human token FPR", "Oranges", ".2f")):
+            img = ax.imshow(grid, cmap=cmap, aspect="auto", vmin=0)
+            ax.set_xticks(range(len(domain_models)), [label for label, _ in domain_models],
+                          rotation=35, ha="right", fontsize=8)
+            ax.set_yticks(range(len(domains)), domains)
+            ax.set_title(title)
+            for i in range(len(domains)):
+                for j in range(len(domain_models)):
+                    val = grid[i, j]
+                    ax.text(j, i, f"{val:{fmt}}%", ha="center", va="center",
+                            color="white" if val > grid.max() * .55 else "black", fontsize=8)
+            fig.colorbar(img, ax=ax, shrink=.75)
+        fig.suptitle("Held-out LLMTrace performance by domain", fontsize=14)
+        fig.tight_layout()
+        fig.savefig(REPORTS / "span_size_curve_v5_domains.pdf")
+        plt.close(fig)
     lines = ["# Span data-size curve", "",
              "Nested 5k, 10k, and 20k training documents use the same Qwen3-1.7B Repeat2 token architecture, Vast-selected LoRA settings, initialization adapter, fixed validation, and frozen test sets. The 5k × 4 run matches the 20k run's 3,269 optimizer steps to separate exposure to new data from additional updates. The 5k and 10k runs used Vast RTX 4090s; the 20k and matched-compute 5k runs were completed on the local RTX 4080 after Vast credit ran out. All training hyperparameters and BF16 precision were held fixed, but GPU hardware is a minor remaining experimental difference. Thresholds are calibrated separately on the same pure-human calibration set at 5% document-any false highlight.", "",
              "| Run | Documents | Optimizer steps | LLMTrace heldout AUROC | LLMTrace AI recall | LLMTrace human FPR | LLMTrace recall at v4 FPR* | AITDNA mixed AI recall | AITDNA mixed human FPR | Locked human any-highlight | CoAuthor AI recall |",
@@ -131,6 +157,15 @@ def main() -> None:
                      " | ".join(formatted) + " |")
     if old is not None:
         lines += ["", f"The previous v4 checkpoint has {old['overall']['roc_auc']:.3f} AUROC and recalls {percent(old, 'ai_recall'):.1f}% of AI tokens at {percent(old, 'fpr'):.2f}% human-token FPR on the same held-out LLMTrace test. It trained on the older 5k synthetic mix and was not part of this controlled nested-mixture sweep."]
+        lines += ["", "## LLMTrace held-out domains", "",
+                  "| Domain | Previous v4 recall | 5k recall | 10k recall | 20k recall | 5k × 4 recall | 20k human FPR |",
+                  "| --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
+        for domain in domains:
+            recall = [100 * (report["by_domain"][domain].get("ai_recall") or 0)
+                      for _, report in domain_models]
+            human_fpr = 100 * (data["20k · 1 epoch"]["LLMTrace heldout"]["by_domain"][domain].get("fpr") or 0)
+            lines.append(f"| {domain} | " + " | ".join(f"{v:.1f}%" for v in recall) +
+                         f" | {human_fpr:.2f}% |")
     lines += ["", f"*ROC-interpolated recall at the previous v4 checkpoint's {100*target_fpr:.2f}% LLMTrace human-token FPR. This is a retrospective test-set tradeoff, not a deployable threshold. AUROC and recall at the frozen threshold answer different questions. The ROC chart shows the available recall/FPR tradeoff, while the other table columns show the prespecified calibration rule.", "",
               "The frozen pure-human calibration set contains social Q&A, professional finance, and creative writing. It does not cover all nine LLMTrace domain labels. Large differences between AUROC and recall at its calibrated threshold may therefore reflect score calibration across domains; a broader independent human calibration set is the next threshold study.", "",
               "The 20k tier consists of 4,964 unique earlier synthetic composites and 15,036 substantial English LLMTrace documents. The 5k and 10k tiers are subsets of it. Labeled AI characters comprise 48.3–48.6% across tiers. Train, validation, and test texts are exact-hash disjoint; LLMTrace topic groups overlapping the earlier validation and frozen diverse test were excluded. These experiments do not establish a 50k-data result or guarantee generalization beyond the tested generators and domains.", ""]
