@@ -35,6 +35,17 @@ def write_rows(path: Path, values: list[dict]) -> None:
             file.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+def unique_text(values: list[dict]) -> list[dict]:
+    seen = set()
+    unique = []
+    for row in values:
+        key = row.get("text_sha256") or hashlib.sha256(row["text"].encode()).hexdigest()
+        if key not in seen:
+            seen.add(key)
+            unique.append(row)
+    return unique
+
+
 def excluded_groups(source_rows: list[dict], audit: dict, source: str, refs: tuple[str, ...]) -> set[str]:
     by_id = {row["id"]: row["group_id"] for row in source_rows}
     hits = audit["sources"][source]["first_match_ids"]
@@ -108,13 +119,8 @@ def main() -> None:
     old_train, old_val = rows(old_train_path), rows(old_val_path)
     # Some v4 composites are exact duplicates because their source excerpts
     # were reused. Retain only the first identical text before counting sizes.
-    seen_old = set()
-    unique_old = []
-    for row in old_train:
-        if row["text_sha256"] not in seen_old:
-            seen_old.add(row["text_sha256"])
-            unique_old.append(row)
-    old_train = unique_old
+    old_train = unique_text(old_train)
+    old_val = unique_text(old_val)
     source_train, source_val, source_test = rows(llm_train_path), rows(llm_val_path), rows(llm_test_path)
     for key, path in (("llmtrace_train", llm_train_path), ("llmtrace_val", llm_val_path),
                       ("llmtrace_test", llm_test_path)):
