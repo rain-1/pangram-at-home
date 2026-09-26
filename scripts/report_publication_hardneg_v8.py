@@ -164,6 +164,26 @@ def main():
         ax.grid(alpha=.15);ax.legend(loc='lower right',frameon=False)
         fig.tight_layout(rect=(.04,.04,.98,.9));pages.savefig(fig);plt.close(fig)
 
+        fig,ax=plt.subplots(figsize=(11.7,8.3))
+        fig.suptitle('Which human publications are falsely flagged?',fontsize=18,weight='bold',y=.97)
+        rows=v8_pure['External articles']['rows']
+        names=['Associated Press','Discover','National Geographic','New York Times',
+               "Reader's Digest",'Scientific American','Smithsonian Magazine','Wall Street Journal']
+        aliases={'Readers Digest':"Reader's Digest"}
+        groups=[[j for j,row in enumerate(rows) if row['kind']=='human' and
+                 aliases.get(row.get('publication'),row.get('publication'))==name] for name in names]
+        comparison=models(v6_pure,v8_pure,'External articles')
+        y=np.arange(len(names));width=.17
+        for i,model in enumerate(comparison):
+            values=[100*sum(model['score'][j]>=model['threshold'] for j in group)/len(group)
+                    for group in groups]
+            ax.barh(y+(i-1.5)*width,values,width,color=COLORS[i],label=NAMES[i])
+        ax.set_yticks(y,names);ax.invert_yaxis();ax.set_xlim(0,100)
+        ax.set_xlabel('Attributed-human articles falsely flagged (%)')
+        ax.grid(axis='x',alpha=.2);ax.set_axisbelow(True)
+        ax.legend(loc='lower right',ncol=2,frameon=False)
+        fig.tight_layout(rect=(.04,.04,.98,.91));pages.savefig(fig);plt.close(fig)
+
     lines=['# Publication hard-negative pilot v8','',
            'The v8 model changes 500 of 20,000 training documents from DAMASHA mixed examples to dated, attributed human publication prose from five CC BY publishers. The architecture, tuned hyperparameters, and initialization match v6. Original article stress results have guided this experiment and are now development evidence, not an untouched final test.','',
            '## Plain-language verdict','',
@@ -186,6 +206,18 @@ def main():
         for name,m in zip(NAMES,models(v6_mix,v8_mix,source)):
             lines.append(f'| {source} | {name} | {100*m["ai_recall"]:.1f}% | '
                          f'{100*m["human_fpr"]:.2f}% | {100*m["span_recall_half_covered"]:.1f}% |')
+    lines+=['','## Human article false alarms by publication','',
+            '| Publication | Human articles | Qwen v6 | Qwen v8 | Pangram RoBERTa | Pangram Llama |',
+            '| --- | ---: | ---: | ---: | ---: | ---: |']
+    rows=v8_pure['External articles']['rows']
+    comparison=models(v6_pure,v8_pure,'External articles')
+    aliases={'Readers Digest':"Reader's Digest"}
+    for name in ['Associated Press','Discover','National Geographic','New York Times',
+                 "Reader's Digest",'Scientific American','Smithsonian Magazine','Wall Street Journal']:
+        group=[j for j,row in enumerate(rows) if row['kind']=='human' and
+               aliases.get(row.get('publication'),row.get('publication'))==name]
+        counts=[sum(m['score'][j]>=m['threshold'] for j in group) for m in comparison]
+        lines.append(f'| {name} | {len(group)} | '+' | '.join(f'{n}/{len(group)}' for n in counts)+' |')
     lines+=['','## Separate publication controls','',
             '| Human-only source | Qwen v6 false alarms | Qwen v8 false alarms |',
             '| --- | ---: | ---: |']
