@@ -1,4 +1,8 @@
-"""Bounded local Repeat2 comparison, with an optional token pilot."""
+"""Historical local Repeat2 comparison, with an optional token pilot.
+
+The two recorded local runs used microbatch 1 × accumulation 8. The Vast HPO
+winner used 2 × 4; this controller reproduces the local pair, not that run.
+"""
 import argparse
 import fcntl
 import json

@@ -1,0 +1,27 @@
+{
+  "role": "one backward and AdamW optimizer step using selected BF16 LoRA settings; no checkpoint saved",
+  "gpu": "NVIDIA GeForce RTX 4080",
+  "source_tokens": 512,
+  "microbatch": 2,
+  "single": {
+    "repeat2": false,
+    "microbatch": 2,
+    "tokens_per_example": 512,
+    "loss": 0.703125,
+    "gpu_total_gib": 15.992,
+    "gpu_free_before_model_gib": 14.691,
+    "peak_allocated_gib": 3.878,
+    "peak_reserved_gib": 4.227
+  },
+  "repeat2": {
+    "repeat2": true,
+    "microbatch": 2,
+    "tokens_per_example": 1024,
+    "loss": 1.65625,
+    "gpu_total_gib": 15.992,
+    "gpu_free_before_model_gib": 14.691,
+    "peak_allocated_gib": 4.022,
+    "peak_reserved_gib": 4.555
+  },
+  "limits": "Synthetic maximum-length input and one step; does not cover sustained training, evaluation, or fragmentation."
+}

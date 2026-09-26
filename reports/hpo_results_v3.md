@@ -32,4 +32,10 @@ Run a matched single-copy / Repeat2 pair from the same base checkpoint, seed, da
 
 Repeat2 may help passage classification, but the passage head already sees the whole window. Its stronger motivation is token-level prediction with a causal backbone. A token pilot is a new objective and needs known span provenance; this sweep supplies starting settings, not proven token-task optima.
 
+## Follow-up correction
+
+The later local pair used microbatch 1 × accumulation 8 for both single-copy and Repeat2 runs. This retained the selected effective batch of 8 but changed the sweep's microbatch 2 × accumulation 4. No memory probe established that microbatch 2 would fail on the local 4080 before this change. The local pair is internally matched, while neither run is an exact reproduction of the Vast sweep winner. The old local `qwen3_17b_diverse_v1` run used the trainer's NF4 default; the two local HPO follow-up runs and the selected Vast run used unquantized BF16.
+
+A later one-step memory probe at microbatch 2 succeeded for both 512-token single-copy and 1,024-token Repeat2 inputs, peaking at 4.23 GiB and 4.56 GiB reserved by PyTorch respectively on the 16 GiB RTX 4080. This does not prove a sustained run would have identical memory use, but the original reduction was not evidence-based. See [the probe record](metrics/local_microbatch2_probe.json) and [the wider evaluation](comparative_models_v1.md).
+
 Artifacts: [charts](hpo_results_v3.pdf), [all-trial CSV](hpo_results_v3.csv), [machine-readable results](metrics/hpo_results_v3.json).
