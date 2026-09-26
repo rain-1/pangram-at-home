@@ -109,6 +109,9 @@ def main():
         "by_domain":{d:summarize([r for r in results if r["row"]["domain"]==d]) for d in sorted({r["row"]["domain"] for r in results})}}
     (run/f"{args.output_name}.json").write_text(json.dumps(report,indent=2)+"\n")
     (run/f"{args.output_name}_predictions.jsonl").write_text("".join(json.dumps(x)+"\n" for x in predictions))
+    np.savez_compressed(run/f"{args.output_name}_scores.npz",
+        score=np.concatenate([r["score"][r["label"]!=-100] for r in results]).astype(np.float32),
+        label=np.concatenate([r["label"][r["label"]!=-100] for r in results]).astype(np.int8))
     if args.report_to=="wandb":
         import wandb
         wb=wandb.init(project="pangram-at-home",name=args.run_name+"_span_validation",job_type="span-validation",config={"parent_run":args.run_name})
