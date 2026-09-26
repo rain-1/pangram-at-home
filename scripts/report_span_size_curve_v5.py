@@ -138,21 +138,22 @@ def main() -> None:
         plt.close(fig)
     lines = ["# Span data-size curve", "",
              "Nested 5k, 10k, and 20k training documents use the same Qwen3-1.7B Repeat2 token architecture, Vast-selected LoRA settings, initialization adapter, fixed validation, and frozen test sets. The 5k × 4 run matches the 20k run's 3,269 optimizer steps to separate exposure to new data from additional updates. The 5k and 10k runs used Vast RTX 4090s; the 20k and matched-compute 5k runs were completed on the local RTX 4080 after Vast credit ran out. All training hyperparameters and BF16 precision were held fixed, but GPU hardware is a minor remaining experimental difference. Thresholds are calibrated separately on the same pure-human calibration set at 5% document-any false highlight.", "",
-             "| Run | Documents | Optimizer steps | LLMTrace heldout AUROC | LLMTrace AI recall | LLMTrace human FPR | LLMTrace recall at v4 FPR* | AITDNA mixed AI recall | AITDNA mixed human FPR | Locked human any-highlight | CoAuthor AI recall |",
+             "| Run | Documents | Optimizer steps | LLMTrace heldout AUROC | LLMTrace AI recall | LLMTrace mixed AI recall | LLMTrace human FPR | LLMTrace recall at v4 FPR* | AITDNA mixed AI recall | AITDNA mixed human FPR | Locked human any-highlight | CoAuthor AI recall |",
              "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for label, row in data.items():
         run = next(run for entry, run, _, _ in RUNS if entry == label)
         auc = row["LLMTrace heldout"]["overall"]["roc_auc"]
         values = (percent(row["LLMTrace heldout"], "ai_recall"),
+                  percent(row["LLMTrace heldout"], "ai_recall", "mixed"),
                   percent(row["LLMTrace heldout"], "fpr"),
                   recall_at_fpr(ROOT / "runs" / run / "v5_llmtrace_heldout_scores.npz", target_fpr),
                   percent(row["AITDNA"], "ai_recall", "mixed"),
                   percent(row["AITDNA"], "fpr", "mixed"),
                   percent(row["Locked human"], "pure_human_document_any_false_highlight_rate"),
                   percent(row["CoAuthor"], "ai_recall"))
-        formatted = (f"{values[0]:.1f}%", f"{values[1]:.3f}%", f"{values[2]:.1f}%",
-                     f"{values[3]:.1f}%", f"{values[4]:.1f}%", f"{values[5]:.2f}%",
-                     f"{values[6]:.1f}%")
+        formatted = (f"{values[0]:.1f}%", f"{values[1]:.1f}%", f"{values[2]:.3f}%",
+                     f"{values[3]:.1f}%", f"{values[4]:.1f}%", f"{values[5]:.1f}%",
+                     f"{values[6]:.2f}%", f"{values[7]:.1f}%")
         lines.append(f"| {label} | {row['docs']:,} | {row['steps']:,} | {auc:.3f} | " +
                      " | ".join(formatted) + " |")
     if old is not None:
@@ -167,6 +168,7 @@ def main() -> None:
             lines.append(f"| {domain} | " + " | ".join(f"{v:.1f}%" for v in recall) +
                          f" | {human_fpr:.2f}% |")
     lines += ["", f"*ROC-interpolated recall at the previous v4 checkpoint's {100*target_fpr:.2f}% LLMTrace human-token FPR. This is a retrospective test-set tradeoff, not a deployable threshold. AUROC and recall at the frozen threshold answer different questions. The ROC chart shows the available recall/FPR tradeoff, while the other table columns show the prespecified calibration rule.", "",
+              "A recall near 50% alone is not equivalent to random chance. Chance-level scores have AUROC around 0.5; a random detector that labels half the AI tokens also labels about half the human tokens. Report recall together with human false-positive rate, and inspect mixed-document recall separately because pure-AI documents can dominate the aggregate.", "",
               "The frozen pure-human calibration set contains social Q&A, professional finance, and creative writing. It does not cover all nine LLMTrace domain labels. Large differences between AUROC and recall at its calibrated threshold may therefore reflect score calibration across domains; a broader independent human calibration set is the next threshold study.", "",
               "The 20k tier consists of 4,964 unique earlier synthetic composites and 15,036 substantial English LLMTrace documents. The 5k and 10k tiers are subsets of it. Labeled AI characters comprise 48.3–48.6% across tiers. Train, validation, and test texts are exact-hash disjoint; LLMTrace topic groups overlapping the earlier validation and frozen diverse test were excluded. These experiments do not establish a 50k-data result or guarantee generalization beyond the tested generators and domains.", ""]
     (REPORTS / "span_size_curve_v5.md").write_text("\n".join(lines))
