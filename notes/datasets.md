@@ -1,5 +1,23 @@
 # Human source data shortlist
 
+## Current direction — September 26, 2026
+
+The project targets **diverse human and AI prose**, with papers as one important
+domain. The paper-focused percentages below record the initial proposal; they
+are not the current requirement. Creative fiction is a priority for expansion:
+original online stories, fanfiction, web serials, and historical fiction offer
+different writing styles and document lengths. Current creative training draws
+from MAGE WritingPrompts/ROCStories and EditLens WritingPrompts, so new source
+families matter more than simply adding more rows from the same benchmarks.
+
+Keep work and author IDs where available and split before chunking. Retain
+version-specific evidence for human-origin labels; dates and site membership
+alone are insufficient. Evaluate human false positives by fiction source and
+genre. Human-only fiction supports that audit, but matched AI fiction is also
+needed to measure recall and train without source/label shortcuts. Record reuse
+terms separately from authorship evidence. This is a discriminative project;
+that purpose does not itself establish permissions for every source.
+
 Research checked 2026-09-24. This is a source plan, not a downloaded or rights-cleared corpus. The goal is a paper-focused detector with human examples whose source, date, and reuse terms can be traced per document. A pre-2023 date is strong evidence of human authorship, especially for edited proceedings and journals, but is not absolute proof: AI writing tools existed before 2023, and downloaded copies may have been revised later.
 
 ## Mix to try
