@@ -36,7 +36,7 @@ def main():
     assert docs['LLMTrace']/sum(docs.values())==.03
     assert windows['LLMTrace']/sum(windows.values())<=.03
     assert tokens['LLMTrace']/total<=.03
-    assert max(tokens.values())/total<.70
+    assert max(tokens.values())/total<.35
     dest=DATA/'span_balanced_v6/exposure_audit.json'
     dest.write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps({k:report[k] for k in ('documents','windows','supervised_token_positions',
