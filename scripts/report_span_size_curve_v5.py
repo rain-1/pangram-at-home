@@ -65,7 +65,8 @@ def main() -> None:
         bars = ax.bar(x, values, color=colors)
         for bar, val in zip(bars, values):
             ax.text(bar.get_x() + bar.get_width() / 2, val + max(values + [1]) * .02,
-                    f"{val:.1f}%", ha="center", fontsize=9)
+                    f"{val:.2f}%" if metric == "pure_human_document_any_false_highlight_rate" else f"{val:.1f}%",
+                    ha="center", fontsize=9)
         ax.set_xticks(x, labels, fontsize=9)
         ax.set_title(title, loc="left")
         ax.set_ylabel("Percent")
@@ -115,18 +116,21 @@ def main() -> None:
              "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for label, row in data.items():
         run = next(run for entry, run, _, _ in RUNS if entry == label)
-        values = (percent(row["LLMTrace heldout"], "roc_auc"),
-                  percent(row["LLMTrace heldout"], "ai_recall"),
+        auc = row["LLMTrace heldout"]["overall"]["roc_auc"]
+        values = (percent(row["LLMTrace heldout"], "ai_recall"),
                   percent(row["LLMTrace heldout"], "fpr"),
                   recall_at_fpr(ROOT / "runs" / run / "v5_llmtrace_heldout_scores.npz", target_fpr),
                   percent(row["AITDNA"], "ai_recall", "mixed"),
                   percent(row["AITDNA"], "fpr", "mixed"),
                   percent(row["Locked human"], "pure_human_document_any_false_highlight_rate"),
                   percent(row["CoAuthor"], "ai_recall"))
-        lines.append(f"| {label} | {row['docs']:,} | {row['steps']:,} | " +
-                     " | ".join(f"{v:.1f}%" for v in values) + " |")
+        formatted = (f"{values[0]:.1f}%", f"{values[1]:.3f}%", f"{values[2]:.1f}%",
+                     f"{values[3]:.1f}%", f"{values[4]:.1f}%", f"{values[5]:.2f}%",
+                     f"{values[6]:.1f}%")
+        lines.append(f"| {label} | {row['docs']:,} | {row['steps']:,} | {auc:.3f} | " +
+                     " | ".join(formatted) + " |")
     if old is not None:
-        lines += ["", f"The previous v4 checkpoint has {percent(old, 'roc_auc'):.1f}% AUROC and recalls {percent(old, 'ai_recall'):.1f}% of AI tokens at {percent(old, 'fpr'):.2f}% human-token FPR on the same held-out LLMTrace test. It trained on the older 5k synthetic mix and was not part of this controlled nested-mixture sweep."]
+        lines += ["", f"The previous v4 checkpoint has {old['overall']['roc_auc']:.3f} AUROC and recalls {percent(old, 'ai_recall'):.1f}% of AI tokens at {percent(old, 'fpr'):.2f}% human-token FPR on the same held-out LLMTrace test. It trained on the older 5k synthetic mix and was not part of this controlled nested-mixture sweep."]
     lines += ["", f"*ROC-interpolated recall at the previous v4 checkpoint's {100*target_fpr:.2f}% LLMTrace human-token FPR. This is a retrospective test-set tradeoff, not a deployable threshold. AUROC and recall at the frozen threshold answer different questions. The ROC chart shows the available recall/FPR tradeoff, while the other table columns show the prespecified calibration rule.", "",
               "The frozen pure-human calibration set contains social Q&A, professional finance, and creative writing. It does not cover all nine LLMTrace domain labels. Large differences between AUROC and recall at its calibrated threshold may therefore reflect score calibration across domains; a broader independent human calibration set is the next threshold study.", "",
               "The 20k tier consists of 4,964 unique earlier synthetic composites and 15,036 substantial English LLMTrace documents. The 5k and 10k tiers are subsets of it. Labeled AI characters comprise 48.3–48.6% across tiers. Train, validation, and test texts are exact-hash disjoint; LLMTrace topic groups overlapping the earlier validation and frozen diverse test were excluded. These experiments do not establish a 50k-data result or guarantee generalization beyond the tested generators and domains.", ""]
