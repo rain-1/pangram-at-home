@@ -2,9 +2,12 @@ DATASETS USED FOR TRAINING AND EVALUATION
 26 September 2026
 
 TRAINING SOURCES
-Each pair contains one human and one AI passage. The tuned passage model uses all
-10,000 training rows. The v4 span model constructs 5,000 labeled documents from
-these same 16 sources; it does not train directly on the external span datasets.
+Each counted pair means one human row and one AI row selected from the same
+source category. It does NOT always mean the texts answer the same prompt or
+come from the same original document. MAGE rows, for example, are matched by
+length bucket rather than shared prompt ID. The tuned passage model uses all
+10,000 training rows. The v4 span model constructs 5,000 labeled documents
+from these same 16 sources; it does not train directly on external span data.
 
 | Category | Dataset/source | Train pairs | Validation pairs | Test pairs |
 | --- | --- | ---: | ---: | ---: |
@@ -51,13 +54,23 @@ CURRENT V4 SPAN-MODEL DATA
 
 | Dataset | Size | Role |
 | --- | ---: | --- |
-| Synthetic span training from the 16 sources above | 5,000 documents; 7,600 windows | Training |
-| Synthetic span validation | 600 documents | Development evaluation |
+| Synthetic span training from the 16 sources above | 5,000 documents: 1,238 fully human, 1,262 fully AI, 2,500 mixed; 7,600 windows | Training |
+| Synthetic span validation | 600 documents: 152 fully human, 148 fully AI, 300 mixed | Development evaluation |
 | Earlier synthetic span validation | 400 documents | Previous-pilot comparison |
 | Pure-human calibration: Standard Ebooks, Federal Reserve, Writers Stack Exchange | 1,120 documents | Threshold selection |
 | Pure-human test: PERSUADE and Writers Stack Exchange | 3,579 documents | False-highlight evaluation |
 | AITDNA | 362 documents | Real collaboration evaluation |
 | CoAuthor | 119 mixed documents | Short-suggestion stress test |
+
+EVALUATION LABEL TYPES
+
+| Evaluation group | Label composition |
+| --- | --- |
+| Passage-model balanced tests (diverse, RAID, Enron, MAGE, EditLens) | Separate fully human and fully AI passages; passage models give one score per passage/window |
+| Human-only audits (ebooks, essays, Federal Reserve, Writers Stack Exchange, PMC) | Fully human text; measures false positives only |
+| Synthetic span validations | Fully human, fully AI, AND mixed human/AI documents with character-level boundaries |
+| AITDNA | 103 final documents fully human, 258 mixed, 1 fully AI by surviving-character labels |
+| CoAuthor | 119 mixed documents; uncertain-provenance characters are masked |
 
 COLLECTED BUT NOT USED IN DETECTOR TRAINING
 
