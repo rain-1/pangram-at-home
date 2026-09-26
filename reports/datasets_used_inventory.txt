@@ -1,0 +1,70 @@
+DATASETS USED FOR TRAINING AND EVALUATION
+26 September 2026
+
+TRAINING SOURCES
+Each pair contains one human and one AI passage. The tuned passage model uses all
+10,000 training rows. The v4 span model constructs 5,000 labeled documents from
+these same 16 sources; it does not train directly on the external span datasets.
+
+| Category | Dataset/source | Train pairs | Validation pairs | Test pairs |
+| --- | --- | ---: | ---: | ---: |
+| Papers | PMC Open Access abstracts | 309 | 46 | 59 |
+| Papers | ACL Anthology abstracts | 462 | 47 | 59 |
+| Papers | MAGE scientific writing | 979 | 47 | 57 |
+| Reference | EditLens FineWeb Edu | 334 | 27 | 34 |
+| Reference | MAGE ELI5 | 333 | 27 | 33 |
+| Reference | MAGE SQuAD | 333 | 26 | 33 |
+| Creative | EditLens Reddit WritingPrompts | 334 | 24 | 40 |
+| Creative | MAGE WritingPrompts | 333 | 34 | 39 |
+| Creative | MAGE ROCStories | 333 | 22 | 21 |
+| Social/Q&A | MAGE ChangeMyView | 250 | 20 | 25 |
+| Social/Q&A | MAGE TLDR | 250 | 20 | 25 |
+| Reviews | EditLens Amazon reviews | 167 | 14 | 17 |
+| Reviews | EditLens Google reviews | 167 | 13 | 17 |
+| Reviews | MAGE Yelp reviews | 166 | 13 | 16 |
+| News | EditLens news | 125 | 10 | 13 |
+| News | MAGE XSum | 125 | 10 | 12 |
+| TOTAL | 16 sources | 5,000 | 400 | 500 |
+
+PASSAGE-MODEL EVALUATION
+
+| Dataset | Size | Role |
+| --- | ---: | --- |
+| Diverse validation | 800 passages | Threshold selection |
+| Diverse test | 1,000 passages | Held-out rows from training source families |
+| RAID | 1,600 passages | Separate source-family test |
+| EditLens Enron | 3,600 passages | Professional email test |
+| MAGE GPT-4 challenge | 1,200 passages | Generator shift |
+| MAGE paraphrase challenge | 1,200 passages | Paraphrased AI |
+| Additional MAGE holdout | 3,040 passages | Domain breakdown |
+| EditLens original probe | 3,757 passages | Generator comparison |
+| EditLens Llama probe | 3,833 passages | Generator comparison |
+| Paper generator swap | 164 passages | Generator shift on held-out papers |
+| Standard Ebooks | 1,860 human passages | False positives only |
+| PERSUADE | 1,000 human essays | False positives only |
+| Federal Reserve Beige Book | 1,622 human passages | False positives only |
+| Writers Stack Exchange | 1,000 human posts | False positives only |
+| PMC full-body chunks | 261 human chunks | False positives only |
+| Complete PMC papers | 100 human papers | Long-document false highlights |
+
+CURRENT V4 SPAN-MODEL DATA
+
+| Dataset | Size | Role |
+| --- | ---: | --- |
+| Synthetic span training from the 16 sources above | 5,000 documents; 7,600 windows | Training |
+| Synthetic span validation | 600 documents | Development evaluation |
+| Earlier synthetic span validation | 400 documents | Previous-pilot comparison |
+| Pure-human calibration: Standard Ebooks, Federal Reserve, Writers Stack Exchange | 1,120 documents | Threshold selection |
+| Pure-human test: PERSUADE and Writers Stack Exchange | 3,579 documents | False-highlight evaluation |
+| AITDNA | 362 documents | Real collaboration evaluation |
+| CoAuthor | 119 mixed documents | Short-suggestion stress test |
+
+COLLECTED BUT NOT USED IN DETECTOR TRAINING
+
+| Dataset | Current status |
+| --- | --- |
+| LLMTrace | Downloaded and normalized; candidate for next span-training mix |
+| DAMASHA | Downloaded and parsed; overlap and provenance issues remain |
+| New fiction collection | Human-source candidates; no balanced AI counterpart yet |
+| Human Detectors articles | 300-article evaluation candidate; not yet scored |
+| Named-author essays and generator-response corpora | Reserved for later attribution probes |
