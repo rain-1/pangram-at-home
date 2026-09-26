@@ -52,7 +52,13 @@ def models(v6,v8,source):
 
 def bars(ax,categories,values,ylabel,lower=False):
     x=np.arange(len(categories));w=.18
-    for i in range(4):ax.bar(x+(i-1.5)*w,np.array(values[i])*100,w,color=COLORS[i],label=NAMES[i])
+    for i in range(4):
+        heights=np.array(values[i])*100
+        ax.bar(x+(i-1.5)*w,heights,w,color=COLORS[i],label=NAMES[i])
+        for j,height in enumerate(heights):
+            if height>=.3:
+                ax.text(x[j]+(i-1.5)*w,height+1.1,f'{height:.0f}' if height>=10 else f'{height:.1f}',
+                        ha='center',va='bottom',fontsize=6.5)
     ax.set_xticks(x,categories);ax.set_ylim(0,105);ax.set_ylabel(ylabel)
     ax.grid(axis='y',alpha=.2);ax.set_axisbelow(True);ax.spines[['top','right']].set_visible(False)
     if lower:ax.text(.99,.98,'LOWER IS BETTER',transform=ax.transAxes,ha='right',va='top',fontsize=8)
