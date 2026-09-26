@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter
+import argparse
 import json
 
 from transformers import AutoTokenizer
@@ -11,9 +12,12 @@ from span_data import encode_document,window_starts
 
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--dataset-folder',default='span_balanced_v6')
+    args=parser.parse_args()
     tokenizer=AutoTokenizer.from_pretrained(ROOT/'models/Qwen3-1.7B')
     docs=Counter();windows=Counter();tokens=Counter();labels=Counter()
-    with (DATA/'span_balanced_v6/train.jsonl').open() as file:
+    with (DATA/args.dataset_folder/'train.jsonl').open() as file:
         for line in file:
             row=json.loads(line)
             source=('DAMASHA' if row['source']=='DAMASHA clean published aggregate' else
@@ -37,7 +41,7 @@ def main():
     assert windows['LLMTrace']/sum(windows.values())<=.03
     assert tokens['LLMTrace']/total<=.03
     assert max(tokens.values())/total<.35
-    dest=DATA/'span_balanced_v6/exposure_audit.json'
+    dest=DATA/args.dataset_folder/'exposure_audit.json'
     dest.write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps({k:report[k] for k in ('documents','windows','supervised_token_positions',
           'source_supervised_token_fraction','class_supervised_tokens')},indent=2))
