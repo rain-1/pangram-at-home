@@ -18,6 +18,31 @@ needed to measure recall and train without source/label shortcuts. Record reuse
 terms separately from authorship evidence. This is a discriminative project;
 that purpose does not itself establish permissions for every source.
 
+### Span-training update — September 27, 2026
+
+The `span_balanced_v6` training set caps LLMTrace at 600/20,000 documents (3%;
+1.01% of supervised token positions), and its largest source contributes 32.8%
+of supervised positions. The frozen
+external article stress test still produces 64/150 human-document false alarms
+after that retrain, although its article AUROC improved from 0.937 to 0.978.
+Historical CNN/Daily Mail and pre-2023 PMC articles are much easier (1/500 and
+5/346 false alarms), so broad "add news" sampling is not yet a demonstrated
+fix. See `reports/balanced_retrain_v6.md` and
+`reports/balanced_publication_thresholds_v6.md`.
+
+A small `span_publication_hardneg_v8` pilot therefore replaces 500 DAMASHA
+mixtures with 500 dated, bylined, English CC BY article bodies from five
+publishers in the [Common Pile news collection](https://huggingface.co/datasets/common-pile/news).
+Their title, byline and date header lines are removed. Four other publishers
+form a separate 100-document human calibration set and 200-document locked
+human test; articles are screened for sampled 24-word overlap with existing
+training and frozen evaluations. The 500 long human articles account for about
+11.7% of supervised positions, leaving the pilot at 42.9% AI / 57.1% human
+supervised positions. The larger 1,500-article draft was rejected because it
+left only 34% AI token supervision. Publication date and a byline support a
+human label, but do not prove every edit was human; keep this provenance limit
+in evaluation claims.
+
 Research checked 2026-09-24. This is a source plan, not a downloaded or rights-cleared corpus. The goal is a paper-focused detector with human examples whose source, date, and reuse terms can be traced per document. A pre-2023 date is strong evidence of human authorship, especially for edited proceedings and journals, but is not absolute proof: AI writing tools existed before 2023, and downloaded copies may have been revised later.
 
 ## Mix to try
