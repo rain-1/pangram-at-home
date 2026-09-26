@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.metrics import roc_curve
 
 
 ROOT = Path("/mnt/f/pangram-at-home")
@@ -29,6 +31,12 @@ def percent(report: dict, key: str, kind: str = "overall") -> float:
     return 100 * (x.get(key) or 0)
 
 
+def recall_at_fpr(path: Path, target_fpr: float) -> float:
+    scores = np.load(path)
+    fpr, tpr, _ = roc_curve(scores["label"], scores["score"])
+    return 100 * float(np.interp(target_fpr, fpr, tpr))
+
+
 def main() -> None:
     data = {}
     for label, run, docs, steps in RUNS:
@@ -41,6 +49,7 @@ def main() -> None:
                           for name, file in SETS.items()}}
     old_path = ROOT / "runs/qwen3_token_repeat2_v4_pilot1/v5_llmtrace_heldout.json"
     old = json.loads(old_path.read_text()) if old_path.exists() else None
+    target_fpr = old["overall"]["fpr"] if old is not None else .0067
     labels = list(data)
     x = list(range(len(labels)))
     fig, axes = plt.subplots(2, 2, figsize=(12, 8))
@@ -76,14 +85,40 @@ def main() -> None:
     REPORTS.mkdir(exist_ok=True)
     fig.savefig(REPORTS / "span_size_curve_v5.pdf")
     plt.close(fig)
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
+    curves = [(label, ROOT / "runs" / run / "v5_llmtrace_heldout_scores.npz")
+              for label, run, _, _ in RUNS]
+    if old is not None:
+        curves.insert(0, ("Previous v4", ROOT / "runs/qwen3_token_repeat2_v4_pilot1/v5_llmtrace_heldout_scores.npz"))
+    colors = ["#a84432", "#4b8fc4", "#2876b6", "#07538b", "#b3843d"]
+    for (label, path), color in zip(curves, colors):
+        scores = np.load(path)
+        fpr, tpr, _ = roc_curve(scores["label"], scores["score"])
+        for ax in axes:
+            ax.plot(fpr * 100, tpr * 100, label=label, color=color, linewidth=1.8)
+    axes[0].plot([0, 100], [0, 100], linestyle=":", color="#777", label="Chance")
+    axes[0].set(xlim=(0, 100), ylim=(0, 100), title="Full ROC")
+    axes[1].set(xlim=(0, 5), ylim=(0, 100), title="Low false-positive region")
+    for ax in axes:
+        ax.set_xlabel("Human-token false-positive rate (%)")
+        ax.set_ylabel("AI-token recall (%)")
+        ax.grid(alpha=.2)
+    axes[1].legend(fontsize=8, loc="lower right")
+    fig.suptitle("Held-out LLMTrace token ROC: 2,000 documents", fontsize=14)
+    fig.tight_layout()
+    fig.savefig(REPORTS / "span_size_curve_v5_roc.pdf")
+    plt.close(fig)
     lines = ["# Span data-size curve", "",
              "Nested 5k, 10k, and 20k training documents use the same Qwen3-1.7B Repeat2 token architecture, Vast-selected LoRA settings, initialization adapter, fixed validation, and frozen test sets. The 5k × 4 run matches the 20k run's 3,269 optimizer steps to separate exposure to new data from additional updates. Thresholds are calibrated separately on the same pure-human calibration set at 5% document-any false highlight.", "",
-             "| Run | Documents | Optimizer steps | LLMTrace heldout AUROC | LLMTrace AI recall | LLMTrace human FPR | AITDNA mixed AI recall | AITDNA mixed human FPR | Locked human any-highlight | CoAuthor AI recall |",
-             "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
+             "| Run | Documents | Optimizer steps | LLMTrace heldout AUROC | LLMTrace AI recall | LLMTrace human FPR | LLMTrace recall at v4 FPR* | AITDNA mixed AI recall | AITDNA mixed human FPR | Locked human any-highlight | CoAuthor AI recall |",
+             "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for label, row in data.items():
+        run = next(run for entry, run, _, _ in RUNS if entry == label)
         values = (percent(row["LLMTrace heldout"], "roc_auc"),
                   percent(row["LLMTrace heldout"], "ai_recall"),
                   percent(row["LLMTrace heldout"], "fpr"),
+                  recall_at_fpr(ROOT / "runs" / run / "v5_llmtrace_heldout_scores.npz", target_fpr),
                   percent(row["AITDNA"], "ai_recall", "mixed"),
                   percent(row["AITDNA"], "fpr", "mixed"),
                   percent(row["Locked human"], "pure_human_document_any_false_highlight_rate"),
@@ -92,7 +127,8 @@ def main() -> None:
                      " | ".join(f"{v:.1f}%" for v in values) + " |")
     if old is not None:
         lines += ["", f"The previous v4 checkpoint has {percent(old, 'roc_auc'):.1f}% AUROC and recalls {percent(old, 'ai_recall'):.1f}% of AI tokens at {percent(old, 'fpr'):.2f}% human-token FPR on the same held-out LLMTrace test. It trained on the older 5k synthetic mix and was not part of this controlled nested-mixture sweep."]
-    lines += ["", "The 20k tier consists of 4,964 unique earlier synthetic composites and 15,036 substantial English LLMTrace documents. The 5k and 10k tiers are subsets of it. Labeled AI characters comprise 48.3–48.6% across tiers. Train, validation, and test texts are exact-hash disjoint; LLMTrace topic groups overlapping the earlier validation and frozen diverse test were excluded. These experiments do not establish a 50k-data result or guarantee generalization beyond the tested generators and domains.", ""]
+    lines += ["", f"*ROC-interpolated recall at the previous v4 checkpoint's {100*target_fpr:.2f}% LLMTrace human-token FPR. This is a retrospective test-set tradeoff, not a deployable threshold. AUROC and recall at the frozen threshold answer different questions. The ROC chart shows the available recall/FPR tradeoff, while the other table columns show the prespecified calibration rule.", "",
+              "The 20k tier consists of 4,964 unique earlier synthetic composites and 15,036 substantial English LLMTrace documents. The 5k and 10k tiers are subsets of it. Labeled AI characters comprise 48.3–48.6% across tiers. Train, validation, and test texts are exact-hash disjoint; LLMTrace topic groups overlapping the earlier validation and frozen diverse test were excluded. These experiments do not establish a 50k-data result or guarantee generalization beyond the tested generators and domains.", ""]
     (REPORTS / "span_size_curve_v5.md").write_text("\n".join(lines))
     print(REPORTS / "span_size_curve_v5.pdf")
 
