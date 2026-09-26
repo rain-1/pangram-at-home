@@ -102,7 +102,7 @@ def render(rows, results):
     ax.set_title('Recall by generator or rewrite method (30 articles each)')
     ax.grid(axis='y', alpha=.2)
     ax.set_axisbelow(True)
-    ax.legend(loc='upper right')
+    ax.legend(loc='lower center', ncol=3)
     fig.tight_layout()
     figs.append(('generators', fig))
 
@@ -111,7 +111,7 @@ def render(rows, results):
     for result in results:
         scores = np.array(result['score'])
         fpr, tpr, _ = roc_curve(labels, scores)
-        ax.plot(100*fpr, 100*tpr, label=f"{result['name']} (AUROC {result['auroc']:.3f})",
+        ax.plot(100*fpr, 100*tpr, label=f"{result['name']} (AUROC {result['auroc']:.4f})",
                 color=result['color'], linewidth=2)
     ax.plot([0, 100], [0, 100], color='#888888', linestyle=':', label='Chance ranking')
     ax.set(xlim=(0, 100), ylim=(0, 100), xlabel='Human false-positive rate (%)',
@@ -127,7 +127,14 @@ def render(rows, results):
             plt.close(fig)
 
 
-def write_markdown(results):
+def write_markdown(rows, results):
+    qwen_tokens = json.loads((RUNS / QWEN / 'v5_external_human_detectors.json').read_text())['overall']
+    with np.load(RUNS / QWEN / 'v5_external_human_detectors_scores.npz') as data:
+        values, offsets = data['score'], data['document_offsets']
+        highlighted = [float(np.mean(values[offsets[i]:offsets[i + 1]].astype(np.float64)
+                                     >= results[0]['threshold']))
+                       for i, row in enumerate(rows) if row['kind'] == 'human']
+    flagged_fraction = [fraction for fraction in highlighted if fraction > 0]
     lines = ['# External article stress test', '',
              'The [Human Detectors dataset](https://github.com/jenna-russell/human_detectors) provides 150 human and 150 AI nonfiction articles. Our 20k model trained on LLMTrace and earlier synthetic sources; these articles are from a separate dataset. The local audit found no exact text or normalized 24-word shingle overlap with training. These are whole-article labels, so they do not test mixed-span localization.', '',
              'Each model uses its previously fixed threshold, calibrated to at most 5% document false alarms on a separate set of 1,120 human documents. Our Qwen article score is its highest token logit; EditLens uses the mean of overlapping native-window scores. The thresholds and score aggregation were chosen before looking at this stress set. No thresholds were retuned here.', '',
@@ -135,12 +142,24 @@ def write_markdown(results):
              '| Model | AI detected / 150 | Human false alarms / 150 | Article AUROC |',
              '| --- | ---: | ---: | ---: |']
     for r in results:
-        lines.append(f"| {r['name']} | {r['ai_detected']}/150 ({100*r['ai_detected']/150:.1f}%) | {r['human_false']}/150 ({100*r['human_false']/150:.1f}%) | {r['auroc']:.3f} |")
+        lines.append(f"| {r['name']} | {r['ai_detected']}/150 ({100*r['ai_detected']/150:.1f}%) | {r['human_false']}/150 ({100*r['human_false']/150:.1f}%) | {r['auroc']:.4f} |")
+    lines += ['',
+              f"Our Qwen model highlights {100*qwen_tokens['ai_recall']:.1f}% of AI tokens and falsely highlights {100*qwen_tokens['fpr']:.1f}% of human tokens on these fully labeled articles. The {results[0]['human_false']} human-document false alarms therefore include broad false highlights, not just one stray token in each article."]
+    lines += [f"Among falsely flagged human articles, the median highlighted share is {100*np.median(flagged_fraction):.1f}% of tokens; {sum(f > .5 for f in flagged_fraction)} of {len(flagged_fraction)} have more than half their tokens highlighted."]
     lines += ['', '## AI detection by generator', '',
               '| Generator | Our Qwen 20k | EditLens RoBERTa | EditLens Llama |',
               '| --- | ---: | ---: | ---: |']
     for g in sorted(results[0]['by_generator']):
         lines.append('| ' + g + ' | ' + ' | '.join(f"{r['by_generator'][g]}/30" for r in results) + ' |')
+    lines += ['', '## Human article false alarms by publication', '',
+              'These are document-level false alarms for our Qwen model at its frozen threshold. They are spread across sources rather than coming from one duplicate or publication.', '',
+              '| Publication | Human articles | Falsely flagged |',
+              '| --- | ---: | ---: |']
+    for publication in sorted({r['publication'] for r in rows if r['kind'] == 'human'}):
+        indexes = [i for i, row in enumerate(rows)
+                   if row['kind'] == 'human' and row['publication'] == publication]
+        count = sum(results[0]['score'][i] >= results[0]['threshold'] for i in indexes)
+        lines.append(f'| {publication} | {len(indexes)} | {count} |')
     lines += ['', 'This is a stress test of source transfer, not a representative estimate of deployment accuracy. It contains one domain (nonfiction news articles) and five AI generation/rewrite modes.', '']
     (OUT / 'external_articles_v5.md').write_text('\n'.join(lines))
 
@@ -149,4 +168,4 @@ if __name__ == '__main__':
     docs = load_rows()
     models = load_results(docs)
     render(docs, models)
-    write_markdown(models)
+    write_markdown(docs, models)

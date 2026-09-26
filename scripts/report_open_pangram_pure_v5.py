@@ -88,7 +88,7 @@ def render(rows: list[dict]) -> None:
     for ax in axes:
         ax.grid(axis='x', alpha=.2)
         ax.set_axisbelow(True)
-    fig.suptitle('Pure-document detection: our size sweep and Open Pangram', fontsize=16, fontweight='bold')
+    fig.suptitle('LLMTrace pure documents: in-corpus holdout', fontsize=16, fontweight='bold')
     fig.text(.5, .025, 'Held-out LLMTrace: 516 AI + 720 human documents. Our 20k run trained on 15,036 other LLMTrace records.\n'
              'Thresholds use the same separate 1,120 human docs (≤5% FPR). Ours needs any AI token; EditLens uses mean window score.',
              ha='center', fontsize=9)
@@ -111,7 +111,7 @@ def render(rows: list[dict]) -> None:
     for ax in axes:
         ax.grid(axis='x', alpha=.2)
         ax.set_axisbelow(True)
-    fig.suptitle('Threshold-independent ranking and held-out human false alarms', fontsize=15, fontweight='bold')
+    fig.suptitle('LLMTrace ranking and separate human false alarms', fontsize=15, fontweight='bold')
     fig.text(.5, .025, 'AUROC uses each model’s document score: maximum token score for ours, mean window score for EditLens.\n'
              'Zero observed false alarms is an estimate on these datasets, not a guarantee for arbitrary human text.',
              ha='center', fontsize=9)
