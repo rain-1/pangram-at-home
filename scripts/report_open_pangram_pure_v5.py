@@ -38,9 +38,10 @@ def our_results(kinds: dict[str, str]) -> list[dict]:
                 for i, id_ in enumerate(ids) if str(id_) in kinds]
         labels = np.array([kind == 'ai' for kind, _ in pure], dtype=bool)
         values = np.array([score for _, score in pure])
+        threshold = float(np.float32(report['threshold']))
         locked_file = 'v4_human_locked_test.json' if label == 'Earlier v4' else 'v5_human_locked_test.json'
         result.append({'name': label, 'group': 'Our token model', 'color': color,
-                       'ai_detected': int(np.sum(labels & (values >= report['threshold']))),
+                       'ai_detected': int(np.sum(labels & (values >= threshold))),
                        'human_false': report['by_kind']['human']['pure_human_documents_with_false_highlight'],
                        'auroc': float(roc_auc_score(labels, values)),
                        'threshold_rule': 'any token exceeds separately calibrated threshold',
@@ -132,7 +133,7 @@ def write_markdown(rows: list[dict]) -> None:
              '| --- | ---: | ---: | ---: | ---: |']
     for row in rows:
         lines.append(f"| {row['name']} | {row['ai_detected']}/516 ({100*row['ai_detected']/516:.1f}%) | {row['human_false']}/720 ({100*row['human_false']/720:.2f}%) | {row['auroc']:.3f} | {row['locked_human_false']}/3,579 |")
-    lines += ['', 'The LLMTrace pure set is out of the reported EditLens training corpus. The older synthetic evaluation may be closer to EditLens training data, so the LLMTrace pure set is the primary external comparison. The pure-document task is easier than localizing AI spans within mixed documents.', '',
+    lines += ['', 'The LLMTrace pure set is a different named corpus from the published EditLens training dataset. Source-level overlap has not been fully audited. The older synthetic evaluation may be closer to EditLens training data, so LLMTrace is the primary comparison here. The pure-document task is easier than localizing AI spans within mixed documents.', '',
               'EditLens has no native token labels. This report does not compare EditLens against our token recall; that would require explicitly broadcasting its window scores to tokens and evaluating the resulting coarse spans.', '',
               '## Additional shared synthetic pure-document result for EditLens', '',
               '| Model | AI detected (148) | Human falsely flagged (152) | AUROC |',
