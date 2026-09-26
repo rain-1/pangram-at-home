@@ -43,7 +43,19 @@ left only 34% AI token supervision. Publication date and a byline support a
 human label, but do not prove every edit was human; keep this provenance limit
 in evaluation claims.
 
-Research checked 2026-09-24. This is a source plan, not a downloaded or rights-cleared corpus. The goal is a paper-focused detector with human examples whose source, date, and reuse terms can be traced per document. A pre-2023 date is strong evidence of human authorship, especially for edited proceedings and journals, but is not absolute proof: AI writing tools existed before 2023, and downloaded copies may have been revised later.
+If v8 leaves a large magazine-style false-positive gap, investigate
+pre-2023 science explainers from [The Conversation](https://creativecommons.org/2016/12/22/conversation-conversation-transforming-journalism-cc-license/).
+Its expert-authored articles are closer in style to the failing science
+magazines than generic news, and Creative Commons describes its article
+licensing. Verify article-level bylines, dates, exact license, source family,
+and overlap before adding any to training. This is a candidate, not a v8 source.
+
+The older shortlist below was researched 2026-09-24 and describes a proposed,
+paper-heavy mix; it is not the current training mix. The current goal is broad
+domain coverage with source, date, and reuse terms traced per document. A
+pre-2023 date is strong evidence of human authorship, especially for edited
+proceedings and journals, but is not absolute proof: AI writing tools existed
+before 2023, and downloaded copies may have been revised later.
 
 ## Mix to try
 
