@@ -1,0 +1,312 @@
+{
+  "CoAuthor": {
+    "source": "CoAuthor",
+    "source_file": "/mnt/f/pangram-at-home/data/span_realistic_eval_v1/test.jsonl",
+    "cache_file": "/mnt/f/pangram-at-home/runs/qwen3_token_repeat2_v4_pilot1/v4_realistic_locked_test_scores.npz",
+    "documents": 119,
+    "mixed_documents": 119,
+    "writer_groups": 25,
+    "labeled_token_fraction": 0.5125805712789975,
+    "frozen_threshold": 6.750000000000001,
+    "overall": {
+      "documents": 119,
+      "tokens": 31332,
+      "human_tokens": 24306,
+      "ai_tokens": 7026,
+      "false_positive_tokens": 86,
+      "true_positive_tokens": 233,
+      "fpr": 0.003538221015387147,
+      "ai_recall": 0.033162539140335894,
+      "precision": 0.7304075235109718,
+      "roc_auc": 0.6759911007741719,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "by_domain": {
+      "argumentative": {
+        "documents": 36,
+        "tokens": 9079,
+        "human_tokens": 7302,
+        "ai_tokens": 1777,
+        "false_positive_tokens": 0,
+        "true_positive_tokens": 0,
+        "fpr": 0.0,
+        "ai_recall": 0.0,
+        "precision": null,
+        "roc_auc": 0.608436114279866,
+        "pure_human_documents": 0,
+        "pure_human_documents_with_false_highlight": 0,
+        "pure_human_document_any_false_highlight_rate": null
+      },
+      "creative": {
+        "documents": 83,
+        "tokens": 22253,
+        "human_tokens": 17004,
+        "ai_tokens": 5249,
+        "false_positive_tokens": 86,
+        "true_positive_tokens": 233,
+        "fpr": 0.0050576334980004705,
+        "ai_recall": 0.04438940750619166,
+        "precision": 0.7304075235109718,
+        "roc_auc": 0.7025521299909081,
+        "pure_human_documents": 0,
+        "pure_human_documents_with_false_highlight": 0,
+        "pure_human_document_any_false_highlight_rate": null
+      }
+    },
+    "mixed": {
+      "ai_tokens": 7026,
+      "human_tokens": 24306,
+      "ai_token_fraction": 0.22424358483339715,
+      "auroc": 0.6759911007741719,
+      "ai_token_recall": 0.033162539140335894,
+      "human_token_fpr": 0.003538221015387147
+    },
+    "documents_with_ai": 119,
+    "documents_with_any_ai_token_detected": 7,
+    "documents_with_zero_ai_tokens_detected": 112,
+    "retrospective_mixed_roc": {
+      "0.01": {
+        "realized_fpr": 0.009997531473710195,
+        "ai_token_recall": 0.09849131796185596
+      },
+      "0.02": {
+        "realized_fpr": 0.01999506294742039,
+        "ai_token_recall": 0.13805863933959578
+      },
+      "0.05": {
+        "realized_fpr": 0.04998765736855097,
+        "ai_token_recall": 0.21719328209507544
+      },
+      "0.1": {
+        "realized_fpr": 0.0998518884226117,
+        "ai_token_recall": 0.3181041844577284
+      }
+    },
+    "by_ai_span_character_length": {
+      "<20": {
+        "spans": 25,
+        "characters": 312,
+        "scored_tokens": 67,
+        "detected_tokens": 4,
+        "spans_with_scored_tokens": 23,
+        "spans_with_any_highlight": 1,
+        "spans_half_covered": 1,
+        "ai_character_share": 0.009548876782763054,
+        "scorable_span_share": 0.92,
+        "token_recall_at_frozen_threshold": 0.05970149253731343,
+        "any_highlight_span_recall": 0.043478260869565216
+      },
+      "20\u201379": {
+        "spans": 202,
+        "characters": 10827,
+        "scored_tokens": 2356,
+        "detected_tokens": 20,
+        "spans_with_scored_tokens": 202,
+        "spans_with_any_highlight": 2,
+        "spans_half_covered": 1,
+        "ai_character_share": 0.3313643875864602,
+        "scorable_span_share": 1.0,
+        "token_recall_at_frozen_threshold": 0.008488964346349746,
+        "any_highlight_span_recall": 0.009900990099009901
+      },
+      "80\u2013319": {
+        "spans": 176,
+        "characters": 19121,
+        "scored_tokens": 4019,
+        "detected_tokens": 81,
+        "spans_with_scored_tokens": 176,
+        "spans_with_any_highlight": 7,
+        "spans_half_covered": 2,
+        "ai_character_share": 0.585205362061578,
+        "scorable_span_share": 1.0,
+        "token_recall_at_frozen_threshold": 0.02015426723065439,
+        "any_highlight_span_recall": 0.03977272727272727
+      },
+      "320+": {
+        "spans": 4,
+        "characters": 2414,
+        "scored_tokens": 584,
+        "detected_tokens": 128,
+        "spans_with_scored_tokens": 4,
+        "spans_with_any_highlight": 2,
+        "spans_half_covered": 1,
+        "ai_character_share": 0.07388137356919876,
+        "scorable_span_share": 1.0,
+        "token_recall_at_frozen_threshold": 0.2191780821917808,
+        "any_highlight_span_recall": 0.5
+      }
+    }
+  },
+  "AITDNA": {
+    "source": "AITDNA",
+    "source_file": "/mnt/f/pangram-at-home/data/span_sources_v5/normalized_aitdna_real/locked_test.jsonl",
+    "cache_file": "/mnt/f/pangram-at-home/runs/qwen3_token_repeat2_v4_pilot1/aitdna_locked_v1_scores.npz",
+    "documents": 362,
+    "mixed_documents": 258,
+    "writer_groups": 99,
+    "labeled_token_fraction": 0.977622741355526,
+    "frozen_threshold": 6.750000000000001,
+    "overall": {
+      "documents": 362,
+      "tokens": 172918,
+      "human_tokens": 75094,
+      "ai_tokens": 97824,
+      "false_positive_tokens": 6974,
+      "true_positive_tokens": 86520,
+      "fpr": 0.0928702692625243,
+      "ai_recall": 0.8844455348380765,
+      "precision": 0.9254069779878923,
+      "roc_auc": 0.9560623748090704,
+      "pure_human_documents": 103,
+      "pure_human_documents_with_false_highlight": 1,
+      "pure_human_document_any_false_highlight_rate": 0.009708737864077669
+    },
+    "by_domain": {
+      "Argumentative Writing": {
+        "documents": 121,
+        "tokens": 55703,
+        "human_tokens": 24860,
+        "ai_tokens": 30843,
+        "false_positive_tokens": 2495,
+        "true_positive_tokens": 26816,
+        "fpr": 0.1003620273531778,
+        "ai_recall": 0.8694355283208508,
+        "precision": 0.9148783733069497,
+        "roc_auc": 0.9471036390174107,
+        "pure_human_documents": 33,
+        "pure_human_documents_with_false_highlight": 0,
+        "pure_human_document_any_false_highlight_rate": 0.0
+      },
+      "Creative Writing": {
+        "documents": 116,
+        "tokens": 59151,
+        "human_tokens": 24918,
+        "ai_tokens": 34233,
+        "false_positive_tokens": 2031,
+        "true_positive_tokens": 30889,
+        "fpr": 0.08150734408861064,
+        "ai_recall": 0.9023164782519791,
+        "precision": 0.9383049817739976,
+        "roc_auc": 0.9638470403529424,
+        "pure_human_documents": 32,
+        "pure_human_documents_with_false_highlight": 0,
+        "pure_human_document_any_false_highlight_rate": 0.0
+      },
+      "Explanatory Writing": {
+        "documents": 115,
+        "tokens": 54416,
+        "human_tokens": 21984,
+        "ai_tokens": 32432,
+        "false_positive_tokens": 2305,
+        "true_positive_tokens": 28735,
+        "fpr": 0.10484898107714702,
+        "ai_recall": 0.8860076467686235,
+        "precision": 0.9257409793814433,
+        "roc_auc": 0.9553102062914394,
+        "pure_human_documents": 33,
+        "pure_human_documents_with_false_highlight": 1,
+        "pure_human_document_any_false_highlight_rate": 0.030303030303030304
+      },
+      "Peer Review": {
+        "documents": 10,
+        "tokens": 3648,
+        "human_tokens": 3332,
+        "ai_tokens": 316,
+        "false_positive_tokens": 143,
+        "true_positive_tokens": 80,
+        "fpr": 0.0429171668667467,
+        "ai_recall": 0.25316455696202533,
+        "precision": 0.35874439461883406,
+        "roc_auc": 0.8633655994043188,
+        "pure_human_documents": 5,
+        "pure_human_documents_with_false_highlight": 0,
+        "pure_human_document_any_false_highlight_rate": 0.0
+      }
+    },
+    "mixed": {
+      "ai_tokens": 97467,
+      "human_tokens": 37424,
+      "ai_token_fraction": 0.7225611790260285,
+      "auroc": 0.9182570362344452,
+      "ai_token_recall": 0.88406332399684,
+      "human_token_fpr": 0.17985784523300555
+    },
+    "documents_with_ai": 258,
+    "documents_with_any_ai_token_detected": 236,
+    "documents_with_zero_ai_tokens_detected": 22,
+    "retrospective_mixed_roc": {
+      "0.01": {
+        "realized_fpr": 0.00975309961522018,
+        "ai_token_recall": 0.15993105358736803
+      },
+      "0.02": {
+        "realized_fpr": 0.019853569901667378,
+        "ai_token_recall": 0.2849887654282988
+      },
+      "0.05": {
+        "realized_fpr": 0.04962056434373664,
+        "ai_token_recall": 0.5613181897462731
+      },
+      "0.1": {
+        "realized_fpr": 0.09980226592560923,
+        "ai_token_recall": 0.7626889100926467
+      }
+    },
+    "by_ai_span_character_length": {
+      "<20": {
+        "spans": 2767,
+        "characters": 12243,
+        "scored_tokens": 1510,
+        "detected_tokens": 478,
+        "spans_with_scored_tokens": 984,
+        "spans_with_any_highlight": 301,
+        "spans_half_covered": 297,
+        "ai_character_share": 0.022478738561419485,
+        "scorable_span_share": 0.35561980484279004,
+        "token_recall_at_frozen_threshold": 0.3165562913907285,
+        "any_highlight_span_recall": 0.30589430894308944
+      },
+      "20\u201379": {
+        "spans": 553,
+        "characters": 23192,
+        "scored_tokens": 3808,
+        "detected_tokens": 1901,
+        "spans_with_scored_tokens": 553,
+        "spans_with_any_highlight": 291,
+        "spans_half_covered": 275,
+        "ai_character_share": 0.04258163070460187,
+        "scorable_span_share": 1.0,
+        "token_recall_at_frozen_threshold": 0.4992121848739496,
+        "any_highlight_span_recall": 0.5262206148282098
+      },
+      "80\u2013319": {
+        "spans": 382,
+        "characters": 65587,
+        "scored_tokens": 11600,
+        "detected_tokens": 8170,
+        "spans_with_scored_tokens": 382,
+        "spans_with_any_highlight": 295,
+        "spans_half_covered": 261,
+        "ai_character_share": 0.12042089569777177,
+        "scorable_span_share": 1.0,
+        "token_recall_at_frozen_threshold": 0.7043103448275863,
+        "any_highlight_span_recall": 0.7722513089005235
+      },
+      "320+": {
+        "spans": 471,
+        "characters": 443626,
+        "scored_tokens": 80906,
+        "detected_tokens": 75971,
+        "spans_with_scored_tokens": 471,
+        "spans_with_any_highlight": 467,
+        "spans_half_covered": 450,
+        "ai_character_share": 0.8145187350362069,
+        "scorable_span_share": 1.0,
+        "token_recall_at_frozen_threshold": 0.9390032877660495,
+        "any_highlight_span_recall": 0.9915074309978769
+      }
+    }
+  }
+}
