@@ -86,10 +86,42 @@ def source_aware(threshold):
 def main():
     d,old_pure,old_mix,v6_pure,v6_mix,v8_pure,v8_mix,v6_thr,v8_thr=load()
     adjusted=source_aware(v8_thr)
+    article_v6=v6_pure['External articles']['models'][0]
+    article_v8=v8_pure['External articles']['models'][0]
+    article_fpr=article_v8['fp']/article_v8['human']
+    article_recall=article_v8['tp']/article_v8['ai']
+    article_gate=article_fpr<=.10 and article_recall>=.95
+    mixed_gate=(v8_mix['LLMTrace test']['models'][0]['ai_recall']>=.75 and
+                v8_mix['AITDNA collaboration']['models'][0]['human_fpr']<=.05 and
+                v8_mix['CoAuthor collaboration']['models'][0]['ai_recall']>=.50)
+    article_verdict='PASS' if article_gate else 'FAIL'
+    mixed_verdict='PASS' if mixed_gate else 'FAIL'
     (ROOT/'runs'/RUN/'v8_source_aware_threshold_analysis.json').write_text(json.dumps(adjusted,indent=2)+'\n')
     plt.rcParams.update({'font.family':'DejaVu Sans','font.size':9})
     pdf=OUT/'publication_hardneg_v8.pdf'
     with PdfPages(pdf) as pages:
+        fig=plt.figure(figsize=(11.7,8.3))
+        fig.suptitle('Publication retrain: the verdict',fontsize=21,weight='bold',y=.94)
+        fig.text(.07,.86,'Fixed operating rule: 5% false alarms on 1,120 separate human controls.',fontsize=11)
+        fig.text(.07,.76,f'PUBLISHED HUMAN ARTICLES  |  {article_verdict}',fontsize=16,weight='bold',
+                 color='#16806d' if article_gate else '#a9403b')
+        fig.text(.08,.70,f'False alarms: v6 {article_v6["fp"]}/150  →  v8 {article_v8["fp"]}/150 '
+                 f'({100*article_fpr:.1f}%). Goal: at most 15/150 (10%).',fontsize=13)
+        fig.text(.08,.64,f'AI articles caught: {article_v8["tp"]}/150 '
+                 f'({100*article_recall:.1f}%). Goal: at least 95%.',fontsize=13)
+        fig.text(.07,.52,f'MIXED TEXT HIGHLIGHTING  |  {mixed_verdict}',fontsize=16,weight='bold',
+                 color='#16806d' if mixed_gate else '#a9403b')
+        fig.text(.08,.46,'AI words highlighted / human words falsely marked:',fontsize=12)
+        for j,source in enumerate(['LLMTrace test','Synthetic v4 validation','AITDNA collaboration','CoAuthor collaboration']):
+            m=v8_mix[source]['models'][0]
+            fig.text(.09,.40-j*.055,f'{source}: {100*m["ai_recall"]:.1f}% / '
+                     f'{100*m["human_fpr"]:.1f}%',fontsize=11)
+        fig.text(.07,.10,'Mixed-text verdict requires ≥75% AI-token recall on LLMTrace, '
+                 '≤5% human-token false marks on AITDNA, and ≥50% AI-token recall on CoAuthor.',fontsize=9)
+        fig.text(.07,.055,'The external article set has attributed authors, but independent '
+                 'verification of AI-free workflows is unavailable.',fontsize=9)
+        pages.savefig(fig);plt.close(fig)
+
         fig,axes=plt.subplots(2,1,figsize=(11.7,8.3))
         fig.suptitle('Did publication hard negatives lower false alarms?',fontsize=19,weight='bold',y=.97)
         fig.text(.055,.91,'Each Qwen threshold was calibrated to 5% false alarms on the same separate 1,120 human controls.',fontsize=9)
@@ -134,6 +166,10 @@ def main():
 
     lines=['# Publication hard-negative pilot v8','',
            'The v8 model changes 500 of 20,000 training documents from DAMASHA mixed examples to dated, attributed human publication prose from five CC BY publishers. The architecture, tuned hyperparameters, and initialization match v6. Original article stress results have guided this experiment and are now development evidence, not an untouched final test.','',
+           '## Plain-language verdict','',
+           f'**Published articles: {article_verdict}.** At the separately calibrated threshold, v8 falsely flags {article_v8["fp"]}/150 attributed-human articles ({100*article_fpr:.1f}%), versus {article_v6["fp"]}/150 for v6. It catches {article_v8["tp"]}/150 AI articles ({100*article_recall:.1f}%). The stated goal is at most 10% human false alarms with at least 95% AI recall.','',
+           f'**Mixed documents: {mixed_verdict}.** A useful passage highlighter should both find AI passages and leave human passages unmarked across datasets. The current check requires ≥75% AI-token recall on LLMTrace, ≤5% human-token false marks on AITDNA, and ≥50% AI-token recall on CoAuthor. This is a practical gate, not a published benchmark standard.','',
+           '“AI-token recall” means the fraction of truly AI-written word/token positions the model highlights. “Human-token false marks” means the fraction of human-written positions it incorrectly highlights. “AI spans half covered” counts an AI passage only if the model highlights at least half of it; this is stricter than merely touching its edge.','',
            f'Qwen v6 threshold: `{v6_thr:.4f}`; v8 threshold: `{v8_thr:.4f}`. Both use the same independent 1,120-document calibration protocol.','',
            '## Fully human and fully AI documents','',
            '| Dataset | Model | Human false alarms | AI caught | Document AUROC |',
