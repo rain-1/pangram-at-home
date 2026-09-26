@@ -63,6 +63,13 @@ def doc_scores(name):
         return np.array([scores[offsets[i]:offsets[i+1]].max() for i in range(len(offsets)-1)])
 
 
+def article_highlight_share(run,stem,threshold):
+    with np.load(ROOT/'runs'/run/f'{stem}_scores.npz') as data:
+        score=data['score'];offsets=data['document_offsets']
+        return np.array([(score[offsets[i]:offsets[i+1]]>=threshold).mean()
+                         for i in range(len(offsets)-1)])
+
+
 def source_aware(threshold):
     cal=doc_scores('v8_commonpile_calibration')
     own=float(np.nextafter(np.sort(cal)[::-1][int(.05*len(cal))],np.inf))
@@ -91,6 +98,12 @@ def main():
     article_fpr=article_v8['fp']/article_v8['human']
     article_recall=article_v8['tp']/article_v8['ai']
     article_gate=article_fpr<=.10 and article_recall>=.95
+    article_rows=v8_pure['External articles']['rows']
+    human_index=np.array([i for i,row in enumerate(article_rows) if row['kind']=='human'])
+    substantial_v6=int((article_highlight_share('qwen3_token_repeat2_balanced_v6_20k',
+                       'v6_external_articles',v6_thr)[human_index]>=.10).sum())
+    substantial_v8=int((article_highlight_share(RUN,'v8_external_articles',v8_thr)
+                        [human_index]>=.10).sum())
     mixed_gate=(v8_mix['LLMTrace test']['models'][0]['ai_recall']>=.75 and
                 v8_mix['AITDNA collaboration']['models'][0]['human_fpr']<=.05 and
                 v8_mix['CoAuthor collaboration']['models'][0]['ai_recall']>=.50)
@@ -109,6 +122,8 @@ def main():
                  f'({100*article_fpr:.1f}%). Goal: at most 15/150 (10%).',fontsize=13)
         fig.text(.08,.64,f'AI articles caught: {article_v8["tp"]}/150 '
                  f'({100*article_recall:.1f}%). Goal: at least 95%.',fontsize=13)
+        fig.text(.08,.59,f'Human articles with ≥10% of tokens wrongly highlighted: '
+                 f'v6 {substantial_v6}/150 → v8 {substantial_v8}/150.',fontsize=11)
         fig.text(.07,.52,f'MIXED TEXT HIGHLIGHTING  |  {mixed_verdict}',fontsize=16,weight='bold',
                  color='#16806d' if mixed_gate else '#a9403b')
         fig.text(.08,.46,'AI words highlighted / human words falsely marked:',fontsize=12)
@@ -188,6 +203,7 @@ def main():
            'The v8 model changes 500 of 20,000 training documents from DAMASHA mixed examples to dated, attributed human publication prose from five CC BY publishers. The architecture, tuned hyperparameters, and initialization match v6. Original article stress results have guided this experiment and are now development evidence, not an untouched final test.','',
            '## Plain-language verdict','',
            f'**Published articles: {article_verdict}.** At the separately calibrated threshold, v8 falsely flags {article_v8["fp"]}/150 attributed-human articles ({100*article_fpr:.1f}%), versus {article_v6["fp"]}/150 for v6. It catches {article_v8["tp"]}/150 AI articles ({100*article_recall:.1f}%). The stated goal is at most 10% human false alarms with at least 95% AI recall.','',
+           f'The any-highlight document rule includes small isolated errors. A stricter descriptive view counts articles with at least 10% of tokens falsely highlighted: v6 {substantial_v6}/150; v8 {substantial_v8}/150. This is not a recalibrated operating threshold.','',
            f'**Mixed documents: {mixed_verdict}.** A useful passage highlighter should both find AI passages and leave human passages unmarked across datasets. The current check requires ≥75% AI-token recall on LLMTrace, ≤5% human-token false marks on AITDNA, and ≥50% AI-token recall on CoAuthor. This is a practical gate, not a published benchmark standard.','',
            '“AI-token recall” means the fraction of truly AI-written word/token positions the model highlights. “Human-token false marks” means the fraction of human-written positions it incorrectly highlights. “AI spans half covered” counts an AI passage only if the model highlights at least half of it; this is stricter than merely touching its edge.','',
            f'Qwen v6 threshold: `{v6_thr:.4f}`; v8 threshold: `{v8_thr:.4f}`. Both use the same independent 1,120-document calibration protocol.','',
