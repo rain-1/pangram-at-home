@@ -130,6 +130,9 @@ def main():
     v9_run = QWEN[2][1]
     human_sets = [
         ('External articles', 'v8_external_articles', 'v9_external_articles'),
+        ('Generic held-out human', 'v8_human_locked_test', 'v9_human_locked_test'),
+        ('CNN news', 'v8_cnn_article_test', 'v9_cnn_article_test'),
+        ('PMC articles', 'v8_pmc_article_test', 'v9_pmc_article_test'),
         ('Archived EPA', 'v9_archived_epa_human_v8', 'v9_archived_epa_human'),
         ('Archived magazine', 'v10_magazine_test_v8', 'v10_magazine_test_v9'),
         ('AITDNA collaboration', 'v8_aitdna', 'v9_aitdna'),
@@ -230,10 +233,10 @@ def main():
                          marker='o', label=label, color=color, lw=2)
             axes[1].plot([r[2] for r in rows], [100*r[4] for r in rows],
                          marker='o', label=label, color=color, lw=2)
-            for target, _, human_flagged, article_flagged, recall in rows:
-                axes[0].annotate(f'{100*target:g}%', (article_flagged, 100*recall),
+            for target, _, human_flagged, article_flagged, point_recall in rows:
+                axes[0].annotate(f'{100*target:g}%', (article_flagged, 100*point_recall),
                                  xytext=(4, 4), textcoords='offset points', fontsize=8)
-                axes[1].annotate(f'{100*target:g}%', (human_flagged, 100*recall),
+                axes[1].annotate(f'{100*target:g}%', (human_flagged, 100*point_recall),
                                  xytext=(4, 4), textcoords='offset points', fontsize=8)
         axes[0].set(xlabel='External human articles flagged (of 150)',
                     ylabel='External AI-token recall (%)', title='Publication transfer')
@@ -298,6 +301,12 @@ def main():
                  'The original Human Detectors source IDs repeat, although all 300 text hashes are distinct '
                  'across 150 source article URLs; numeric results use row order, and new prediction exports include row index and '
                  'text hash for unambiguous case review.', '',
+                 'The generic held-out human split contains 3,000 PERSUADE 2.0 student essays and '
+                 '579 Writers Stack Exchange documents, whereas the calibration split contains neither '
+                 'student essays nor CNN articles. The v9 generic-human regression is driven mainly by '
+                 'the student essays (239/3,000 documents with any false highlight at the original '
+                 '5% calibration target versus 2/3,000 for v8). PERSUADE remains evaluation-only; '
+                 'its source license in our ingested version restricts training.', '',
                  f'[Download the comparison charts]({pdf.name})', '']
     (REPORTS/'science_paired_v9_comparison.md').write_text('\n'.join(markdown))
     print(pdf)
