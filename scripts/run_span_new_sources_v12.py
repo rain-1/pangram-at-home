@@ -57,6 +57,15 @@ def wait_for_gpu(state: dict, timeout_hours: float = 12) -> None:
         pids = compute_pids()
         if not pids:
             return
+        if os.environ.get('PANGRAM_ALLOW_SHARED_GPU') == '1':
+            memory = subprocess.run(
+                ['nvidia-smi', '--query-gpu=memory.free', '--format=csv,noheader,nounits'],
+                capture_output=True, text=True, check=True)
+            free_mib = int(memory.stdout.splitlines()[0].strip())
+            if free_mib >= 8192:
+                state['shared_gpu_start_free_mib'] = free_mib
+                state['shared_gpu_other_pids'] = pids
+                return
         if time.monotonic() >= deadline:
             raise TimeoutError(f'GPU remained busy for {timeout_hours} hours: {pids}')
         state['phase'] = 'waiting_for_gpu'

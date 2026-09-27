@@ -157,9 +157,11 @@ def main() -> None:
               f'{summary["train_runtime_seconds"]/3600:.2f} hours; '
               f'best validation partial AUROC: {summary["best_metric"]:.4f}.',
               f'- [Weights & Biases run]({summary["wandb_run_url"]}).',
-              '- New-source holdout labels have different evidence levels: Dolly employees were '
+        '- New-source holdout labels have different evidence levels: Dolly employees were '
               'instructed not to use AI; historical fiction and pre-LLM essays have '
               'publication-era evidence; GRADTEX mixed boundaries are reconstructed.',
+              '- The new holdout is work/group-disjoint, not author-disjoint: writers may '
+              'appear on both sides. Its author rows test held-out prose, not unknown authors.',
               '- External articles and other established evaluations have informed model '
               'development. They are useful comparisons, not untouched final tests.', '']
     out = REPO/'reports/span_new_sources_v12.md'
