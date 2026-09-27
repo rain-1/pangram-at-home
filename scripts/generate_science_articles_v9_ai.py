@@ -24,6 +24,8 @@ def main():
     p.add_argument('--batch-size', type=int, default=2)
     p.add_argument('--prompt-file', type=Path, default=ROOT/'matched_ai_prompts.jsonl')
     p.add_argument('--output-file', type=Path)
+    p.add_argument('--max-new-tokens', type=int, default=800)
+    p.add_argument('--min-new-tokens', type=int, default=300)
     args = p.parse_args()
     model_name, model_path = MODELS[args.model]
     prompts = [json.loads(line) for line in args.prompt_file.open()]
@@ -57,7 +59,8 @@ def main():
         seed = int(hashlib.sha256(f'v9:{args.model}:{offset}'.encode()).hexdigest()[:8], 16)
         torch.manual_seed(seed)
         with torch.inference_mode():
-            ids = model.generate(**inputs, max_new_tokens=800, min_new_tokens=300,
+            ids = model.generate(**inputs, max_new_tokens=args.max_new_tokens,
+                                 min_new_tokens=args.min_new_tokens,
                                  do_sample=True, temperature=0.8, top_p=0.95,
                                  pad_token_id=tokenizer.pad_token_id)
         generated = tokenizer.batch_decode(ids[:, inputs['input_ids'].shape[1]:], skip_special_tokens=True)

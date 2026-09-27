@@ -43,7 +43,7 @@ def main():
     if OUTPUT.exists():
         raise SystemExit(f'Refusing to overwrite {OUTPUT}')
     humans = {r['id']: r for r in (json.loads(line) for line in (SCIENCE/'train_candidates.jsonl').open())}
-    ai_files = [SCIENCE/f'generated_{model}_train.jsonl' for model in ('qwen2_5_3b', 'smollm2_1_7b')]
+    ai_files = [SCIENCE/f'accepted_{model}_train.jsonl' for model in ('qwen2_5_3b', 'smollm2_1_7b')]
     ai = [json.loads(line) for path in ai_files for line in path.open()]
     assert len(ai) == len(humans) == 146
     assert {r['human_id'] for r in ai} == set(humans)
