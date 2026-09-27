@@ -29,6 +29,8 @@ def window_rows(row, tokenizer, positions):
     for position, start in positions:
         assert 0 <= start <= len(ids)-WINDOW
         text = tokenizer.decode(ids[start:start+WINDOW], skip_special_tokens=True)
+        if len(tokenizer.encode(text, add_special_tokens=False)) != WINDOW:
+            raise ValueError(f'Window token count changed on decode: {row["id"]}:{position}')
         label = int(row['label']) if 'label' in row else int(row['kind'] == 'ai')
         out.append({'id': f'science_v9:{row["id"]}:{position}',
                     'text': text, 'spans': [{'start': 0, 'end': len(text), 'label': label}],

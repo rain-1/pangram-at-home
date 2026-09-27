@@ -18,7 +18,7 @@ def main():
     humans = {r['id']: r for r in (json.loads(line) for line in (ROOT/'train_candidates.jsonl').open())}
     protected_phrases = set()
     for name in ('train_candidates', 'calibration_human', 'locked_test_human',
-                 'archived_epa_science_matters_human'):
+                 'archived_epa_science_matters_human', 'archived_noaa_fisheries_human'):
         for row in (json.loads(line) for line in (ROOT/f'{name}.jsonl').open()):
             protected_phrases.update(phrase_fingerprints(row['text']))
     reasons = Counter()
