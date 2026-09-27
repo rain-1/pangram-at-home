@@ -10,7 +10,7 @@ this repository contains only collection code and aggregate documentation.
 | Editorial source | Accepted articles | Use | Date evidence | Reuse evidence |
 |---|---:|---|---|---|
 | NASA Earth Observatory | 41 | Training candidate | Page `article:published_time`; visible NASA story credit | [NASA Earth FAQ](https://science.nasa.gov/earth/faq/) |
-| NOAA Fisheries feature stories | 105 | Training candidate | Visible feature-story publication date | [NOAA Fisheries website policy](https://www.fisheries.noaa.gov/website-policies-and-disclaimers) |
+| NOAA Fisheries feature stories | 105 current pages; 90 archived extracts | Training candidate | Visible publication date; historical WARC timestamp for 90 | [NOAA Fisheries website policy](https://www.fisheries.noaa.gov/website-policies-and-disclaimers) |
 | NOAA Climate.gov science explainers | 41 | Calibration human pool | Page `article:published_time` and byline | [Climate.gov about](https://www.climate.gov/about) and [NOAA reuse policy](https://sos.noaa.gov/copyright/) |
 | EPA Science Matters | 240 current pages; 151 archived extracts | Locked human test pool | Visible `Published` line in the 2017–2022 archives; historical WARC timestamp for 151 | [EPA disclaimers](https://www.epa.gov/web-policies-and-procedures/epa-disclaimers) |
 
@@ -18,7 +18,8 @@ The source-exclusive split is 146 training candidates, 41 calibration-human docu
 locked-test-human documents. The split manifest, data and raw HTML are on F.
 The full overlap audit found zero sampled 24-word matches against the listed
 prior train/validation/test partitions and zero matches across the four new
-sources (`overlap_audit.json` on F).
+sources (`overlap_audit.json` on F). The audit covers 427 current and 241
+archived extracts (90 NOAA Fisheries plus 151 EPA).
 
 All accepted pages carry an original publication date before 2023. Text comes
 from article paragraphs after figures, figure captions, navigation, references,
@@ -40,6 +41,10 @@ rate-limited Common Crawl lookup recovered 164 dated pre-2023 EPA captures;
 least 90% of the current page's sampled 13-word sequences. Use the 151
 historical extracts as the primary high-confidence human publication test,
 and treat the remaining current-page EPA articles as provisional stress data.
+For NOAA Fisheries training candidates, 90 pre-2023 captures were recovered
+and all yielded usable article prose. Their median current-to-archive sampled
+13-word overlap is 100%; 89 of 90 retain at least 90%. Training preparation
+prefers these historical extracts over the current snapshots.
 Keep EPA locked during training and threshold selection. NOAA Climate.gov and NOAA
 Fisheries share an agency, so the calibration source is editorially distinct but
 not institutionally independent of one training source.
@@ -79,6 +84,19 @@ found no overlap between these historical extracts and protected training or
 evaluation partitions, and none between them and the 60 generated AI pilots.
 The archived full-article pairs have an even stronger length shortcut
 (length-only AUROC 0.854), reinforcing the need to use equal-token windows.
+
+## Training-side diagnostic and paired pilot
+
+The frozen v8 model at its existing threshold falsely highlighted 1,445 of
+167,622 source tokens (0.86%) in 23 of the 146 archive-preferred training
+articles. The NASA subset had 1.45% token FPR; NOAA Fisheries had 0.60%.
+These are training-side diagnostics, not held-out evaluation results. The
+paired training pilot selects one 512-token window containing the largest
+number of v8 false highlights (or the highest mean score if none are above
+threshold) and one ordinary window per human article. AI partners use the
+same relative positions, with exactly equal source-token lengths. It replaces
+equal numbers of pure human and pure AI science abstracts in the 20k mix,
+preserving mixed-document supervision.
 
 Use the raw/source text locally for research, preserving attribution. Individual
 pages can contain material with separate rights even on public-sector sites;
