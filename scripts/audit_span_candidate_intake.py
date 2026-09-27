@@ -95,7 +95,8 @@ def main():
         reference[name]=(exact,phrases)
         sizes[name]=count
     counts=Counter();sources=Counter();kinds=Counter();matches=defaultdict(Counter)
-    first_hits=defaultdict(list);seen_ids=set();seen_text=set();duplicate_ids=[]
+    first_hits=defaultdict(list);hit_groups=defaultdict(set)
+    seen_ids=set();seen_text=set();duplicate_ids=[]
     candidate_sha=hashlib.sha256()
     with args.candidate.open('rb') as stream:
         for block in iter(lambda:stream.read(1024*1024),b''):
@@ -128,12 +129,17 @@ def main():
                 matches[name]['rows_with_match']+=1
                 matches[name]['exact_rows']+=hit_exact
                 matches[name]['sampled_24_word_phrase_rows']+=hit_phrase
+                if row.get('group_id'):
+                    hit_groups[name].add(str(row['group_id']))
                 if len(first_hits[name])<20:
                     first_hits[name].append({'id':identifier,'exact':hit_exact,
-                                             'sampled_phrase':hit_phrase})
+                                             'sampled_phrase':hit_phrase,
+                                             'group_id':row.get('group_id')})
     result={'candidate':str(args.candidate),'sha256':candidate_sha.hexdigest(),
             'checks':dict(counts),'sources':dict(sources),'kinds':dict(kinds),
             'reference_rows':sizes,'overlap':{name:dict(value) for name,value in matches.items()},
+            'overlap_group_count':{name:len(groups) for name,groups in hit_groups.items()},
+            'overlap_group_ids':{name:sorted(groups)[:100] for name,groups in hit_groups.items()},
             'first_overlap_ids':dict(first_hits),'first_duplicate_ids':duplicate_ids,
             'caveat':'Sampled phrase hits require source/work review; no hit is not proof of independence.'}
     rendered=json.dumps(result,indent=2)+'\n'
