@@ -48,7 +48,9 @@ def load(tag, key):
 
 def baseline_documents(which, key, expected_ids):
     stem = {'calibration':'calibration', 'generic':'locked_human',
-            'external':'external_human_detectors'}[key]
+            'external':'external_human_detectors', 'llmtrace':'llmtrace_pure',
+            **{key:'additional_human_'+key for key in
+               ('cnn','pmc','epa','magazine','asap')}}[key]
     path = RUNS/f'open_pangram_editlens_{which}_v5'/(stem+'.jsonl')
     rows = [json.loads(line) for line in path.open()]
     assert [row['id'] for row in rows] == list(expected_ids), (which, key)
@@ -125,6 +127,15 @@ def external_roc(data):
     return y, values
 
 
+def llmtrace_pure_roc(data, rows):
+    score, offsets = data['score'], data['document_offsets']
+    assert len(rows) == len(offsets)-1
+    selected = [(int(row['kind']=='ai'), float(score[offsets[i]:offsets[i+1]].max()))
+                for i,row in enumerate(rows) if row['kind'] in ('human','ai')]
+    y, values = zip(*selected)
+    return np.array(y),np.array(values)
+
+
 def main():
     REPORTS.mkdir(exist_ok=True)
     generic_rows = [json.loads(line) for line in
@@ -135,6 +146,8 @@ def main():
     }
     assert len(groups['persuade']) == 3000 and len(groups['writers']) == 579
     mixed_groups = {}
+    llmtrace_pure_ids = []
+    llmtrace_rows = []
     for key,relative in {
         'llmtrace':'span_size_curve_v5/size_20000/test_llmtrace.jsonl',
         'aitdna':'span_sources_v5/normalized_aitdna_real/locked_test.jsonl',
@@ -145,6 +158,10 @@ def main():
             assert [row['id'] for row in rows] == list(data['document_ids']), key
         mixed_groups[key] = [i for i,row in enumerate(rows) if row['kind']=='mixed']
         assert mixed_groups[key], key
+        if key == 'llmtrace':
+            llmtrace_rows = rows
+            llmtrace_pure_ids = [row['id'] for row in rows
+                                 if row['kind'] in ('human','ai')]
     loaded = {tag:{key:load(tag,key) for key in STEMS} for tag in MODELS}
     summary = {}
     for tag in MODELS:
@@ -160,16 +177,20 @@ def main():
                      for key in MIXED_LABELS}
             summary[tag]['thresholds'][f'{target:.1%}'] = {
                 'cutoff':cutoff, 'human':human, 'mixed':mixed,
-                'external_ai':result(loaded[tag]['external'],cutoff)}
+                'external_ai':result(loaded[tag]['external'],cutoff),
+                'llmtrace_ai':result(loaded[tag]['llmtrace'],cutoff)}
         y, score = external_roc(loaded[tag]['external'])
         summary[tag]['external_document_auroc'] = float(roc_auc_score(y,score))
+        y, score = llmtrace_pure_roc(loaded[tag]['llmtrace'],llmtrace_rows)
+        summary[tag]['llmtrace_pure_document_auroc'] = float(roc_auc_score(y,score))
     for name,(which,color) in BASELINES.items():
         pure = {}
         span = {}
         reference = RUNS/MODELS['v10'][0]
-        for key in ('calibration','generic','external'):
+        for key in ('calibration','generic','external','cnn','pmc','epa','magazine','asap'):
             with np.load(reference/(STEMS[key]['v10']+'_scores.npz')) as data:
                 pure[key] = baseline_documents(which,key,data['document_ids'])
+        pure['llmtrace'] = baseline_documents(which,'llmtrace',llmtrace_pure_ids)
         for key in ('calibration','generic','llmtrace','aitdna'):
             with np.load(reference/(STEMS[key]['v10']+'_scores.npz')) as data:
                 span[key] = baseline_spans(which,key,data['document_ids'],data['label'])
@@ -177,21 +198,24 @@ def main():
         for target in (.005,.01,.02,.05):
             pure_cutoff = document_threshold(pure['calibration'],target)
             span_cutoff = threshold(span['calibration'],target)
-            human = {
-                'external':document_result(pure['external'],pure_cutoff),
-                'persuade':document_result(pure['generic'],pure_cutoff,groups['persuade']),
-                'writers':document_result(pure['generic'],pure_cutoff,groups['writers']),
-            }
+            human = {key:document_result(pure[key],pure_cutoff)
+                     for key in ('external','cnn','pmc','epa','magazine','asap')}
+            human['persuade'] = document_result(pure['generic'],pure_cutoff,groups['persuade'])
+            human['writers'] = document_result(pure['generic'],pure_cutoff,groups['writers'])
             mixed = {key:result(span[key],span_cutoff,mixed_groups[key])
                      for key in MIXED_LABELS}
             summary[name]['thresholds'][f'{target:.1%}'] = {
                 'pure_cutoff':pure_cutoff, 'span_cutoff':span_cutoff,
                 'human':human, 'mixed':mixed,
                 'external_ai':document_result(pure['external'],pure_cutoff),
+                'llmtrace_ai':document_result(pure['llmtrace'],pure_cutoff),
             }
         y = np.array([row['kind']=='ai' for row in pure['external']])
         score = np.array([row['score'] for row in pure['external']])
         summary[name]['external_document_auroc'] = float(roc_auc_score(y,score))
+        y = np.array([row['kind']=='ai' for row in pure['llmtrace']])
+        score = np.array([row['score'] for row in pure['llmtrace']])
+        summary[name]['llmtrace_pure_document_auroc'] = float(roc_auc_score(y,score))
     (REPORTS/'essay_paired_v10_comparison.json').write_text(json.dumps(summary,indent=2)+'\n')
 
     target = '2.0%'
@@ -219,42 +243,42 @@ def main():
         axes[0].set_title('Shared human tests',loc='left')
         axes[0].grid(axis='x',alpha=.2);axes[0].set_axisbelow(True)
         names=[name for name,_ in all_models]
-        caught=[summary[name]['thresholds'][target]['external_ai']['ai_flagged']
+        caught=[summary[name]['thresholds'][target]['llmtrace_ai']['ai_flagged']
                 for name in names]
         axes[1].barh(np.arange(len(names)),caught,
                      color=[color for _,color in all_models],height=.65)
         axes[1].set_yticks(np.arange(len(names)),names);axes[1].invert_yaxis()
-        axes[1].set_xlim(0,175);axes[1].set_xlabel('AI articles detected (of 150)')
-        axes[1].set_title('External AI articles',loc='left')
+        axes[1].set_xlim(0,570);axes[1].set_xlabel('Pure AI documents detected (of 516)')
+        axes[1].set_title('LLMTrace pure AI',loc='left')
         axes[1].grid(axis='x',alpha=.2);axes[1].set_axisbelow(True)
         for yi,value in enumerate(caught):
-            axes[1].text(value-2,yi,f'{value}/150',va='center',ha='right',
+            axes[1].text(value-5,yi,f'{value}/516',va='center',ha='right',
                          color='white',fontsize=9)
         fig.suptitle('Our models and open Pangram at 2% human-calibration target',
                      x=.06,ha='left',fontsize=15)
-        fig.text(.06,.01,'Qwen detects an article when any token is highlighted; EditLens makes a document decision. '
+        fig.text(.06,.01,'Qwen detects a document when any token is highlighted; EditLens makes a document decision. '
                  'Each model uses its own threshold from the same human calibration documents.',fontsize=8)
         fig.tight_layout(rect=[0,.05,1,.93]);pages.savefig(fig);plt.close(fig)
 
         fig,ax = plt.subplots(figsize=(12,7))
         keys = [key for key in HUMAN_LABELS if key not in ('external','persuade','writers')]
         y = np.arange(len(keys))
-        width = .25
-        for position,(tag,(_,color)) in enumerate(MODELS.items()):
-            metrics = summary[tag]['thresholds'][target]['human']
+        width = .15
+        for position,(name,color) in enumerate(all_models):
+            metrics = summary[name]['thresholds'][target]['human']
             values = [100*metrics[key]['human_flagged']/metrics[key]['human_docs'] for key in keys]
-            ax.barh(y+(position-1)*width,values,width,color=color,label=tag)
-            for yi,value,key in zip(y+(position-1)*width,values,keys):
+            ax.barh(y+(position-2)*width,values,width,color=color,label=name)
+            for yi,value,key in zip(y+(position-2)*width,values,keys):
                 row = metrics[key]
                 ax.text(value+.35,yi,f'{row["human_flagged"]}/{row["human_docs"]}',
-                        va='center',fontsize=8)
+                        va='center',fontsize=7)
         ax.set_yticks(y,[HUMAN_LABELS[key] for key in keys]);ax.invert_yaxis()
         ax.set_xlabel('Documents with any false highlight (%)')
         ax.set_xlim(0,max(8,ax.get_xlim()[1]*1.12))
-        ax.grid(axis='x',alpha=.2);ax.set_axisbelow(True);ax.legend()
-        ax.set_title('Additional human sources: our three checkpoints',loc='left',fontsize=15)
+        ax.grid(axis='x',alpha=.2);ax.set_axisbelow(True);ax.legend(fontsize=8)
+        ax.set_title('Additional human sources: all five models',loc='left',fontsize=15)
         fig.text(.09,.015,'ASAP test prompts are excluded from v10 training. '
-                 'Saved EditLens scores are unavailable for these sources.',fontsize=8)
+                 'EditLens uses whole-document scores; Qwen flags any highlighted token.',fontsize=8)
         fig.tight_layout(rect=[0,.035,1,1]);pages.savefig(fig);plt.close(fig)
 
         fig,axes = plt.subplots(1,2,figsize=(12,5.7))
@@ -298,6 +322,34 @@ def main():
 
         fig,axes=plt.subplots(1,2,figsize=(12,5.5))
         for tag,(_,color) in MODELS.items():
+            y,score=llmtrace_pure_roc(loaded[tag]['llmtrace'],llmtrace_rows)
+            fpr,tpr,_=roc_curve(y,score)
+            for ax in axes:
+                ax.plot(fpr,tpr,label=f'{tag} ({roc_auc_score(y,score):.4f})',
+                        color=color,lw=2)
+        for name,(which,color) in BASELINES.items():
+            rows=[json.loads(line) for line in
+                  (RUNS/f'open_pangram_editlens_{which}_v5'/'llmtrace_pure.jsonl').open()]
+            y=np.array([int(row['kind']=='ai') for row in rows])
+            score=np.array([row['score'] for row in rows])
+            fpr,tpr,_=roc_curve(y,score)
+            for ax in axes:
+                ax.plot(fpr,tpr,label=f'{name} ({roc_auc_score(y,score):.4f})',
+                        color=color,lw=2)
+        axes[0].set(xlim=(0,1),ylim=(0,1),title='Full ROC')
+        axes[1].set(xlim=(0,.2),ylim=(.5,1),title='Low false-positive region')
+        for ax in axes:
+            ax.set_xlabel('Pure-human document false-positive rate')
+            ax.set_ylabel('Pure-AI document recall')
+            ax.grid(alpha=.2);ax.legend(fontsize=7,loc='lower right')
+        fig.suptitle('LLMTrace pure-document ranking across thresholds',
+                     x=.06,ha='left',fontsize=15)
+        fig.text(.06,.01,'LLMTrace contributes some v8–v10 training records; evaluation IDs are disjoint '
+                 'but this is a same-source test.',fontsize=8)
+        fig.tight_layout(rect=[0,.04,1,.93]);pages.savefig(fig);plt.close(fig)
+
+        fig,axes=plt.subplots(1,2,figsize=(12,5.5))
+        for tag,(_,color) in MODELS.items():
             points=[]
             for target_key,row in summary[tag]['thresholds'].items():
                 h=row['human'];a=row['external_ai']
@@ -326,24 +378,26 @@ def main():
               'development tests rather than blind tests.','',
               '## Shared human and AI document tests','',
               '| Model | External human alarms | PERSUADE human alarms | Writers human alarms | '
-              'External AI articles detected | Document AUROC |',
-              '|---|---:|---:|---:|---:|---:|']
+              'External AI articles detected | LLMTrace pure AI detected | External AUROC | LLMTrace AUROC |',
+              '|---|---:|---:|---:|---:|---:|---:|---:|']
     for name in [*MODELS,*BASELINES]:
         row=summary[name]['thresholds'][target]
-        h=row['human'];a=row['external_ai']
+        h=row['human'];a=row['external_ai'];llm=row['llmtrace_ai']
         markdown.append(f'| {name} | {h["external"]["human_flagged"]}/150 | '
                         f'{h["persuade"]["human_flagged"]}/3,000 | '
                         f'{h["writers"]["human_flagged"]}/579 | '
-                        f'{a["ai_flagged"]}/150 | '
-                        f'{summary[name]["external_document_auroc"]:.4f} |')
-    markdown+=['','## Additional human sources scored for our checkpoints','',
-              '| Source | v8 | v9 | v10 |','|---|---:|---:|---:|']
+                        f'{a["ai_flagged"]}/150 | {llm["ai_flagged"]}/516 | '
+                        f'{summary[name]["external_document_auroc"]:.4f} | '
+                        f'{summary[name]["llmtrace_pure_document_auroc"]:.4f} |')
+    markdown+=['','## Additional human sources (all five models)','',
+              '| Source | v8 | v9 | v10 | Pangram RoBERTa | Pangram Llama |',
+              '|---|---:|---:|---:|---:|---:|']
     for key,label in HUMAN_LABELS.items():
         if key in ('external','persuade','writers'):
             continue
         values=[]
-        for tag in MODELS:
-            row=summary[tag]['thresholds'][target]['human'][key]
+        for name in [*MODELS,*BASELINES]:
+            row=summary[name]['thresholds'][target]['human'][key]
             values.append(f'{row["human_flagged"]}/{row["human_docs"]}')
         markdown.append(f'| {label} | '+' | '.join(values)+' |')
     markdown+=['','## Mixed-document localization (mixed records only)','',
@@ -361,7 +415,9 @@ def main():
         row=summary[tag]['thresholds'][target]['external_ai']
         markdown.append(f'| {tag} | {row["ai_token_recall"]:.1%} | '
                         f'{row["ai_flagged"]}/{row["ai_docs"]} |')
-    markdown+=['','EditLens document decisions cannot provide an AI-token recall for external articles. '
+    markdown+=['','LLMTrace evaluation IDs are disjoint from training, but LLMTrace contributes '
+               'some training records to v8–v10. EditLens document decisions cannot provide an '
+               'AI-token recall for external articles. '
                'The mixed-document EditLens scores above are coarse window broadcasts, not native '
                'token predictions. The document detection counts also use different decision units: '
                'any highlighted Qwen token versus a single EditLens document score. V8/v9 saved-score '

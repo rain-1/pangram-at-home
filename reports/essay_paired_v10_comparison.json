@@ -94,6 +94,14 @@
           "ai_flagged": 149,
           "human_token_fpr": 0.01822620016273393,
           "ai_token_recall": 0.8030693251446928
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 0,
+          "ai_docs": 516,
+          "ai_flagged": 356,
+          "human_token_fpr": 0.0,
+          "ai_token_recall": 0.17448737802488945
         }
       },
       "1.0%": {
@@ -189,6 +197,14 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.03856794141578519,
           "ai_token_recall": 0.8837080957165296
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 0,
+          "ai_docs": 516,
+          "ai_flagged": 412,
+          "human_token_fpr": 0.00011650833482702993,
+          "ai_token_recall": 0.3204694292591003
         }
       },
       "2.0%": {
@@ -284,6 +300,14 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.06265256305939788,
           "ai_token_recall": 0.926783364229414
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 0,
+          "ai_docs": 516,
+          "ai_flagged": 442,
+          "human_token_fpr": 0.0004145008065961642,
+          "ai_token_recall": 0.4329346791798048
         }
       },
       "5.0%": {
@@ -379,12 +403,21 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.12982777325739084,
           "ai_token_recall": 0.9738067273267579
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 2,
+          "ai_docs": 516,
+          "ai_flagged": 476,
+          "human_token_fpr": 0.0027043376949274062,
+          "ai_token_recall": 0.620042166539172
         }
       }
     },
     "human": {},
     "mixed": {},
-    "external_document_auroc": 0.9836444444444444
+    "external_document_auroc": 0.9836444444444444,
+    "llmtrace_pure_document_auroc": 0.9871958440999138
   },
   "v9": {
     "thresholds": {
@@ -481,6 +514,14 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.010754000542446433,
           "ai_token_recall": 0.872175131249381
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 0,
+          "ai_docs": 516,
+          "ai_flagged": 447,
+          "human_token_fpr": 0.00034728445958057,
+          "ai_token_recall": 0.3986902251991716
         }
       },
       "1.0%": {
@@ -576,6 +617,14 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.01482912937347437,
           "ai_token_recall": 0.9341701218390479
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 2,
+          "ai_docs": 516,
+          "ai_flagged": 477,
+          "human_token_fpr": 0.0013868972934217602,
+          "ai_token_recall": 0.5546504468533686
         }
       },
       "2.0%": {
@@ -671,6 +720,14 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.02053837808516409,
           "ai_token_recall": 0.9647643171494474
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 10,
+          "ai_docs": 516,
+          "ai_flagged": 487,
+          "human_token_fpr": 0.003994891557626815,
+          "ai_token_recall": 0.6616489728902737
         }
       },
       "5.0%": {
@@ -766,12 +823,21 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.05398698128559805,
           "ai_token_recall": 0.994941061598766
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 33,
+          "ai_docs": 516,
+          "ai_flagged": 497,
+          "human_token_fpr": 0.028535579853020254,
+          "ai_token_recall": 0.8124521894882176
         }
       }
     },
     "human": {},
     "mixed": {},
-    "external_document_auroc": 0.989111111111111
+    "external_document_auroc": 0.989111111111111,
+    "llmtrace_pure_document_auroc": 0.9878458763996554
   },
   "v10": {
     "thresholds": {
@@ -868,6 +934,14 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.011893138052617304,
           "ai_token_recall": 0.9006679213777293
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 0,
+          "ai_docs": 516,
+          "ai_flagged": 454,
+          "human_token_fpr": 0.0010799426420505466,
+          "ai_token_recall": 0.5048827359740284
         }
       },
       "1.0%": {
@@ -963,6 +1037,14 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.01466639544344996,
           "ai_token_recall": 0.9355498323121118
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 0,
+          "ai_docs": 516,
+          "ai_flagged": 467,
+          "human_token_fpr": 0.0017677899265101272,
+          "ai_token_recall": 0.5857566654850085
         }
       },
       "2.0%": {
@@ -1058,6 +1140,14 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.01800922158936805,
           "ai_token_recall": 0.9588634015877283
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 2,
+          "ai_docs": 516,
+          "ai_flagged": 479,
+          "human_token_fpr": 0.002914948915576268,
+          "ai_token_recall": 0.6475586320129858
         }
       },
       "5.0%": {
@@ -1153,12 +1243,21 @@
           "ai_flagged": 150,
           "human_token_fpr": 0.030519392459994577,
           "ai_token_recall": 0.9864859128022981
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 14,
+          "ai_docs": 516,
+          "ai_flagged": 494,
+          "human_token_fpr": 0.010263936189281233,
+          "ai_token_recall": 0.740668320988115
         }
       }
     },
     "human": {},
     "mixed": {},
-    "external_document_auroc": 0.9921333333333333
+    "external_document_auroc": 0.9921333333333333,
+    "llmtrace_pure_document_auroc": 0.9879347006890611
   },
   "Pangram RoBERTa": {
     "kind": "open_pangram",
@@ -1172,6 +1271,36 @@
             "human_flagged": 0,
             "ai_docs": 150,
             "ai_flagged": 72
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
           },
           "persuade": {
             "human_docs": 3000,
@@ -1209,6 +1338,12 @@
           "human_flagged": 0,
           "ai_docs": 150,
           "ai_flagged": 72
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 1,
+          "ai_docs": 516,
+          "ai_flagged": 297
         }
       },
       "1.0%": {
@@ -1220,6 +1355,36 @@
             "human_flagged": 0,
             "ai_docs": 150,
             "ai_flagged": 103
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
           },
           "persuade": {
             "human_docs": 3000,
@@ -1257,6 +1422,12 @@
           "human_flagged": 0,
           "ai_docs": 150,
           "ai_flagged": 103
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 1,
+          "ai_docs": 516,
+          "ai_flagged": 334
         }
       },
       "2.0%": {
@@ -1268,6 +1439,36 @@
             "human_flagged": 0,
             "ai_docs": 150,
             "ai_flagged": 118
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
           },
           "persuade": {
             "human_docs": 3000,
@@ -1305,6 +1506,12 @@
           "human_flagged": 0,
           "ai_docs": 150,
           "ai_flagged": 118
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 2,
+          "ai_docs": 516,
+          "ai_flagged": 353
         }
       },
       "5.0%": {
@@ -1316,6 +1523,36 @@
             "human_flagged": 1,
             "ai_docs": 150,
             "ai_flagged": 146
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
           },
           "persuade": {
             "human_docs": 3000,
@@ -1353,10 +1590,17 @@
           "human_flagged": 1,
           "ai_docs": 150,
           "ai_flagged": 146
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 10,
+          "ai_docs": 516,
+          "ai_flagged": 423
         }
       }
     },
-    "external_document_auroc": 0.9989333333333333
+    "external_document_auroc": 0.9989333333333333,
+    "llmtrace_pure_document_auroc": 0.9506325366063739
   },
   "Pangram Llama": {
     "kind": "open_pangram",
@@ -1370,6 +1614,36 @@
             "human_flagged": 0,
             "ai_docs": 150,
             "ai_flagged": 142
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
           },
           "persuade": {
             "human_docs": 3000,
@@ -1407,6 +1681,12 @@
           "human_flagged": 0,
           "ai_docs": 150,
           "ai_flagged": 142
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 0,
+          "ai_docs": 516,
+          "ai_flagged": 385
         }
       },
       "1.0%": {
@@ -1418,6 +1698,36 @@
             "human_flagged": 0,
             "ai_docs": 150,
             "ai_flagged": 147
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
           },
           "persuade": {
             "human_docs": 3000,
@@ -1455,6 +1765,12 @@
           "human_flagged": 0,
           "ai_docs": 150,
           "ai_flagged": 147
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 0,
+          "ai_docs": 516,
+          "ai_flagged": 416
         }
       },
       "2.0%": {
@@ -1466,6 +1782,36 @@
             "human_flagged": 0,
             "ai_docs": 150,
             "ai_flagged": 149
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
           },
           "persuade": {
             "human_docs": 3000,
@@ -1503,6 +1849,12 @@
           "human_flagged": 0,
           "ai_docs": 150,
           "ai_flagged": 149
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 2,
+          "ai_docs": 516,
+          "ai_flagged": 453
         }
       },
       "5.0%": {
@@ -1514,6 +1866,36 @@
             "human_flagged": 7,
             "ai_docs": 150,
             "ai_flagged": 150
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0
           },
           "persuade": {
             "human_docs": 3000,
@@ -1551,9 +1933,16 @@
           "human_flagged": 7,
           "ai_docs": 150,
           "ai_flagged": 150
+        },
+        "llmtrace_ai": {
+          "human_docs": 720,
+          "human_flagged": 19,
+          "ai_docs": 516,
+          "ai_flagged": 486
         }
       }
     },
-    "external_document_auroc": 0.9999111111111111
+    "external_document_auroc": 0.9999111111111111,
+    "llmtrace_pure_document_auroc": 0.9834248492678725
   }
 }
