@@ -8,6 +8,7 @@ from pathlib import Path
 from transformers import AutoTokenizer
 
 from build_span_balanced_v6 import phrase_fingerprints
+from prepare_asap2_ai_prompts_v10 import source_texts
 
 ROOT = Path('/mnt/f/pangram-at-home/data/asap2_student_essays_v10')
 TOKENIZER = Path('/mnt/f/pangram-at-home/models/Qwen3-1.7B')
@@ -22,6 +23,8 @@ def main():
     for name in ('train_candidates', 'locked_test_human'):
         for line in (ROOT/f'{name}.jsonl').open():
             protected.update(phrase_fingerprints(json.loads(line)['text']))
+    protected_readings = {name: phrase_fingerprints(text)
+                          for name, text in source_texts().items()}
     rejected = Counter()
     cleaned = Counter()
     accepted_ids = set()
@@ -56,6 +59,8 @@ def main():
                 rejected['incomplete_ending'] += 1
             elif phrase_fingerprints(text) & protected:
                 rejected['human_24_word_overlap'] += 1
+            elif phrase_fingerprints(text) & protected_readings[row['topic_title']]:
+                rejected['source_reading_24_word_overlap'] += 1
             else:
                 accepted_ids.add(row['human_id'])
                 row.update(text=text, words=len(text.split()),
