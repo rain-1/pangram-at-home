@@ -138,6 +138,9 @@ def main() -> None:
                     ROOT/(output_name+'.log'))
             state['completed_evaluations'].append(output_name)
             save(state)
+        command([sys.executable, '-u', str(REPO/'scripts/report_span_new_sources_v12.py')],
+                ROOT/'span_new_sources_v12_report.log')
+        state['report'] = str(REPO/'reports/span_new_sources_v12.md')
         state['phase'] = 'complete'
     except Exception:
         state['phase'] = 'failed'
