@@ -87,6 +87,12 @@ def threshold_sweep(run, prefix):
                               for i in range(len(external_offsets)-1)
                               if np.all(labels[external_offsets[i]:external_offsets[i+1]] == 0))
         ai_recall = float((external[labels == 1] >= threshold).mean())
+        if target == .05:
+            heldout_report = report_json(run, prefix+'_human_locked_test')['overall']
+            article_report = report_json(run, prefix+'_external_articles')['overall']
+            heldout_flagged = heldout_report['pure_human_documents_with_false_highlight']
+            article_flagged = article_report['pure_human_documents_with_false_highlight']
+            ai_recall = article_report['ai_recall']
         rows.append((target, threshold, heldout_flagged, article_flagged, ai_recall))
     return rows
 
@@ -301,6 +307,9 @@ def main():
                  'The original Human Detectors source IDs repeat, although all 300 text hashes are distinct '
                  'across 150 source article URLs; numeric results use row order, and new prediction exports include row index and '
                  'text hash for unambiguous case review.', '',
+                 'For v8 and v9, retrospective threshold sweeps use saved float32 scores. '
+                 'The frozen 5% rows use the original float64 evaluation summaries; near-threshold ties '
+                 'can shift a retrospective count by one document.', '',
                  'The generic held-out human split contains 3,000 PERSUADE 2.0 student essays and '
                  '579 Writers Stack Exchange documents, whereas the calibration split contains neither '
                  'student essays nor CNN articles. The v9 generic-human regression is driven mainly by '

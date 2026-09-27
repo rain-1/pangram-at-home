@@ -58,9 +58,11 @@ Each threshold below is selected using only the separate generic-human calibrati
 | v9 | 0.5% | 4 | 9 | 87.2% |
 | v9 | 1.0% | 16 | 15 | 93.4% |
 | v9 | 2.0% | 42 | 20 | 96.5% |
-| v9 | 5.0% | 266 | 39 | 99.5% |
+| v9 | 5.0% | 265 | 39 | 99.5% |
 
 The external Human Detectors human labels have attributed bylines but no independently verified AI-free workflow. The archived EPA and magazine extracts were captured before 2023. External article results have informed development and are no longer a pristine blind test. The magazine test is author-exclusive from its candidate training pool. The original Human Detectors source IDs repeat, although all 300 text hashes are distinct across 150 source article URLs; numeric results use row order, and new prediction exports include row index and text hash for unambiguous case review.
+
+For v8 and v9, retrospective threshold sweeps use saved float32 scores. The frozen 5% rows use the original float64 evaluation summaries; near-threshold ties can shift a retrospective count by one document.
 
 The generic held-out human split contains 3,000 PERSUADE 2.0 student essays and 579 Writers Stack Exchange documents, whereas the calibration split contains neither student essays nor CNN articles. The v9 generic-human regression is driven mainly by the student essays (239/3,000 documents with any false highlight at the original 5% calibration target versus 2/3,000 for v8). PERSUADE remains evaluation-only; its source license in our ingested version restricts training.
 

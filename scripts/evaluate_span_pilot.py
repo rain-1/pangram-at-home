@@ -131,7 +131,7 @@ def main():
     (run/f"{args.output_name}.json").write_text(json.dumps(report,indent=2)+"\n")
     (run/f"{args.output_name}_predictions.jsonl").write_text("".join(json.dumps(x)+"\n" for x in predictions))
     np.savez_compressed(run/f"{args.output_name}_scores.npz",
-        score=np.concatenate([r["score"][r["label"]!=-100] for r in results]).astype(np.float32),
+        score=np.concatenate([r["score"][r["label"]!=-100] for r in results]).astype(np.float64),
         label=np.concatenate([r["label"][r["label"]!=-100] for r in results]).astype(np.int8),
         document_offsets=np.cumsum([0]+[int(np.sum(r["label"]!=-100)) for r in results]),
         document_ids=np.array([r["row"]["id"] for r in results]),
