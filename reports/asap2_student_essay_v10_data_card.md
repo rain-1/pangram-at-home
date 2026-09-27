@@ -25,3 +25,12 @@ scores, with fixed quotas across the two prompts. AI companions are generated
 from each essay's assignment and the original source reading, without showing
 the student's essay. The goal is to teach the detector source-based student
 prose without contaminating the protected PERSUADE test.
+
+The exhaustive AI audit accepted 223 of 256 generated pairs (114 Qwen2.5-3B
+and 109 SmolLM2-1.7B). It rejected long overlaps with protected human essays
+or source readings, short outputs, incomplete endings, and meta responses.
+Each accepted human/AI pair contributes one excerpt with exactly the same
+Qwen3 source-token length. The resulting 20,000-document training mix assigns
+2.53% of supervised-token positions to ASAP 2.0 essays, 3.61% to the earlier
+paired science data, and 0.89% to LLMTrace; the largest single source is
+DAMASHA at 26.2%. The class balance is 43.1% AI supervised tokens.
