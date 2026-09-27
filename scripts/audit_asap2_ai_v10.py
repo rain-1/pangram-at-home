@@ -8,8 +8,8 @@ from pathlib import Path
 import pyarrow.parquet as pq
 from transformers import AutoTokenizer
 
-from build_span_balanced_v6 import phrase_fingerprints
 from prepare_asap2_ai_prompts_v10 import source_texts
+from prepare_asap2_student_essays_v10 import shingles
 
 ROOT = Path('/mnt/f/pangram-at-home/data/asap2_student_essays_v10')
 TOKENIZER = Path('/mnt/f/pangram-at-home/models/Qwen3-1.7B')
@@ -23,11 +23,11 @@ def main():
     protected = set()
     for name in ('train_candidates', 'locked_test_human'):
         for line in (ROOT/f'{name}.jsonl').open():
-            protected.update(phrase_fingerprints(json.loads(line)['text']))
+            protected.update(shingles(json.loads(line)['text']))
     persuade = Path('/mnt/f/pangram-at-home/data/persuade_essays_v1/human_eval.parquet')
     for text in pq.read_table(persuade, columns=['text']).column('text').to_pylist():
-        protected.update(phrase_fingerprints(text))
-    protected_readings = {name: phrase_fingerprints(text)
+        protected.update(shingles(text))
+    protected_readings = {name: shingles(text)
                           for name, text in source_texts().items()}
     rejected = Counter()
     cleaned = Counter()
@@ -61,9 +61,9 @@ def main():
                 rejected['no_paragraphs'] += 1
             elif not text.endswith(('.', '!', '?', '”', '"')):
                 rejected['incomplete_ending'] += 1
-            elif phrase_fingerprints(text) & protected:
+            elif shingles(text) & protected:
                 rejected['human_24_word_overlap'] += 1
-            elif phrase_fingerprints(text) & protected_readings[row['topic_title']]:
+            elif shingles(text) & protected_readings[row['topic_title']]:
                 rejected['source_reading_24_word_overlap'] += 1
             else:
                 accepted_ids.add(row['human_id'])
