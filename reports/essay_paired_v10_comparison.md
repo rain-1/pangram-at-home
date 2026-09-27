@@ -1,35 +1,50 @@
 # Paired student essay v10 comparison
 
-All rows below use a threshold selected for 2% document false alarms on the separate generic-human calibration split. v8 and v9 were rescored from saved token scores; v10 was evaluated directly at its frozen threshold. The external article and PERSUADE sets have informed development and are now development tests rather than blind tests.
+All models use thresholds selected for 2% document false alarms on the same separate generic-human calibration documents. The Qwen models flag a document when any token is highlighted; the two open Pangram EditLens models make document decisions. For genuinely mixed documents only, EditLens window scores are broadcast across overlapping windows to form coarse token scores, with separate 2% calibration of that span rule. The external article and PERSUADE sets have informed development and are now development tests rather than blind tests.
 
-## Human documents with any false highlight
+## Shared human and AI document tests
+
+| Model | External human alarms | PERSUADE human alarms | Writers human alarms | External AI articles detected | Document AUROC |
+|---|---:|---:|---:|---:|---:|
+| v8 | 63/150 | 0/3,000 | 3/579 | 150/150 | 0.9836 |
+| v9 | 20/150 | 33/3,000 | 9/579 | 150/150 | 0.9891 |
+| v10 | 16/150 | 2/3,000 | 7/579 | 150/150 | 0.9921 |
+| Pangram RoBERTa | 0/150 | 0/3,000 | 1/579 | 118/150 | 0.9989 |
+| Pangram Llama | 0/150 | 0/3,000 | 1/579 | 149/150 | 0.9999 |
+
+## Additional human sources scored for our checkpoints
 
 | Source | v8 | v9 | v10 |
 |---|---:|---:|---:|
-| External articles | 63/150 | 20/150 | 16/150 |
-| PERSUADE essays | 0/3000 | 33/3000 | 2/3000 |
-| Writers Stack Exchange | 3/579 | 9/579 | 7/579 |
 | CNN articles | 1/500 | 9/500 | 4/500 |
 | PMC papers | 2/346 | 0/346 | 0/346 |
 | Archived EPA | 4/151 | 0/151 | 0/151 |
 | Archived Smithsonian | 1/21 | 0/21 | 0/21 |
 | ASAP 2.0 essays | 0/200 | 4/200 | 1/200 |
 
-## AI-token recall on mixed documents
+## Mixed-document localization (mixed records only)
 
-| Source | v8 | v9 | v10 |
-|---|---:|---:|---:|
-| LLMTrace | 43.3% recall / 0.0% FPR | 66.2% recall / 0.4% FPR | 64.8% recall / 0.3% FPR |
-| AITDNA | 82.6% recall / 5.7% FPR | 89.5% recall / 7.7% FPR | 87.3% recall / 7.2% FPR |
+| Source | Model | AI-token recall | Human-token FPR |
+|---|---|---:|---:|
+| LLMTrace | v8 | 16.6% | 0.1% |
+| LLMTrace | v9 | 42.4% | 0.9% |
+| LLMTrace | v10 | 38.6% | 0.8% |
+| LLMTrace | Pangram RoBERTa | 12.1% | 2.9% |
+| LLMTrace | Pangram Llama | 22.4% | 6.8% |
+| AITDNA | v8 | 82.5% | 10.7% |
+| AITDNA | v9 | 89.5% | 14.5% |
+| AITDNA | v10 | 87.3% | 13.4% |
+| AITDNA | Pangram RoBERTa | 57.2% | 20.5% |
+| AITDNA | Pangram Llama | 90.9% | 57.1% |
 
-## External AI articles
+## External AI-token coverage from our models
 
-| Model | AI-token recall | AI articles with any highlight | Document AUROC |
-|---|---:|---:|---:|
-| v8 | 92.7% | 150/150 | 0.9836 |
-| v9 | 96.5% | 150/150 | 0.9891 |
-| v10 | 95.9% | 150/150 | 0.9921 |
+| Model | AI-token recall | AI articles with any highlight |
+|---|---:|---:|
+| v8 | 92.7% | 150/150 |
+| v9 | 96.5% | 150/150 |
+| v10 | 95.9% | 150/150 |
 
-The two open Pangram baselines appear on the external article ROC chart. They make whole-document decisions, so their article alarm counts are not directly equivalent to any-token highlights from these span models. V8/v9 saved-score threshold sweeps may differ by one document at a score tie because those older exports were float32; v10 exports retain float64.
+EditLens document decisions cannot provide an AI-token recall for external articles. The mixed-document EditLens scores above are coarse window broadcasts, not native token predictions. The document detection counts also use different decision units: any highlighted Qwen token versus a single EditLens document score. V8/v9 saved-score threshold sweeps may differ by one document at a score tie because those older exports were float32; v10 exports retain float64.
 
 [Download charts](essay_paired_v10_comparison.pdf)

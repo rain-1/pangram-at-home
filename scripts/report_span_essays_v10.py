@@ -15,6 +15,10 @@ MODELS = {
     'v9': ('qwen3_token_repeat2_science_paired_v9_20k', '#168f83'),
     'v10': ('qwen3_token_repeat2_essay_paired_v10_20k', '#435acb'),
 }
+BASELINES = {
+    'Pangram RoBERTa': ('roberta', '#9156a8'),
+    'Pangram Llama': ('llama', '#b95f88'),
+}
 STEMS = {
     'calibration': {'v8':'v8_human_calibration','v9':'v9_human_calibration','v10':'v10_human_calibration'},
     'generic': {'v8':'v8_human_locked_test','v9':'v9_human_locked_test','v10':'v10_human_locked_test'},
@@ -42,12 +46,46 @@ def load(tag, key):
         return {name:data[name] for name in ('score','label','document_offsets')}
 
 
+def baseline_documents(which, key, expected_ids):
+    stem = {'calibration':'calibration', 'generic':'locked_human',
+            'external':'external_human_detectors'}[key]
+    path = RUNS/f'open_pangram_editlens_{which}_v5'/(stem+'.jsonl')
+    rows = [json.loads(line) for line in path.open()]
+    assert [row['id'] for row in rows] == list(expected_ids), (which, key)
+    return rows
+
+
+def baseline_spans(which, key, expected_ids, expected_labels):
+    stem = {'calibration':'calibration', 'generic':'locked_human',
+            'llmtrace':'llmtrace_heldout', 'aitdna':'aitdna'}[key]
+    path = RUNS/f'open_pangram_editlens_{which}_span_v5'/(stem+'_scores.npz')
+    with np.load(path) as data:
+        assert np.array_equal(data['document_ids'], expected_ids), (which, key)
+        assert np.array_equal(data['label'], expected_labels), (which, key)
+        return {name:data[name] for name in ('score','label','document_offsets')}
+
+
 def threshold(calibration, target):
     score, offsets = calibration['score'], calibration['document_offsets']
     maxima = np.array([score[offsets[i]:offsets[i+1]].max()
                        for i in range(len(offsets)-1)])
     ordered = np.sort(maxima)[::-1]
     return float(np.nextafter(ordered[int(np.floor(target*len(ordered)))], np.inf))
+
+
+def document_threshold(rows, target):
+    ordered = np.sort(np.array([row['score'] for row in rows]))[::-1]
+    return float(np.nextafter(ordered[int(np.floor(target*len(ordered)))], np.inf))
+
+
+def document_result(rows, cutoff, indices=None):
+    selected = rows if indices is None else [rows[i] for i in indices]
+    human = [row for row in selected if row['kind'] == 'human']
+    ai = [row for row in selected if row['kind'] == 'ai']
+    return {'human_docs':len(human),
+            'human_flagged':sum(row['score'] >= cutoff for row in human),
+            'ai_docs':len(ai),
+            'ai_flagged':sum(row['score'] >= cutoff for row in ai)}
 
 
 def result(data, cutoff, doc_indices=None):
@@ -96,6 +134,17 @@ def main():
         'writers':[i for i,row in enumerate(generic_rows) if row['source']=='writers.stackexchange.com'],
     }
     assert len(groups['persuade']) == 3000 and len(groups['writers']) == 579
+    mixed_groups = {}
+    for key,relative in {
+        'llmtrace':'span_size_curve_v5/size_20000/test_llmtrace.jsonl',
+        'aitdna':'span_sources_v5/normalized_aitdna_real/locked_test.jsonl',
+    }.items():
+        rows = [json.loads(line) for line in (ROOT/'data'/relative).open()]
+        reference = RUNS/MODELS['v10'][0]/(STEMS[key]['v10']+'_scores.npz')
+        with np.load(reference) as data:
+            assert [row['id'] for row in rows] == list(data['document_ids']), key
+        mixed_groups[key] = [i for i,row in enumerate(rows) if row['kind']=='mixed']
+        assert mixed_groups[key], key
     loaded = {tag:{key:load(tag,key) for key in STEMS} for tag in MODELS}
     summary = {}
     for tag in MODELS:
@@ -107,19 +156,88 @@ def main():
             human = {key:result(loaded[tag][key],cutoff)
                      for key in ('external','cnn','pmc','epa','magazine','asap')}
             human.update({key:result(generic,cutoff,indices) for key,indices in groups.items()})
-            mixed = {key:result(loaded[tag][key],cutoff) for key in MIXED_LABELS}
+            mixed = {key:result(loaded[tag][key],cutoff,mixed_groups[key])
+                     for key in MIXED_LABELS}
             summary[tag]['thresholds'][f'{target:.1%}'] = {
                 'cutoff':cutoff, 'human':human, 'mixed':mixed,
                 'external_ai':result(loaded[tag]['external'],cutoff)}
         y, score = external_roc(loaded[tag]['external'])
         summary[tag]['external_document_auroc'] = float(roc_auc_score(y,score))
+    for name,(which,color) in BASELINES.items():
+        pure = {}
+        span = {}
+        reference = RUNS/MODELS['v10'][0]
+        for key in ('calibration','generic','external'):
+            with np.load(reference/(STEMS[key]['v10']+'_scores.npz')) as data:
+                pure[key] = baseline_documents(which,key,data['document_ids'])
+        for key in ('calibration','generic','llmtrace','aitdna'):
+            with np.load(reference/(STEMS[key]['v10']+'_scores.npz')) as data:
+                span[key] = baseline_spans(which,key,data['document_ids'],data['label'])
+        summary[name] = {'kind':'open_pangram', 'thresholds':{}}
+        for target in (.005,.01,.02,.05):
+            pure_cutoff = document_threshold(pure['calibration'],target)
+            span_cutoff = threshold(span['calibration'],target)
+            human = {
+                'external':document_result(pure['external'],pure_cutoff),
+                'persuade':document_result(pure['generic'],pure_cutoff,groups['persuade']),
+                'writers':document_result(pure['generic'],pure_cutoff,groups['writers']),
+            }
+            mixed = {key:result(span[key],span_cutoff,mixed_groups[key])
+                     for key in MIXED_LABELS}
+            summary[name]['thresholds'][f'{target:.1%}'] = {
+                'pure_cutoff':pure_cutoff, 'span_cutoff':span_cutoff,
+                'human':human, 'mixed':mixed,
+                'external_ai':document_result(pure['external'],pure_cutoff),
+            }
+        y = np.array([row['kind']=='ai' for row in pure['external']])
+        score = np.array([row['score'] for row in pure['external']])
+        summary[name]['external_document_auroc'] = float(roc_auc_score(y,score))
     (REPORTS/'essay_paired_v10_comparison.json').write_text(json.dumps(summary,indent=2)+'\n')
 
     target = '2.0%'
     pdf = REPORTS/'essay_paired_v10_comparison.pdf'
     with PdfPages(pdf) as pages:
+        fig,axes = plt.subplots(1,2,figsize=(12,6.2),gridspec_kw={'width_ratios':[1.3,1]})
+        shared = [('external','External articles'),('persuade','PERSUADE essays'),
+                  ('writers','Writers Stack Exchange')]
+        all_models = [(tag,color) for tag,(_,color) in MODELS.items()] + [
+            (name,color) for name,(_,color) in BASELINES.items()]
+        y = np.arange(len(shared));width=.15
+        for position,(name,color) in enumerate(all_models):
+            metrics = summary[name]['thresholds'][target]['human']
+            values = [100*metrics[key]['human_flagged']/metrics[key]['human_docs']
+                      for key,_ in shared]
+            offset = y+(position-2)*width
+            axes[0].barh(offset,values,width,color=color,label=name)
+            for yi,value,(key,_) in zip(offset,values,shared):
+                row=metrics[key]
+                axes[0].text(value+.25,yi,f'{row["human_flagged"]}/{row["human_docs"]}',
+                             va='center',fontsize=7)
+        axes[0].set_yticks(y,[label for _,label in shared]);axes[0].invert_yaxis()
+        axes[0].set_xlabel('Human documents falsely flagged (%)')
+        axes[0].set_xlim(0,50)
+        axes[0].set_title('Shared human tests',loc='left')
+        axes[0].grid(axis='x',alpha=.2);axes[0].set_axisbelow(True)
+        names=[name for name,_ in all_models]
+        caught=[summary[name]['thresholds'][target]['external_ai']['ai_flagged']
+                for name in names]
+        axes[1].barh(np.arange(len(names)),caught,
+                     color=[color for _,color in all_models],height=.65)
+        axes[1].set_yticks(np.arange(len(names)),names);axes[1].invert_yaxis()
+        axes[1].set_xlim(0,175);axes[1].set_xlabel('AI articles detected (of 150)')
+        axes[1].set_title('External AI articles',loc='left')
+        axes[1].grid(axis='x',alpha=.2);axes[1].set_axisbelow(True)
+        for yi,value in enumerate(caught):
+            axes[1].text(value-2,yi,f'{value}/150',va='center',ha='right',
+                         color='white',fontsize=9)
+        fig.suptitle('Our models and open Pangram at 2% human-calibration target',
+                     x=.06,ha='left',fontsize=15)
+        fig.text(.06,.01,'Qwen detects an article when any token is highlighted; EditLens makes a document decision. '
+                 'Each model uses its own threshold from the same human calibration documents.',fontsize=8)
+        fig.tight_layout(rect=[0,.05,1,.93]);pages.savefig(fig);plt.close(fig)
+
         fig,ax = plt.subplots(figsize=(12,7))
-        keys = list(HUMAN_LABELS)
+        keys = [key for key in HUMAN_LABELS if key not in ('external','persuade','writers')]
         y = np.arange(len(keys))
         width = .25
         for position,(tag,(_,color)) in enumerate(MODELS.items()):
@@ -132,36 +250,39 @@ def main():
                         va='center',fontsize=8)
         ax.set_yticks(y,[HUMAN_LABELS[key] for key in keys]);ax.invert_yaxis()
         ax.set_xlabel('Documents with any false highlight (%)')
-        ax.set_xlim(0,max(40,ax.get_xlim()[1]*1.12))
+        ax.set_xlim(0,max(8,ax.get_xlim()[1]*1.12))
         ax.grid(axis='x',alpha=.2);ax.set_axisbelow(True);ax.legend()
-        ax.set_title('Human false alarms at 2% generic calibration target',loc='left',fontsize=15)
-        fig.text(.09,.015,'PERSUADE and Writers are disjoint slices of the generic held-out human test. '
-                 'ASAP test prompts are excluded from v10 training.',fontsize=8)
+        ax.set_title('Additional human sources: our three checkpoints',loc='left',fontsize=15)
+        fig.text(.09,.015,'ASAP test prompts are excluded from v10 training. '
+                 'Saved EditLens scores are unavailable for these sources.',fontsize=8)
         fig.tight_layout(rect=[0,.035,1,1]);pages.savefig(fig);plt.close(fig)
 
         fig,axes = plt.subplots(1,2,figsize=(12,5.7))
-        keys=list(MIXED_LABELS);x=np.arange(len(keys));width=.25
-        for position,(tag,(_,color)) in enumerate(MODELS.items()):
-            metrics=summary[tag]['thresholds'][target]['mixed']
+        keys=list(MIXED_LABELS);x=np.arange(len(keys));width=.15
+        for position,(name,color) in enumerate(all_models):
+            metrics=summary[name]['thresholds'][target]['mixed']
             for ax,field,title in ((axes[0],'ai_token_recall','AI tokens highlighted'),
                                    (axes[1],'human_token_fpr','Human tokens falsely highlighted')):
                 vals=[100*metrics[key][field] for key in keys]
-                ax.bar(x+(position-1)*width,vals,width,color=color,label=tag)
+                ax.bar(x+(position-2)*width,vals,width,color=color,label=name)
                 ax.set_xticks(x,[MIXED_LABELS[key] for key in keys])
                 ax.set_ylabel('Token rate (%)');ax.set_title(title,loc='left')
                 ax.grid(axis='y',alpha=.2);ax.set_axisbelow(True)
-        axes[1].legend();fig.suptitle('Mixed-authorship localization at 2% generic calibration target',
+        axes[1].legend(fontsize=7);fig.suptitle('Mixed-authorship localization at 2% generic calibration target',
                                       x=.06,ha='left',fontsize=15)
-        fig.tight_layout(rect=[0,0,1,.92]);pages.savefig(fig);plt.close(fig)
+        fig.text(.06,.01,'Only documents containing both human and AI text. EditLens scores are broadcast '
+                 'from overlapping windows; Qwen predicts token labels directly.',
+                 fontsize=8)
+        fig.tight_layout(rect=[0,.04,1,.92]);pages.savefig(fig);plt.close(fig)
 
         fig,axes=plt.subplots(1,2,figsize=(12,5.5))
         for tag,(_,color) in MODELS.items():
             y,score=external_roc(loaded[tag]['external'])
             fpr,tpr,_=roc_curve(y,score)
             for ax in axes:ax.plot(fpr,tpr,label=f'{tag} ({roc_auc_score(y,score):.4f})',color=color,lw=2)
-        for name,run,color in [('Pangram RoBERTa','open_pangram_editlens_roberta_v5','#9156a8'),
-                               ('Pangram Llama','open_pangram_editlens_llama_v5','#b95f88')]:
-            rows=[json.loads(line) for line in (RUNS/run/'external_human_detectors.jsonl').open()]
+        for name,(which,color) in BASELINES.items():
+            rows=[json.loads(line) for line in
+                  (RUNS/f'open_pangram_editlens_{which}_v5'/'external_human_detectors.jsonl').open()]
             y=np.array([int(row['kind']=='ai') for row in rows])
             score=np.array([row['score'] for row in rows])
             fpr,tpr,_=roc_curve(y,score)
@@ -195,37 +316,55 @@ def main():
         fig.tight_layout(rect=[0,0,1,.93]);pages.savefig(fig);plt.close(fig)
 
     markdown=['# Paired student essay v10 comparison','',
-              'All rows below use a threshold selected for 2% document false alarms on the separate '
-              'generic-human calibration split. v8 and v9 were rescored from saved token scores; '
-              'v10 was evaluated directly at its frozen threshold. The external article and PERSUADE '
-              'sets have informed development and are now development tests rather than blind tests.','',
-              '## Human documents with any false highlight','',
+              'All models use thresholds selected for 2% document false alarms on the same separate '
+              'generic-human calibration documents. The Qwen models flag a document when any token '
+              'is highlighted; the two open Pangram EditLens models make document decisions. '
+              'For genuinely mixed documents only, EditLens window scores are broadcast across '
+              'overlapping windows to form coarse token scores, with separate 2% calibration of '
+              'that span rule. '
+              'The external article and PERSUADE sets have informed development and are now '
+              'development tests rather than blind tests.','',
+              '## Shared human and AI document tests','',
+              '| Model | External human alarms | PERSUADE human alarms | Writers human alarms | '
+              'External AI articles detected | Document AUROC |',
+              '|---|---:|---:|---:|---:|---:|']
+    for name in [*MODELS,*BASELINES]:
+        row=summary[name]['thresholds'][target]
+        h=row['human'];a=row['external_ai']
+        markdown.append(f'| {name} | {h["external"]["human_flagged"]}/150 | '
+                        f'{h["persuade"]["human_flagged"]}/3,000 | '
+                        f'{h["writers"]["human_flagged"]}/579 | '
+                        f'{a["ai_flagged"]}/150 | '
+                        f'{summary[name]["external_document_auroc"]:.4f} |')
+    markdown+=['','## Additional human sources scored for our checkpoints','',
               '| Source | v8 | v9 | v10 |','|---|---:|---:|---:|']
     for key,label in HUMAN_LABELS.items():
+        if key in ('external','persuade','writers'):
+            continue
         values=[]
         for tag in MODELS:
             row=summary[tag]['thresholds'][target]['human'][key]
             values.append(f'{row["human_flagged"]}/{row["human_docs"]}')
         markdown.append(f'| {label} | '+' | '.join(values)+' |')
-    markdown+=['','## AI-token recall on mixed documents','',
-               '| Source | v8 | v9 | v10 |','|---|---:|---:|---:|']
+    markdown+=['','## Mixed-document localization (mixed records only)','',
+               '| Source | Model | AI-token recall | Human-token FPR |',
+               '|---|---|---:|---:|']
     for key,label in MIXED_LABELS.items():
-        values=[]
-        for tag in MODELS:
-            row=summary[tag]['thresholds'][target]['mixed'][key]
-            values.append(f'{row["ai_token_recall"]:.1%} recall / {row["human_token_fpr"]:.1%} FPR')
-        markdown.append(f'| {label} | '+' | '.join(values)+' |')
-    markdown+=['','## External AI articles','',
-               '| Model | AI-token recall | AI articles with any highlight | Document AUROC |',
-               '|---|---:|---:|---:|']
+        for name in [*MODELS,*BASELINES]:
+            row=summary[name]['thresholds'][target]['mixed'][key]
+            markdown.append(f'| {label} | {name} | {row["ai_token_recall"]:.1%} | '
+                            f'{row["human_token_fpr"]:.1%} |')
+    markdown+=['','## External AI-token coverage from our models','',
+               '| Model | AI-token recall | AI articles with any highlight |',
+               '|---|---:|---:|']
     for tag in MODELS:
         row=summary[tag]['thresholds'][target]['external_ai']
         markdown.append(f'| {tag} | {row["ai_token_recall"]:.1%} | '
-                        f'{row["ai_flagged"]}/{row["ai_docs"]} | '
-                        f'{summary[tag]["external_document_auroc"]:.4f} |')
-    markdown+=['','The two open Pangram baselines appear on the external article ROC chart. '
-               'They make whole-document decisions, so their article alarm counts are not directly '
-               'equivalent to any-token highlights from these span models. V8/v9 saved-score '
+                        f'{row["ai_flagged"]}/{row["ai_docs"]} |')
+    markdown+=['','EditLens document decisions cannot provide an AI-token recall for external articles. '
+               'The mixed-document EditLens scores above are coarse window broadcasts, not native '
+               'token predictions. The document detection counts also use different decision units: '
+               'any highlighted Qwen token versus a single EditLens document score. V8/v9 saved-score '
                'threshold sweeps may differ by one document at a score tie because those older '
                'exports were float32; v10 exports retain float64.','',
                f'[Download charts]({pdf.name})','']
