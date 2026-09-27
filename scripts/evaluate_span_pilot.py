@@ -68,11 +68,13 @@ def main():
         return float(np.mean(values)) if len(values) else None
     purehuman=[r for r in results if r["row"]["kind"]=="human"]
     error=[];mixed_error=[];false_chars=human_chars=0;predictions=[];ai_span_coverages=[]
-    for r in results:
+    for row_index,r in enumerate(results):
+        identity={"id":r["row"]["id"],"row_index":row_index,
+                  "text_sha256":hashlib.sha256(r["row"]["text"].encode()).hexdigest()}
         mask=r["label"]!=-100;pred=r["score"]>=threshold
         weights=np.array([end-start for start,end in r["offsets"]]);weights=weights*mask
         if not weights.sum():
-            predictions.append({"id":r["row"]["id"],"spans":[]})
+            predictions.append({**identity,"spans":[]})
             continue
         fraction_error=abs(float(np.sum(weights*pred)/weights.sum())-float(np.sum(weights*(r["label"]==1))/weights.sum()))
         error.append(fraction_error)
@@ -90,7 +92,7 @@ def main():
             if not valid:continue
             if spans and spans[-1]["label"]==int(label) and spans[-1]["end"]==start:spans[-1]["end"]=end
             else:spans.append({"start":start,"end":end,"label":int(label)})
-        predictions.append({"id":r["row"]["id"],"spans":spans})
+        predictions.append({**identity,"spans":spans})
     size=config.get("max_length",config.get("max_source_tokens",512))
     stride=config.get("stride",max(1,size//2))
     report={"run_name":args.run_name,"role":"span evaluation; see dataset manifest for provenance and holdout status",
@@ -132,7 +134,9 @@ def main():
         score=np.concatenate([r["score"][r["label"]!=-100] for r in results]).astype(np.float32),
         label=np.concatenate([r["label"][r["label"]!=-100] for r in results]).astype(np.int8),
         document_offsets=np.cumsum([0]+[int(np.sum(r["label"]!=-100)) for r in results]),
-        document_ids=np.array([r["row"]["id"] for r in results]))
+        document_ids=np.array([r["row"]["id"] for r in results]),
+        document_text_sha256=np.array([hashlib.sha256(r["row"]["text"].encode()).hexdigest()
+                                       for r in results]))
     if args.report_to=="wandb":
         import wandb
         wb=wandb.init(project="pangram-at-home",name=args.run_name+"_span_validation",job_type="span-validation",config={"parent_run":args.run_name})
