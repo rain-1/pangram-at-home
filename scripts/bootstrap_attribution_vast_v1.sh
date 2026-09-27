@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd /workspace/pangram-at-home
+python - <<'PY'
+import hashlib,json
+from pathlib import Path
+manifest=json.loads(Path('/workspace/pangram-data/attribution_upload_manifest.json').read_text())
+for name,metadata in manifest['files'].items():
+    path=Path('/workspace')/name
+    h=hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda:stream.read(1024*1024),b''):
+            h.update(block)
+    if path.stat().st_size!=metadata['bytes'] or h.hexdigest()!=metadata['sha256']:
+        raise RuntimeError(f'Upload hash mismatch: {name}')
+print('Upload checksums verified',flush=True)
+PY
 export PIP_BREAK_SYSTEM_PACKAGES=1
 python -m pip install -q -r requirements-span.txt
 python -m pip uninstall -y torchvision torchaudio >/dev/null 2>&1 || true
