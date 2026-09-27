@@ -43,7 +43,17 @@ left only 34% AI token supervision. Publication date and a byline support a
 human label, but do not prove every edit was human; keep this provenance limit
 in evaluation claims.
 
-If v8 leaves a large magazine-style false-positive gap, investigate
+The completed v8 pilot **did not fix** magazine-style publication false
+alarms: 77/150 attributed-human articles were flagged versus 64/150 for v6,
+while both caught 150/150 AI articles. A separate 200-document human test from
+four unseen Common Pile publishers had 0 false alarms, so more generic news
+from those publishers is not a demonstrated fix. Mixed-text performance also
+remains weak on LLMTrace and CoAuthor. The external article set has now guided
+two data iterations and is development evidence, not an untouched final test.
+See `reports/publication_hardneg_v8.md` for the complete source breakdown and
+an explicitly exploratory publisher-transfer threshold diagnostic.
+
+To address the remaining magazine-style gap, investigate
 pre-2023 science explainers from [The Conversation](https://creativecommons.org/2016/12/22/conversation-conversation-transforming-journalism-cc-license/).
 Its expert-authored articles are closer in style to the failing science
 magazines than generic news, and Creative Commons describes its article

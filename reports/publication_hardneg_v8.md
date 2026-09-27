@@ -92,6 +92,20 @@ AI-token recall weighs long passages more heavily. The half-covered span rate gi
 | CNN/Daily Mail historical | 1/500 | 2/500 |
 | Common Pile four unseen publishers | — | 0/200 |
 
+## Exploratory publisher-transfer calibration
+
+This diagnostic uses the already-inspected external article set. For each publisher, it chooses a threshold from *human articles at the other publishers*, then scores the held-out publisher. Reader’s Digest spelling variants are grouped. It is useful evidence about threshold transfer, but the data and target rates have been inspected during development, so these numbers are **not a new independent test or a deployable threshold**.
+
+| Calibration human-FPR target | Model | Held-publisher human false alarms | Held-publisher AI caught |
+| ---: | --- | ---: | ---: |
+| 5% | Qwen v6 | 10/150 | 126/150 |
+| 5% | Qwen v8 | 9/150 | 134/150 |
+| 10% | Qwen v6 | 14/150 | 142/150 |
+| 10% | Qwen v8 | 15/150 | 144/150 |
+
+The result motivates collecting independent, pre-2023 science/magazine-style human articles for calibration and a separate locked test, with matched AI articles to measure the recall cost. Generic historical news and PMC controls were too easy and did not raise the threshold.
+
+
 ## Independent publication threshold check
 
 Common Pile human calibration threshold for 5% FPR: `-2.8984`; source-aware maximum with original controls: `5.0313`.

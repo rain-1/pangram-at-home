@@ -89,6 +89,24 @@ def mixed_span_lengths(folder,filename):
     return len(lengths),float(np.median(lengths))
 
 
+def publisher_holdout(rows,scores,target_fpr):
+    """Exploratory calibration: each publisher is scored without its own humans."""
+    publisher=["Reader's Digest" if row['publication']=='Readers Digest'
+               else row['publication'] for row in rows]
+    names=set(publisher)
+    false_alarms=caught=0
+    for name in names:
+        controls=np.array([scores[i] for i,row in enumerate(rows)
+                           if publisher[i]!=name and row['kind']=='human'])
+        index=int(target_fpr*len(controls))
+        threshold=float(np.nextafter(np.sort(controls)[::-1][index],np.inf))
+        false_alarms+=sum(scores[i]>=threshold for i,row in enumerate(rows)
+                          if publisher[i]==name and row['kind']=='human')
+        caught+=sum(scores[i]>=threshold for i,row in enumerate(rows)
+                    if publisher[i]==name and row['kind']=='ai')
+    return false_alarms,caught
+
+
 def source_aware(threshold):
     cal=doc_scores('v8_commonpile_calibration')
     own=float(np.nextafter(np.sort(cal)[::-1][int(.05*len(cal))],np.inf))
@@ -305,6 +323,22 @@ def main():
                      f'{v8["overall"]["pure_human_documents_with_false_highlight"]}/{total} |')
     common=json.loads((ROOT/'runs'/RUN/'v8_commonpile_locked_test.json').read_text())
     lines.append(f'| Common Pile four unseen publishers | — | {common["overall"]["pure_human_documents_with_false_highlight"]}/200 |')
+    lines+=['','## Exploratory publisher-transfer calibration','',
+            'This diagnostic uses the already-inspected external article set. For each publisher, '
+            'it chooses a threshold from *human articles at the other publishers*, then scores '
+            'the held-out publisher. Reader’s Digest spelling variants are grouped. It is useful '
+            'evidence about threshold transfer, but the data and target rates have been inspected '
+            'during development, so these numbers are **not a new independent test or a deployable threshold**.','',
+            '| Calibration human-FPR target | Model | Held-publisher human false alarms | Held-publisher AI caught |',
+            '| ---: | --- | ---: | ---: |']
+    for rate in (.05,.10):
+        for name,model in [('Qwen v6',article_v6),('Qwen v8',article_v8)]:
+            fp,tp=publisher_holdout(article_rows,model['score'],rate)
+            lines.append(f'| {100*rate:.0f}% | {name} | {fp}/150 | {tp}/150 |')
+    lines+=['','The result motivates collecting independent, pre-2023 science/magazine-style '
+            'human articles for calibration and a separate locked test, with matched AI '
+            'articles to measure the recall cost. Generic historical news and PMC controls '
+            'were too easy and did not raise the threshold.','']
     adj=adjusted['at_source_aware']
     lines+=['','## Independent publication threshold check','',
             f'Common Pile human calibration threshold for 5% FPR: `{adjusted["commonpile_5pct_threshold"]:.4f}`; '
