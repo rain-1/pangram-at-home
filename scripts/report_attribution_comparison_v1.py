@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import csv
 from pathlib import Path
 
 import matplotlib
@@ -35,6 +36,16 @@ def main():
         data[name]={task:json.loads((ROOT/folder/task/'report.json').read_text())
                     for task in ('arena','authors')}
     REPORTS.mkdir(exist_ok=True)
+    for task,filename in (('arena','attribution_arena_by_model_v1.csv'),
+                          ('authors','attribution_authors_by_writer_v1.csv')):
+        labels=data[CONDITIONS[0][0]][task]['labels']
+        with (REPORTS/filename).open('w',newline='') as stream:
+            writer=csv.writer(stream)
+            writer.writerow(['label','test_examples']+[name+' correct' for name,_ in CONDITIONS])
+            n=3
+            for label in labels:
+                writer.writerow([label,n]+[round(data[name][task]['test']['per_label_recall'][label]*n)
+                                             for name,_ in CONDITIONS])
     fig,axes=plt.subplots(1,2,figsize=(11.5,4.8),layout='constrained')
     colours=['#5178b9','#25477f','#b98a51','#845520']
     for ax,task,title,chance in zip(axes,('arena','authors'),
@@ -78,7 +89,9 @@ def main():
                      f"{a['top5_accuracy']:.1%} | "
                      f"{h['accuracy']:.1%} ({round(h['accuracy']*h['rows'])}/{h['rows']}) |")
     lines.extend(['','A random uniform guess is 2% for Arena and 25% for the writers. '
-                  'The bars show 95% Wilson intervals for test accuracy.','',
+                  'The bars show 95% Wilson intervals for test accuracy. '
+                  'Per-label counts are in [Arena CSV](attribution_arena_by_model_v1.csv) '
+                  'and [writers CSV](attribution_authors_by_writer_v1.csv).','',
                   '## Data and protocol','',
                   '- Arena Prose: 4,998 nonempty responses from 50 labels; 4,698 train, '
                   '150 validation, 150 test. Three responses per label are in each '
