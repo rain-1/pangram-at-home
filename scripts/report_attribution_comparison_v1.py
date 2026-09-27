@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import csv
+from collections import Counter
 from pathlib import Path
 
 import matplotlib
@@ -39,12 +40,16 @@ def main():
     for task,filename in (('arena','attribution_arena_by_model_v1.csv'),
                           ('authors','attribution_authors_by_writer_v1.csv')):
         labels=data[CONDITIONS[0][0]][task]['labels']
+        source=ROOT.parent/'data/attribution_heads_v1'/task/'train.jsonl'
+        train_counts=Counter(json.loads(line)['label'] for line in source.open())
         with (REPORTS/filename).open('w',newline='') as stream:
             writer=csv.writer(stream)
-            writer.writerow(['label','test_examples']+[name+' correct' for name,_ in CONDITIONS])
+            writer.writerow(['label','train_examples','test_examples']+
+                            [name+' correct' for name,_ in CONDITIONS])
             n=3
             for label in labels:
-                writer.writerow([label,n]+[round(data[name][task]['test']['per_label_recall'][label]*n)
+                writer.writerow([label,train_counts[label],n]+
+                                [round(data[name][task]['test']['per_label_recall'][label]*n)
                                              for name,_ in CONDITIONS])
     fig,axes=plt.subplots(1,2,figsize=(11.5,4.8),layout='constrained')
     colours=['#5178b9','#25477f','#b98a51','#845520']
