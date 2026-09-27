@@ -51,7 +51,9 @@ def main():
     manifest = json.loads((ROOT/'data'/FOLDER/'manifest.json').read_text())
     audit = json.loads((ROOT/'data'/FOLDER/'exposure_audit.json').read_text())
     assert manifest['documents'] == 20000
-    assert manifest['added_labels'] == {'human': 292, 'ai': 292}
+    assert manifest['paired_article_topics'] >= 120
+    assert manifest['added_labels'] == {'human': 2*manifest['paired_article_topics'],
+                                        'ai': 2*manifest['paired_article_topics']}
     assert audit['source_supervised_token_fraction']['LLMTrace'] <= .03
     assert max(audit['source_supervised_token_fraction'].values()) < .35
     ai = audit['class_supervised_tokens']['1']/audit['supervised_token_positions']

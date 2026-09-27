@@ -45,20 +45,32 @@ def main():
     humans = {r['id']: r for r in (json.loads(line) for line in (SCIENCE/'train_candidates.jsonl').open())}
     ai_files = [SCIENCE/f'accepted_{model}_train.jsonl' for model in ('qwen2_5_3b', 'smollm2_1_7b')]
     ai = [json.loads(line) for path in ai_files for line in path.open()]
-    assert len(ai) == len(humans) == 146
-    assert {r['human_id'] for r in ai} == set(humans)
+    assert len(humans) == 146 and 120 <= len(ai) <= len(humans)
+    assert len({r['human_id'] for r in ai}) == len(ai)
+    assert {r['human_id'] for r in ai} <= set(humans)
     assert all(r['human_text_sha256'] == humans[r['human_id']]['text_sha256'] for r in ai)
     assert len({r['text_sha256'] for r in ai}) == len(ai)
+    archive_file = SCIENCE/'archived_noaa_fisheries_human.jsonl'
+    archives = {}
+    if archive_file.exists():
+        for line in archive_file.open():
+            row = json.loads(line)
+            base_id = row['id'].split(':archive:')[0]
+            if base_id in humans:
+                row['id'] = base_id
+                archives[base_id] = row
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER)
     pairs = []
+    used_archives = 0
     for generated in ai:
-        human = humans[generated['human_id']]
+        human = archives.get(generated['human_id'], humans[generated['human_id']])
         h = window_rows(human, tokenizer)
+        used_archives += generated['human_id'] in archives
         a = window_rows(generated, tokenizer)
         if len(h) != 2 or len(a) != 2 or generated['words'] < 350:
             raise ValueError(f'Short pair {generated["human_id"]}: {len(h)} {len(a)} {generated["words"]}')
         pairs.extend(h+a)
-    assert len(pairs) == 584
+    assert len(pairs) == 4*len(ai)
     original = [json.loads(line) for line in (PARENT/'train.jsonl').open()]
     rng = random.Random(SEED)
     damasha = [r for r in original if r['source'] == 'DAMASHA clean published aggregate']
@@ -80,9 +92,11 @@ def main():
                 'window_source_tokens': WINDOW, 'added_labels': dict(Counter(r['kind'] for r in pairs)),
                 'added_generators': dict(Counter(r['generator'] for r in pairs if r['kind']=='ai')),
                 'sources': dict(sources), 'kinds': dict(kinds),
-                'human_provenance_caveat': 'NASA and NOAA pages carry pre-2023 dates; current extracted text is not independently archive-verified.',
+                'archive_verified_human_topics': used_archives,
+                'human_provenance_caveat': 'NASA and nonarchived NOAA pages carry pre-2023 dates; current extracted text is not independently archive-verified.',
                 'parent_train_sha256': sha(PARENT/'train.jsonl'),
                 'science_human_sha256': sha(SCIENCE/'train_candidates.jsonl'),
+                'science_archive_sha256': sha(archive_file) if archive_file.exists() else None,
                 'science_ai_sha256': {path.name: sha(path) for path in ai_files},
                 'train_sha256': sha(OUTPUT/'train.jsonl'), 'val_sha256': sha(OUTPUT/'val.jsonl')}
     (OUTPUT/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')

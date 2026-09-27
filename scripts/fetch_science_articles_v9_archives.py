@@ -43,6 +43,29 @@ def extract_epa(raw):
     return text if len(text.split()) >= 400 else None
 
 
+def extract_fisheries(raw):
+    soup = BeautifulSoup(raw, 'html.parser')
+    article = soup.select_one('.article__content--news')
+    if article is None:
+        return None
+    for selector in ('figure', 'figcaption', 'aside', 'nav', 'script', 'style', '.caption',
+                     '.share', '.related', '.social-share'):
+        for node in article.select(selector):
+            node.decompose()
+    paras = []
+    for p in article.select('p'):
+        if p.find_parent(['blockquote', 'table']):
+            continue
+        t = re.sub(r'\s+', ' ', p.get_text(' ', strip=True)).strip()
+        if re.match(r'^(story by|photos? by|for more information|to contact|media contact)\b', t, re.I):
+            break
+        if len(t.split()) < 8 or re.match(r'^(image|photo|figure|credit|references|read more)[:\s]', t, re.I):
+            continue
+        paras.append(t)
+    text = '\n\n'.join(paras)
+    return text if len(text.split()) >= 400 else None
+
+
 def fetch_capture(item):
     url = 'https://data.commoncrawl.org/'+item['filename']
     start, length = item['offset'], item['length']
@@ -60,17 +83,20 @@ def fetch_capture(item):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--source', default='epa_science_matters', choices=['epa_science_matters'])
+    p.add_argument('--source', default='epa_science_matters',
+                   choices=['epa_science_matters', 'noaa_fisheries'])
     p.add_argument('--interval', type=float, default=0.25)
     args = p.parse_args()
     ledger = [json.loads(x) for x in (ROOT/f'archive_ledger_{args.source}.jsonl').open()]
-    current = {r['id']: r for r in (json.loads(x) for x in (ROOT/'epa_science_matters.jsonl').open())}
+    source_file = 'epa_science_matters.jsonl' if args.source == 'epa_science_matters' else 'human_articles.jsonl'
+    current = {r['id']: r for r in (json.loads(x) for x in (ROOT/source_file).open())
+               if r['source'] == args.source}
     (ROOT/'raw_archive').mkdir(exist_ok=True)
     accepted, rejected, overlaps = [], Counter(), []
     for i, item in enumerate(ledger):
         try:
             compressed, html = fetch_capture(item)
-            text = extract_epa(html)
+            text = extract_epa(html) if args.source == 'epa_science_matters' else extract_fisheries(html)
         except Exception as exc:
             rejected[type(exc).__name__] += 1
             time.sleep(args.interval)
@@ -98,7 +124,7 @@ def main():
                'capture_warc_length': item['length'],
                'capture_warc_sha256': hashlib.sha256(compressed).hexdigest(),
                'current_13gram_fraction_in_archive': fraction,
-               'extraction_method': 'pre2023_commoncrawl_epa_article_paragraphs_v1'}
+               'extraction_method': f'pre2023_commoncrawl_{args.source}_article_paragraphs_v1'}
         accepted.append(row)
         (ROOT/'raw_archive'/f"{parent['id']}.warc.gz").write_bytes(compressed)
         if (i+1) % 25 == 0:

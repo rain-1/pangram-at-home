@@ -1,6 +1,7 @@
 """Audit paired science training generations before building the span corpus."""
 import hashlib
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -42,6 +43,8 @@ def main():
                 reasons['duplicate_human_id'] += 1
             elif len(text.split()) < 350 or len(tokenizer.encode(text, add_special_tokens=False)) < 512:
                 reasons['short'] += 1
+            elif re.match(r'(?i)^(?:title:|here(?:\s+is|\u2019s)|certainly|as an ai|i cannot)\b', text):
+                reasons['meta_response_or_title'] += 1
             elif text.count('\n\n') < 2:
                 reasons['few_paragraphs'] += 1
             elif not text.endswith(('.', '!', '?', '”', '"')):
