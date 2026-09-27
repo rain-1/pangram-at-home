@@ -32,6 +32,11 @@ def main():
         for row in rows:
             human = humans.get(row['human_id'])
             text = row['text'].strip()
+            first, separator, remainder = text.partition('\n\n')
+            if (separator and len(first.split()) <= 18 and len(remainder.split()) >= 350
+                    and not first.rstrip().endswith(('.', '!', '?', '”', '"'))):
+                text = remainder.strip()
+                salvaged['removed_heading'] += 1
             if not text.endswith(('.', '!', '?', '”', '"')):
                 last = max(text.rfind('.'), text.rfind('!'), text.rfind('?'))
                 if last > 0 and len(text)-last <= 350:
