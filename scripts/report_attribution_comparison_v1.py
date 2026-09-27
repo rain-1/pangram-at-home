@@ -54,7 +54,7 @@ def main():
     fig,axes=plt.subplots(1,2,figsize=(11.5,4.8),layout='constrained')
     colours=['#5178b9','#25477f','#b98a51','#845520']
     for ax,task,title,chance in zip(axes,('arena','authors'),
-                                    ('AI model attribution · 50 labels',
+                                    ('AI model attribution · 50 labels · 3 prompts',
                                      'Human writer attribution · 4 labels'),
                                     (.02,.25)):
         n=data[CONDITIONS[0][0]][task]['test']['rows']
@@ -94,11 +94,14 @@ def main():
                      f"{a['top5_accuracy']:.1%} | "
                      f"{h['accuracy']:.1%} ({round(h['accuracy']*h['rows'])}/{h['rows']}) |")
     lines.extend(['','A random uniform guess is 2% for Arena and 25% for the writers. '
-                  'The bars show 95% Wilson intervals for test accuracy. '
+                  'The bars show row-level 95% Wilson intervals. Arena responses '
+                  'share just three prompts, so its intervals understate uncertainty '
+                  'across new prompts. '
                   'Per-label counts are in [Arena CSV](attribution_arena_by_model_v1.csv) '
                   'and [writers CSV](attribution_authors_by_writer_v1.csv).','',
                   '## Data and protocol','',
-                  '- Arena Prose: 4,998 nonempty responses from 50 labels; 4,698 train, '
+                  '- [Arena Prose](https://huggingface.co/datasets/woog/arena-prose-100-49-models): '
+                  '4,998 nonempty responses from 50 labels; 4,698 train, '
                   '150 validation, 150 test. Three responses per label are in each '
                   'held-out split, with prompts disjoint across splits. Two source '
                   'responses were empty and excluded.',
@@ -124,10 +127,30 @@ def main():
             lines.append(f"| {name} | {task} | {r['validation']['accuracy']:.1%} | "
                          f"{r['test']['accuracy']:.1%} | {r['test']['macro_f1']:.3f} | "
                          f"{r['best_epoch']} | [run]({r['wandb_url']}) |")
+    arena_rows={row['id']:row for row in map(json.loads,
+        (ROOT.parent/'data/attribution_heads_v1/arena/test.jsonl').open())}
+    by_category={}
+    for name,folder in CONDITIONS:
+        counts={category:[0,0] for category in ('explanatory','creative','practical')}
+        predictions=ROOT/folder/'arena/test_predictions.jsonl'
+        for prediction in map(json.loads,predictions.open()):
+            category=arena_rows[prediction['id']]['prompt_category']
+            counts[category][0]+=int(prediction['actual']==prediction['predicted'])
+            counts[category][1]+=1
+        by_category[name]=counts
+    lines.extend(['','## Arena by held-out prompt','',
+                  'Each category below is one held-out prompt answered by all 50 '
+                  'models. Performance varies substantially by prompt.','',
+                  '| Prompt category | v10 frozen | v10 trainable | Qwen frozen | Qwen trainable |',
+                  '|---|---:|---:|---:|---:|'])
+    for category in ('explanatory','creative','practical'):
+        scores=[by_category[name][category] for name,_ in CONDITIONS]
+        lines.append('| '+category+' | '+' | '.join(f'{k}/{n}' for k,n in scores)+' |')
     lines.extend(['','## Interpretation','',
-                  'The Arena test contains only three examples per model. Per-model '
-                  'recall is therefore noisy; aggregate results and larger external '
-                  'tests are needed before claiming robust model-name attribution.',
+                  'The Arena test contains only three prompts and three examples per '
+                  'model. Per-model recall and the aggregate are therefore noisy; '
+                  'a larger prompt-disjoint test is needed before claiming robust '
+                  'model-name attribution.',
                   'The writer test has just 12 essays and each author comes from a '
                   'distinct publication source. High accuracy may reflect source, '
                   'format, or era cues as well as authorial style. This is an '
