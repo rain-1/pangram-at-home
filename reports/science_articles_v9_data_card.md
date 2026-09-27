@@ -98,6 +98,15 @@ same relative positions, with exactly equal source-token lengths. It replaces
 equal numbers of pure human and pure AI science abstracts in the 20k mix,
 preserving mixed-document supervision.
 
+Of 146 locally generated training articles, 144 passed the quality gate (75
+Qwen2.5-3B-Instruct and 69 SmolLM2-1.7B-Instruct). The 144 accepted pairs
+contribute 576 windows, including 88 archive-verified NOAA human topics. The
+selected hard windows contain 1,319 of the 1,445 v8 false-positive source
+tokens found on these training-side articles. The final 20k-document mix has
+25,777 windows, 43.0% supervised AI tokens, 3.66% science-v9 supervised-token
+exposure, and 0.90% LLMTrace supervised-token exposure. The source, exposure,
+and generation audit manifests are stored on F.
+
 Use the raw/source text locally for research, preserving attribution. Individual
 pages can contain material with separate rights even on public-sector sites;
 figures are omitted and obvious third-party text is rejected, but review any
