@@ -20,6 +20,7 @@ SETS = {
     'locked_human': ('span_human_eval_v2', 'test.jsonl'),
     'aitdna': ('span_sources_v5/normalized_aitdna_real', 'locked_test.jsonl'),
     'coauthor': ('span_realistic_eval_v1', 'test.jsonl'),
+    'new_source_holdout': ('span_new_sources_v12', 'new_source_holdout.jsonl'),
 }
 WINDOW = {'roberta': (384, 192), 'llama': (512, 256)}
 
@@ -80,10 +81,12 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--model', choices=MODELS, required=True)
     p.add_argument('--sets', nargs='+', choices=SETS, default=list(SETS))
+    p.add_argument('--target-fpr', type=float, default=.05)
+    p.add_argument('--output-name', default=None)
     args = p.parse_args()
     if 'calibration' not in args.sets:
         raise ValueError('Calibration set is required')
-    out = ROOT / 'runs' / f'open_pangram_editlens_{args.model}_span_v5'
+    out = ROOT / 'runs' / (args.output_name or f'open_pangram_editlens_{args.model}_span_v5')
     out.mkdir(parents=True, exist_ok=True)
     tokenizer, model = load_model(args.model)
     qwen = AutoTokenizer.from_pretrained(ROOT / 'models/Qwen3-1.7B')
@@ -94,7 +97,7 @@ def main():
         rows, windows, truncated = score_rows(ROOT / 'data' / folder / filename,
                                               qwen, tokenizer, model, args.model)
         if threshold is None:
-            threshold = calibrate_threshold(rows, .05, 'document')
+            threshold = calibrate_threshold(rows, args.target_fpr, 'document')
         overall = summarize_scores(rows, threshold)
         by_kind = {kind: summarize_scores([r for r in rows if r['row']['kind'] == kind], threshold)
                    for kind in ('human', 'ai', 'mixed')}
@@ -113,7 +116,7 @@ def main():
                'window_qwen_tokens': WINDOW[args.model][0],
                'stride_qwen_tokens': WINDOW[args.model][1],
                'max_native_tokens': MODELS[args.model]['max_length'],
-               'threshold_source': '5% document-any false highlight on shared pure-human calibration',
+               'threshold_source': f'{100*args.target_fpr:g}% document-any false highlight on shared pure-human calibration',
                'threshold': threshold, 'sets': reports}
     (out / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
 
