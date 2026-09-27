@@ -73,9 +73,15 @@ def main():
     assert len(pairs) == 4*len(ai)
     original = [json.loads(line) for line in (PARENT/'train.jsonl').open()]
     rng = random.Random(SEED)
-    damasha = [r for r in original if r['source'] == 'DAMASHA clean published aggregate']
-    rng.shuffle(damasha)
-    removed = {r['id'] for r in damasha[:len(pairs)]}
+    # Preserve mixed-document supervision; replace pure science abstracts with
+    # equal numbers of human and AI feature windows instead.
+    old_human = [r for r in original if r['source'] == 'mage:sci' and r['kind'] == 'human']
+    old_ai = [r for r in original if r['source'] == 'mage:sci' and r['kind'] == 'ai']
+    rng.shuffle(old_human)
+    rng.shuffle(old_ai)
+    per_class = len(pairs)//2
+    assert len(old_human) >= per_class and len(old_ai) >= per_class
+    removed = {r['id'] for r in old_human[:per_class]+old_ai[:per_class]}
     rows = [r for r in original if r['id'] not in removed]+pairs
     rng.shuffle(rows)
     assert len(rows) == 20000
@@ -88,7 +94,7 @@ def main():
     kinds = Counter(r['kind'] for r in rows)
     manifest = {'role': 'paired science publication pilot, source-exclusive from NOAA calibration and archived EPA test',
                 'seed': SEED, 'documents': len(rows), 'paired_article_topics': len(ai),
-                'added_windows': len(pairs), 'replaced_damasha_documents': len(removed),
+                'added_windows': len(pairs), 'replaced_mage_sci_pure_documents': len(removed),
                 'window_source_tokens': WINDOW, 'added_labels': dict(Counter(r['kind'] for r in pairs)),
                 'added_generators': dict(Counter(r['generator'] for r in pairs if r['kind']=='ai')),
                 'sources': dict(sources), 'kinds': dict(kinds),

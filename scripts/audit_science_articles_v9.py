@@ -16,8 +16,12 @@ ROOT = DATA/'science_articles_v9'
 def main():
     rows = [json.loads(x) for x in (ROOT/'human_articles.jsonl').open()]
     rows += [json.loads(x) for x in (ROOT/'epa_science_matters.jsonl').open()]
-    archive_path = ROOT/'archived_epa_science_matters_human.jsonl'
-    archived_rows = [json.loads(x) for x in archive_path.open()] if archive_path.exists() else []
+    archived_rows = []
+    for name in ('archived_epa_science_matters_human.jsonl',
+                 'archived_noaa_fisheries_human.jsonl'):
+        archive_path = ROOT/name
+        if archive_path.exists():
+            archived_rows += [json.loads(x) for x in archive_path.open()]
     sources = {}
     for row in rows:
         sources.setdefault(row['source'], []).append(row)
