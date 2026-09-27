@@ -202,6 +202,7 @@ def fit_head(task: str, wb) -> dict:
             'feature_recipe':{'repeat2':True,'source_tokens':MAX_SOURCE_TOKENS,
                               'stride':STRIDE,'max_windows_per_document':MAX_WINDOWS,
                               'pooling':'mean second-copy final hidden state per window, then document mean'},
+            'wandb_url':wb.url,
             'data_sha256':{split:sha(DATA/task/(split+'.jsonl')) for split in SPLITS}}
     (RUN/task/'report.json').write_text(json.dumps(report,indent=2)+'\n')
     wb.summary.update({'test_accuracy':outputs['test']['accuracy'],
