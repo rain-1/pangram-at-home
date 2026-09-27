@@ -75,12 +75,14 @@ def main():
         metrics['roc_auc'] = roc_auc_score(y, score)
         qwen.append((name, metrics, y, score, color))
     opened = [(name, *open_document_scores(run), color) for name, run, color in OPEN]
+    open_reports = [json.loads((RUNS/run/'external_human_detectors_summary.json').read_text())
+                    for _, run, _ in OPEN]
     model_labels = [name for name, *_ in qwen]+[name for name, *_ in opened]
-    false_alarms = [m['human_any'] for _, m, *_ in qwen]+[1, 7]
-    ai_caught = [m['ai_any'] for _, m, *_ in qwen]+[146, 150]
+    false_alarms = [m['human_any'] for _, m, *_ in qwen]+[
+        report['overall']['human_false_alarms'] for report in open_reports]
+    ai_caught = [m['ai_any'] for _, m, *_ in qwen]+[
+        report['overall']['ai_detected'] for report in open_reports]
     colors = [row[-1] for row in qwen+opened]
-    # Verify the two open-model counts against their saved score files at the
-    # frozen thresholds reported in the prior publication comparison.
     v8_run = QWEN[1][1]
     v9_run = QWEN[2][1]
     human_sets = [
@@ -172,9 +174,11 @@ def main():
     for name, metrics, *_ in qwen:
         markdown.append(f'| {name} | {metrics["human_any"]}/150 | {metrics["ai_any"]}/150 | '
                         f'{metrics["roc_auc"]:.4f} | {metrics["human_token_fpr"]:.2%} |')
-    markdown += [
-        '| Pangram RoBERTa | 1/150 | 146/150 | 0.9989 | — |',
-        '| Pangram Llama | 7/150 | 150/150 | 0.9999 | — |', '',
+    for (name, _, _), baseline in zip(OPEN, open_reports):
+        item = baseline['overall']
+        markdown.append(f'| {name} | {item["human_false_alarms"]}/150 | '
+                        f'{item["ai_detected"]}/150 | {item["auroc"]:.4f} | — |')
+    markdown += ['',
         'An article is counted as falsely flagged if Qwen highlights any human token. '
         'This is sensitive to isolated errors; Pangram makes a whole-article decision. '
         'The AI-generated article count is analogously any highlighted token.', '',
