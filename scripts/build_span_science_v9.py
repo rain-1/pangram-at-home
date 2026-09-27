@@ -5,6 +5,7 @@ import random
 from collections import Counter
 from pathlib import Path
 
+import numpy as np
 from transformers import AutoTokenizer
 
 ROOT = Path('/mnt/f/pangram-at-home')
@@ -20,12 +21,13 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def window_rows(row, tokenizer):
+def window_rows(row, tokenizer, positions):
     ids = tokenizer.encode(row['text'], add_special_tokens=False)
     if len(ids) < WINDOW:
         return []
     out = []
-    for position, start in (('opening', 0), ('ending', len(ids)-WINDOW)):
+    for position, start in positions:
+        assert 0 <= start <= len(ids)-WINDOW
         text = tokenizer.decode(ids[start:start+WINDOW], skip_special_tokens=True)
         label = int(row['label']) if 'label' in row else int(row['kind'] == 'ai')
         out.append({'id': f'science_v9:{row["id"]}:{position}',
@@ -37,6 +39,21 @@ def window_rows(row, tokenizer):
                     'generator': row.get('model'), 'window_position': position,
                     'text_sha256': hashlib.sha256(text.encode()).hexdigest()})
     return out
+
+
+def highest_risk_start(scores, threshold):
+    """Choose the 512-token training window containing most frozen false alarms."""
+    scores = np.asarray(scores)
+    if len(scores) <= WINDOW:
+        return 0
+    above = (scores >= threshold).astype(np.int32)
+    if above.any():
+        cumulative = np.pad(above.cumsum(), (1, 0))
+        counts = cumulative[WINDOW:]-cumulative[:-WINDOW]
+        return int(np.argmax(counts))
+    cumulative = np.pad(scores.cumsum(dtype=np.float64), (1, 0))
+    means = cumulative[WINDOW:]-cumulative[:-WINDOW]
+    return int(np.argmax(means))
 
 
 def main():
@@ -60,13 +77,40 @@ def main():
                 row['id'] = base_id
                 archives[base_id] = row
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER)
+    diagnostic = ROOT/'runs/qwen3_token_repeat2_publication_v8_20k/v9_train_human_diagnostic_v8'
+    baseline_report = json.loads(diagnostic.with_suffix('.json').read_text())
+    candidate_file = SCIENCE/'train_candidates_archive_preferred.jsonl'
+    assert baseline_report['validation_sha256'] == sha(candidate_file)
+    with np.load(str(diagnostic)+'_scores.npz') as data:
+        offsets = data['document_offsets']
+        ids = data['document_ids']
+        scores = data['score']
+        risk_scores = {str(row_id): scores[offsets[i]:offsets[i+1]]
+                       for i, row_id in enumerate(ids)}
+    assert set(risk_scores) == set(humans)
     pairs = []
     used_archives = 0
+    hard_false_tokens = 0
+    hard_false_documents = 0
     for generated in ai:
         human = archives.get(generated['human_id'], humans[generated['human_id']])
-        h = window_rows(human, tokenizer)
+        h_ids = tokenizer.encode(human['text'], add_special_tokens=False)
+        a_ids = tokenizer.encode(generated['text'], add_special_tokens=False)
+        risk = risk_scores[generated['human_id']]
+        assert len(risk) == len(h_ids)
+        h_hard = highest_risk_start(risk, baseline_report['threshold'])
+        selected_false = int(np.sum(risk[h_hard:h_hard+WINDOW] >= baseline_report['threshold']))
+        hard_false_tokens += selected_false
+        hard_false_documents += selected_false > 0
+        h_max, a_max = len(h_ids)-WINDOW, len(a_ids)-WINDOW
+        a_hard = round(h_hard/h_max*a_max) if h_max > 0 else 0
+        # Put the ordinary control opposite the hard window where possible.
+        ordinary_end = h_hard < h_max/2
+        h_ordinary = h_max if ordinary_end else 0
+        a_ordinary = a_max if ordinary_end else 0
+        h = window_rows(human, tokenizer, [('hard', h_hard), ('ordinary', h_ordinary)])
         used_archives += generated['human_id'] in archives
-        a = window_rows(generated, tokenizer)
+        a = window_rows(generated, tokenizer, [('hard', a_hard), ('ordinary', a_ordinary)])
         if len(h) != 2 or len(a) != 2 or generated['words'] < 350:
             raise ValueError(f'Short pair {generated["human_id"]}: {len(h)} {len(a)} {generated["words"]}')
         pairs.extend(h+a)
@@ -99,6 +143,10 @@ def main():
                 'added_generators': dict(Counter(r['generator'] for r in pairs if r['kind']=='ai')),
                 'sources': dict(sources), 'kinds': dict(kinds),
                 'archive_verified_human_topics': used_archives,
+                'hard_false_positive_tokens_captured': hard_false_tokens,
+                'hard_false_positive_article_count': hard_false_documents,
+                'hard_window_selection': 'v8 frozen token scores on training-side humans only; maximize count above 5.03125',
+                'hard_window_diagnostic_sha256': sha(diagnostic.with_suffix('.json')),
                 'human_provenance_caveat': 'NASA and nonarchived NOAA pages carry pre-2023 dates; current extracted text is not independently archive-verified.',
                 'parent_train_sha256': sha(PARENT/'train.jsonl'),
                 'science_human_sha256': sha(SCIENCE/'train_candidates.jsonl'),
