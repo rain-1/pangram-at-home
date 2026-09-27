@@ -82,10 +82,19 @@ def main():
     parser.add_argument('candidate',type=Path)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--data-root',type=Path,default=DATA)
+    parser.add_argument('--extra-reference',action='append',default=[],metavar='NAME=JSONL',
+                        help='Additional JSONL to compare for candidate-to-candidate overlap')
     args=parser.parse_args()
     reference={};sizes={}
-    for name,relative in REFERENCES.items():
-        path=args.data_root/relative
+    paths={name:args.data_root/relative for name,relative in REFERENCES.items()}
+    for item in args.extra_reference:
+        if '=' not in item:
+            parser.error('--extra-reference requires NAME=JSONL')
+        name,filename=item.split('=',1)
+        if not name or name in paths:
+            parser.error('Extra reference name must be nonempty and distinct')
+        paths[name]=Path(filename)
+    for name,path in paths.items():
         if not path.exists():
             continue
         exact=set();phrases=set();count=0
