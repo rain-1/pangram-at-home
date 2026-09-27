@@ -81,6 +81,8 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('candidate',type=Path)
     parser.add_argument('--output',type=Path)
+    parser.add_argument('--excluded-groups-output',type=Path,
+                        help='Write every group with a screened reference match')
     parser.add_argument('--data-root',type=Path,default=DATA)
     parser.add_argument('--extra-reference',action='append',default=[],metavar='NAME=JSONL',
                         help='Additional JSONL to compare for candidate-to-candidate overlap')
@@ -155,6 +157,10 @@ def main():
     if args.output:
         args.output.parent.mkdir(parents=True,exist_ok=True)
         args.output.write_text(rendered)
+    if args.excluded_groups_output:
+        args.excluded_groups_output.parent.mkdir(parents=True,exist_ok=True)
+        args.excluded_groups_output.write_text(json.dumps({
+            name:sorted(groups) for name,groups in hit_groups.items()},indent=2)+'\n')
     print(rendered)
 
 
