@@ -5,6 +5,9 @@ from collections import defaultdict
 import json
 from pathlib import Path
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import numpy as np
 from span_metrics import summarize_scores
 
@@ -64,6 +67,88 @@ def new_group(row: dict) -> str:
     if row['source'] == 'Travis-ML/ShortStory-SFT-jsonl':
         return 'Historical fiction'
     return 'Pre-LLM author essays'
+
+
+def chart(values: dict, v12_reports: dict) -> Path:
+    names = list(MODELS)
+    colors = {'v10':'#888888', 'v12':'#087e8b',
+              'Pangram RoBERTa':'#d98628', 'Pangram Llama':'#735ca2'}
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+    fig.suptitle('New-source v12: held-out comparisons at 2% calibration FPR',
+                 fontsize=15, fontweight='bold')
+    groups = ['Dolly employee responses', 'Historical fiction',
+              'Pre-LLM author essays', 'GRADTEX human']
+    labels = ['Dolly', 'Historical fiction', 'Pre-LLM essays', 'GRADTEX human']
+    x = np.arange(len(groups))
+    width = .19
+    ax = axes[0, 0]
+    for i, name in enumerate(names):
+        heights = [100*values[name][group]['pure_human_document_any_false_highlight_rate']
+                   for group in groups]
+        ax.bar(x+(i-1.5)*width, heights, width, label=name, color=colors[name])
+    ax.set_xticks(x, labels, rotation=22, ha='right')
+    ax.set_ylabel('Human documents falsely highlighted (%)')
+    ax.set_title('New human holdouts: lower is better')
+    ax.grid(axis='y', alpha=.25)
+    ax.legend(fontsize=8, ncol=2)
+
+    ax = axes[0, 1]
+    x = np.arange(len(names))
+    recall = [100*values[name]['GRADTEX mixed']['ai_recall'] for name in names]
+    fpr = [100*values[name]['GRADTEX mixed']['fpr'] for name in names]
+    ax.bar(x-.17, recall, .34, color='#087e8b', label='AI-token recall')
+    ax.bar(x+.17, fpr, .34, color='#d98628', label='Human-token FPR')
+    ax.set_xticks(x, names, rotation=22, ha='right')
+    ax.set_ylim(0, 100)
+    ax.set_ylabel('Tokens (%)')
+    ax.set_title('GRADTEX mixed spans: recall up, FPR down')
+    ax.grid(axis='y', alpha=.25)
+    ax.legend(fontsize=8)
+
+    ax = axes[1, 0]
+    for name in names:
+        if name == 'v12':
+            m = v12_reports['llmtrace']['by_kind']['mixed']
+            human_fpr, ai_recall = m['fpr'], m['ai_recall']
+        else:
+            m = OLD[name]['thresholds']['2.0%']['mixed']['llmtrace']
+            human_fpr, ai_recall = m['human_token_fpr'], m['ai_token_recall']
+        ax.scatter(100*human_fpr, 100*ai_recall, s=85, color=colors[name], label=name)
+        ax.annotate(name, (100*human_fpr, 100*ai_recall), xytext=(4, 4),
+                    textcoords='offset points', fontsize=8)
+    ax.set_xlabel('Human-token FPR (%)')
+    ax.set_ylabel('AI-token recall (%)')
+    ax.set_title('LLMTrace mixed spans')
+    ax.grid(alpha=.25)
+
+    ax = axes[1, 1]
+    for name in names:
+        if name == 'v12':
+            ext = v12_reports['external']
+            alarms = ext['by_kind']['human']['pure_human_documents_with_false_highlight']
+            caught, total = doc_any(V12, 'v12_external_articles',
+                ROOT/'data/span_ai_eval_candidate_v1/test.jsonl', ext['threshold'], 'ai')
+        else:
+            old = OLD[name]['thresholds']['2.0%']
+            alarms = old['human']['external']['human_flagged']
+            caught, total = old['external_ai']['ai_flagged'], old['external_ai']['ai_docs']
+        ax.scatter(100*alarms/150, 100*caught/total, s=85,
+                   color=colors[name], label=name)
+        ax.annotate(name, (100*alarms/150, 100*caught/total), xytext=(4, 4),
+                    textcoords='offset points', fontsize=8)
+    ax.set_xlabel('Human articles falsely highlighted (%)')
+    ax.set_ylabel('AI articles detected (%)')
+    ax.set_title('External articles')
+    ax.grid(alpha=.25)
+    fig.text(.5, .015,
+             'EditLens broadcasts window scores for mixed spans; Qwen predicts token scores directly. '
+             'New holdout is work/group-disjoint development data.',
+             ha='center', fontsize=8)
+    fig.tight_layout(rect=(0, .03, 1, .96))
+    output = REPO/'reports/span_new_sources_v12.pdf'
+    fig.savefig(output)
+    plt.close(fig)
+    return output
 
 
 def main() -> None:
@@ -165,6 +250,10 @@ def main() -> None:
               '- External articles and other established evaluations have informed model '
               'development. They are useful comparisons, not untouched final tests.', '']
     out = REPO/'reports/span_new_sources_v12.md'
+    chart_path = chart(values, {
+        'llmtrace': json.loads((V12/'v12_llmtrace_heldout.json').read_text()),
+        'external': json.loads((V12/'v12_external_articles.json').read_text())})
+    lines += [f'[Download comparison charts]({chart_path.name})', '']
     out.write_text('\n'.join(lines))
     print(out)
 
