@@ -66,6 +66,31 @@ def report_json(run, stem):
     return json.loads((RUNS/run/(stem+'.json')).read_text())
 
 
+def threshold_sweep(run, prefix):
+    """Choose each threshold on generic human calibration, then score held-out sets."""
+    def load(stem):
+        with np.load(RUNS/run/(stem+'_scores.npz')) as data:
+            return data['score'], data['label'], data['document_offsets']
+
+    calibration, _, cal_offsets = load(prefix+'_human_calibration')
+    maxima = np.array([calibration[cal_offsets[i]:cal_offsets[i+1]].max()
+                       for i in range(len(cal_offsets)-1)])
+    ordered = np.sort(maxima)[::-1]
+    human, _, human_offsets = load(prefix+'_human_locked_test')
+    external, labels, external_offsets = load(prefix+'_external_articles')
+    rows = []
+    for target in (.005, .01, .02, .05):
+        threshold = float(np.nextafter(ordered[int(np.floor(target*len(ordered)))], np.inf))
+        heldout_flagged = sum(bool((human[human_offsets[i]:human_offsets[i+1]] >= threshold).any())
+                              for i in range(len(human_offsets)-1))
+        article_flagged = sum(bool((external[external_offsets[i]:external_offsets[i+1]] >= threshold).any())
+                              for i in range(len(external_offsets)-1)
+                              if np.all(labels[external_offsets[i]:external_offsets[i+1]] == 0))
+        ai_recall = float((external[labels == 1] >= threshold).mean())
+        rows.append((target, threshold, heldout_flagged, article_flagged, ai_recall))
+    return rows
+
+
 def publisher_false_alarms(run, stem):
     rows = [json.loads(line) for line in (ROOT/'data/span_ai_eval_candidate_v1/test.jsonl').open()]
     threshold = report_json(run, stem)['threshold']
@@ -123,6 +148,7 @@ def main():
               for label, old, new in mixed_sets]
     publishers_v8 = publisher_false_alarms(v8_run, 'v8_external_articles')
     publishers_v9 = publisher_false_alarms(v9_run, 'v9_external_articles')
+    sweeps = {'v8': threshold_sweep(v8_run, 'v8'), 'v9': threshold_sweep(v9_run, 'v9')}
     assert publishers_v8.keys() == publishers_v9.keys()
     pdf = REPORTS/'science_paired_v9_comparison.pdf'
     with PdfPages(pdf) as pages:
@@ -196,6 +222,31 @@ def main():
         ax.legend();ax.grid(axis='x', alpha=.2);ax.set_axisbelow(True)
         fig.tight_layout();pages.savefig(fig);plt.close(fig)
 
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5.5))
+        for tag, color in (('v8', QWEN[1][-1]), ('v9', QWEN[2][-1])):
+            rows = sweeps[tag]
+            label = f'Qwen {tag}'
+            axes[0].plot([r[3] for r in rows], [100*r[4] for r in rows],
+                         marker='o', label=label, color=color, lw=2)
+            axes[1].plot([r[2] for r in rows], [100*r[4] for r in rows],
+                         marker='o', label=label, color=color, lw=2)
+            for target, _, human_flagged, article_flagged, recall in rows:
+                axes[0].annotate(f'{100*target:g}%', (article_flagged, 100*recall),
+                                 xytext=(4, 4), textcoords='offset points', fontsize=8)
+                axes[1].annotate(f'{100*target:g}%', (human_flagged, 100*recall),
+                                 xytext=(4, 4), textcoords='offset points', fontsize=8)
+        axes[0].set(xlabel='External human articles flagged (of 150)',
+                    ylabel='External AI-token recall (%)', title='Publication transfer')
+        axes[1].set(xlabel='Held-out human documents flagged (of 3,579)',
+                    ylabel='External AI-token recall (%)', title='General human transfer')
+        for ax in axes:
+            ax.grid(alpha=.2);ax.legend()
+        fig.suptitle('Thresholds selected on separate human calibration only', fontsize=15,
+                     x=.06, ha='left')
+        fig.text(.06, .01, 'Point labels are target false-alarm rates on the calibration documents. '
+                 'No held-out examples were used to set these thresholds.', fontsize=8)
+        fig.tight_layout(rect=[0,.05,1,.94]);pages.savefig(fig);plt.close(fig)
+
     markdown = [
         '# Paired science v9 comparison', '',
         'The v9 run changes paired science article windows while retaining the v8 architecture, '
@@ -231,6 +282,15 @@ def main():
         new, n_new = publishers_v9[publisher]
         assert n_old == n_new
         markdown.append(f'| {publisher} | {old}/{n_old} | {new}/{n_new} |')
+    markdown += ['', '## Calibration target and operating point', '',
+                 'Each threshold below is selected using only the separate generic-human calibration split. '
+                 'The target is the fraction of calibration documents allowed to have any false highlight.', '',
+                 '| Model | Calibration target | Held-out human docs flagged /3,579 | '
+                 'External human articles flagged /150 | External AI-token recall |',
+                 '|---|---:|---:|---:|---:|']
+    for tag, rows in sweeps.items():
+        for target, _, heldout, external, recall in rows:
+            markdown.append(f'| {tag} | {target:.1%} | {heldout} | {external} | {recall:.1%} |')
     markdown += ['', 'The external Human Detectors human labels have attributed bylines but no independently '
                  'verified AI-free workflow. The archived EPA and magazine extracts were captured before 2023. '
                  'External article results have informed development and are no longer a pristine blind test. '
