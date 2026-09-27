@@ -1,0 +1,1163 @@
+{
+  "v8": {
+    "thresholds": {
+      "0.5%": {
+        "cutoff": 8.515625000000002,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 31,
+            "ai_docs": 150,
+            "ai_flagged": 149,
+            "human_token_fpr": 0.01822620016273393,
+            "ai_token_recall": 0.8030693251446928
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 4.8723652155492004e-05,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 2.994303337899646e-05,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0003531499250633086,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 0,
+            "ai_docs": 516,
+            "ai_flagged": 356,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": 0.17448737802488945
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 2,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.027418968226489468,
+            "ai_token_recall": 0.6344148675171737
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 31,
+          "ai_docs": 150,
+          "ai_flagged": 149,
+          "human_token_fpr": 0.01822620016273393,
+          "ai_token_recall": 0.8030693251446928
+        }
+      },
+      "1.0%": {
+        "cutoff": 7.531250000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 49,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.03856794141578519,
+            "ai_token_recall": 0.8837080957165296
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 8.685520601631183e-05,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 2.116720682242595e-05,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00041171670896120134,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0006201657220623955,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 0,
+            "ai_docs": 516,
+            "ai_flagged": 412,
+            "human_token_fpr": 0.00011650833482702993,
+            "ai_token_recall": 0.3204694292591003
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 2,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.04232029190081764,
+            "ai_token_recall": 0.7593944226365718
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 49,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.03856794141578519,
+          "ai_token_recall": 0.8837080957165296
+        }
+      },
+      "2.0%": {
+        "cutoff": 6.734375000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 63,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.06265256305939788,
+            "ai_token_recall": 0.926783364229414
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 9.532888465204957e-05,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00014111471214950632,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 4,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0009282340347488902,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0004657933042212518,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 3,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.000964702234319282,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 0,
+            "ai_docs": 516,
+            "ai_flagged": 442,
+            "human_token_fpr": 0.0004145008065961642,
+            "ai_token_recall": 0.4329346791798048
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 3,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.05662236663381895,
+            "ai_token_recall": 0.8256665031076218
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 63,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.06265256305939788,
+          "ai_token_recall": 0.926783364229414
+        }
+      },
+      "5.0%": {
+        "cutoff": 5.031250000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 77,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.12982777325739084,
+            "ai_token_recall": 0.9738067273267579
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00011015782226459061,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 5,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00039747310588777616,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 13,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.003795279480787801,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0020378457059679767,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 3,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0001881560705090117,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 5.353296768333703e-06,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 6,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.001920791055832142,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 2,
+            "ai_docs": 516,
+            "ai_flagged": 476,
+            "human_token_fpr": 0.0027043376949274062,
+            "ai_token_recall": 0.620042166539172
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 8,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.09101925586598131,
+            "ai_token_recall": 0.9064748936866208
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 77,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.12982777325739084,
+          "ai_token_recall": 0.9738067273267579
+        }
+      }
+    },
+    "human": {},
+    "mixed": {},
+    "external_document_auroc": 0.9836444444444444
+  },
+  "v9": {
+    "thresholds": {
+      "0.5%": {
+        "cutoff": 7.359375000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 9,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.010754000542446433,
+            "ai_token_recall": 0.872175131249381
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 7.414468806270523e-05,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 2.9740537601853905e-06,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 3,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00107667660080277,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 0,
+            "ai_docs": 516,
+            "ai_flagged": 447,
+            "human_token_fpr": 0.00034728445958057,
+            "ai_token_recall": 0.3986902251991716
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 2,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.043612006285455564,
+            "ai_token_recall": 0.7709764474975466
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 9,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.010754000542446433,
+          "ai_token_recall": 0.872175131249381
+        }
+      },
+      "1.0%": {
+        "cutoff": 6.062500000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 15,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.01482912937347437,
+            "ai_token_recall": 0.9341701218390479
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 4,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00013557885817180382,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 8,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 5.412777843537411e-05,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 8,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.002403142172991783,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 2,
+            "ai_docs": 516,
+            "ai_flagged": 477,
+            "human_token_fpr": 0.0013868972934217602,
+            "ai_token_recall": 0.5546504468533686
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 2,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.05940554505020375,
+            "ai_token_recall": 0.8483705430160288
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 15,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.01482912937347437,
+          "ai_token_recall": 0.9341701218390479
+        }
+      },
+      "2.0%": {
+        "cutoff": 4.812500000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 20,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.02053837808516409,
+            "ai_token_recall": 0.9647643171494474
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 9,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0003664866009956572,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 4,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00023767082590612002,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 33,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00032774072437243007,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 9,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0034022980585367534,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 10,
+            "ai_docs": 516,
+            "ai_flagged": 487,
+            "human_token_fpr": 0.003994891557626815,
+            "ai_token_recall": 0.6616489728902737
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 4,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.07681039763496418,
+            "ai_token_recall": 0.8948724239450442
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 20,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.02053837808516409,
+          "ai_token_recall": 0.9647643171494474
+        }
+      },
+      "5.0%": {
+        "cutoff": 1.4921875000000002,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 39,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.05398698128559805,
+            "ai_token_recall": 0.994941061598766
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 29,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.002419235250503125,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 6,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00010583603411212975,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00013474365020548407,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 23,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.004783125371360665,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 239,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.003929914638708975,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 27,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.011025168392220366,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 33,
+            "ai_docs": 516,
+            "ai_flagged": 497,
+            "human_token_fpr": 0.028535579853020254,
+            "ai_token_recall": 0.8124521894882176
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 15,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.13475111193970224,
+            "ai_token_recall": 0.9575359829898593
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 39,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.05398698128559805,
+          "ai_token_recall": 0.994941061598766
+        }
+      }
+    },
+    "human": {},
+    "mixed": {},
+    "external_document_auroc": 0.989111111111111
+  },
+  "v10": {
+    "thresholds": {
+      "0.5%": {
+        "cutoff": 6.234375000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 9,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.011893138052617304,
+            "ai_token_recall": 0.9006679213777293
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00011863150090032836,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 3,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0017054557356715877,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 0,
+            "ai_docs": 516,
+            "ai_flagged": 454,
+            "human_token_fpr": 0.0010799426420505466,
+            "ai_token_recall": 0.5048827359740284
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 4,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.04929821290649053,
+            "ai_token_recall": 0.7932920346745175
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 9,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.011893138052617304,
+          "ai_token_recall": 0.9006679213777293
+        }
+      },
+      "1.0%": {
+        "cutoff": 5.406250000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 11,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.01466639544344996,
+            "ai_token_recall": 0.9355498323121118
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00013134201885393496,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 4,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.001972471532670675,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 0,
+            "ai_docs": 516,
+            "ai_flagged": 467,
+            "human_token_fpr": 0.0017677899265101272,
+            "ai_token_recall": 0.5857566654850085
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 6,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.061256558446746746,
+            "ai_token_recall": 0.8380254334314687
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 11,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.01466639544344996,
+          "ai_token_recall": 0.9355498323121118
+        }
+      },
+      "2.0%": {
+        "cutoff": 4.609375000000001,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 16,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.01800922158936805,
+            "ai_token_recall": 0.9588634015877283
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 4,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00014193411714860714,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 1,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 9.902951079421667e-06,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 2,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 5.353296768333703e-06,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 7,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.002506503126668849,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 2,
+            "ai_docs": 516,
+            "ai_flagged": 479,
+            "human_token_fpr": 0.002914948915576268,
+            "ai_token_recall": 0.6475586320129858
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 7,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.07190987295922444,
+            "ai_token_recall": 0.8734564115145568
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 16,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.01800922158936805,
+          "ai_token_recall": 0.9588634015877283
+        }
+      },
+      "5.0%": {
+        "cutoff": 2.9570312500000004,
+        "human": {
+          "external": {
+            "human_docs": 150,
+            "human_flagged": 22,
+            "ai_docs": 150,
+            "ai_flagged": 150,
+            "human_token_fpr": 0.030519392459994577,
+            "ai_token_recall": 0.9864859128022981
+          },
+          "cnn": {
+            "human_docs": 500,
+            "human_flagged": 7,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.00024361826077746,
+            "ai_token_recall": null
+          },
+          "pmc": {
+            "human_docs": 346,
+            "human_flagged": 4,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 8.231691542054536e-05,
+            "ai_token_recall": null
+          },
+          "epa": {
+            "human_docs": 151,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "magazine": {
+            "human_docs": 21,
+            "human_flagged": 0,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "asap": {
+            "human_docs": 200,
+            "human_flagged": 6,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.0006932065755595167,
+            "ai_token_recall": null
+          },
+          "persuade": {
+            "human_docs": 3000,
+            "human_flagged": 15,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 8.803199130148756e-05,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "human_docs": 579,
+            "human_flagged": 19,
+            "ai_docs": 0,
+            "ai_flagged": 0,
+            "human_token_fpr": 0.005374769591207428,
+            "ai_token_recall": null
+          }
+        },
+        "mixed": {
+          "llmtrace": {
+            "human_docs": 720,
+            "human_flagged": 14,
+            "ai_docs": 516,
+            "ai_flagged": 494,
+            "human_token_fpr": 0.010263936189281233,
+            "ai_token_recall": 0.740668320988115
+          },
+          "aitdna": {
+            "human_docs": 104,
+            "human_flagged": 8,
+            "ai_docs": 7,
+            "ai_flagged": 7,
+            "human_token_fpr": 0.0961062135456894,
+            "ai_token_recall": 0.9226059044815178
+          }
+        },
+        "external_ai": {
+          "human_docs": 150,
+          "human_flagged": 22,
+          "ai_docs": 150,
+          "ai_flagged": 150,
+          "human_token_fpr": 0.030519392459994577,
+          "ai_token_recall": 0.9864859128022981
+        }
+      }
+    },
+    "human": {},
+    "mixed": {},
+    "external_document_auroc": 0.9921333333333333
+  }
+}
