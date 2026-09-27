@@ -1,5 +1,14 @@
 # Human source data shortlist
 
+## Project use restriction — September 27, 2026
+
+This is a noncommercial, open-research-only project. Noncommercial dataset
+licenses are eligible for the research training pool when their other terms
+(including attribution and share-alike obligations) can be met. Record each
+source's license and obligations; human/AI provenance and evaluation leakage
+remain separate acceptance checks. Older commercial-compatible shortlist
+language below records the earlier policy and is superseded by this section.
+
 ## Current direction — September 26, 2026
 
 The project targets **diverse human and AI prose**, with papers as one important
@@ -91,7 +100,7 @@ Make a separate paper-domain validation/test set. Report paper and non-paper fal
 
 | Source | What to use | Provenance and rights | Practical path |
 | --- | --- | --- | --- |
-| [PMC Open Access article datasets](https://pmc.ncbi.nlm.nih.gov/tools/pmcaws/) | Published journal article body/abstract, publication date through 2022; start with biomedical papers | NLM supplies article/version metadata and a **per-article license**. Start with CC0 or CC BY. Exclude preprints, manuscripts, noncommercial terms, and articles whose license cannot be verified. Keep PMCID, DOI, version, journal, date, license, attribution, and source URL. | Use NLM's current [`pmc-oa-opendata` S3 bucket and inventory](https://pmc-oa-opendata.s3.amazonaws.com/README.txt), then its per-version JSON metadata and JATS XML. **Legacy PMC FTP/cloud article files were removed in August 2026**; old `oa_comm` directory recipes are stale. |
+| [PMC Open Access article datasets](https://pmc.ncbi.nlm.nih.gov/tools/pmcaws/) | Published journal article body/abstract, publication date through 2022; start with biomedical papers | NLM supplies article/version metadata and a **per-article license**. CC0, CC BY and compatible noncommercial terms can be considered. Exclude preprints, manuscripts, and articles whose license cannot be verified. Keep PMCID, DOI, version, journal, date, license, attribution, and source URL. | Use NLM's current [`pmc-oa-opendata` S3 bucket and inventory](https://pmc-oa-opendata.s3.amazonaws.com/README.txt), then its per-version JSON metadata and JATS XML. **Legacy PMC FTP/cloud article files were removed in August 2026**; old `oa_comm` directory recipes are stale. |
 | [PLOS articles](https://api.plos.org/text-and-data-mining.html) | Pre-2023 journal article body/abstract across PLOS titles | [PLOS terms](https://plos.org/terms-of-use/) say articles are generally CC BY or similarly reusable unless indicated otherwise. Check each article's license and provenance. Likely overlaps PMC, so dedupe by DOI. | PLOS offers article metadata and JATS XML for text mining; use publication dates and item rights. |
 | [ACL Anthology](https://aclanthology.org/) | 2016–2022 published conference/journal papers | The [Anthology copyright FAQ](https://aclanthology.org/faq/copyright/) says materials from 2016 onward are CC BY 4.0. Use the publisher version, retain Anthology ID, venue/year, author and license details. Narrow topical coverage: computational linguistics. | Use [official metadata/repository](https://github.com/acl-org/acl-anthology) to select papers, then acquire bounded PDF batches. PDF extraction needs paragraph/header/reference cleanup. |
 | [Standard Ebooks](https://standardebooks.org/about) | Books and essays published long before generative AI | Volunteer-edited editions of works believed to be US public domain; [selection policy](https://standardebooks.org/contribute/collections-policy). Strong human-origin source for creative prose. Check individual work/edition and target-jurisdiction rights. | Download selected ebooks, strip front matter/navigation, keep work and edition IDs, and cap any one author. |
@@ -105,7 +114,7 @@ PMC + PLOS provide breadth within biomedical science; ACL adds a different schol
 | --- | --- | --- |
 | [arXiv bulk data](https://info.arxiv.org/help/bulk_data.html) | Large, diverse science and mathematics preprints | Filter each paper's license and submission **version** and date. arXiv's default distribution license is not a blanket commercial reuse grant. Treat preprints as a separate stratum from published papers; LaTeX/PDF extraction is noisy. |
 | [Stack Exchange historical dumps](https://meta.stackexchange.com/questions/224873/all-stack-exchange-data-dump-releases) | Large 2022-or-earlier Q&A corpus | Post-era CC BY-SA terms, attribution and share-alike obligations need an implementation decision; filter bots, edits after cutoff, and personal information. A 2022 snapshot bounds existence but does not verify each poster. |
-| [PERSUADE v1](https://github.com/scrosseye/PERSUADE_corpus) | 2021–22 student argumentative essays with excellent human provenance | CC BY-NC-SA 4.0; useful for noncommercial research/evaluation, **not** in a commercial-compatible training pool without permission. Keep v1 separate from later releases. |
+| [PERSUADE v1](https://github.com/scrosseye/PERSUADE_corpus) | 2021–22 student argumentative essays with excellent human provenance | CC BY-NC-SA 4.0; eligible for this noncommercial research project when attribution and share-alike terms are met. Keep v1 separate from later releases. |
 | [OpenStax textbooks](https://help.openstax.org/s/article/Licensing-information-of-OpenStax-textbooks) | Human-edited educational prose | Current library guidance says CC BY-NC-SA. Older **individual** books can say CC BY, so resolve license per edition and any AI-use conditions before inclusion. |
 | [Chronicling America](https://www.loc.gov/collections/chronicling-america/about-this-collection/rights-and-access/) | Historical US news; [official OCR bulk](https://chroniclingamerica.loc.gov/ocr/) | Old works may be public domain; OCR and article segmentation are noisy, and issue-level rights need checking. A possible small news slice. |
 | [Enron email](https://www.cs.cmu.edu/~enron/) | Authentic pre-LLM professional email | Sensitive personal and business content; resolve rights and privacy filtering before use. Narrow author population. |
@@ -127,7 +136,7 @@ Hugging Face credentials in `.env` are for authenticated access when needed; the
 1. Preserve `source`, `source_id`, `canonical_url`, `original_publication_date`, `retrieved_at`, `source_version`, `license`, `attribution`, `raw_sha256`, `clean_sha256`, `genre`, and `extraction_method` for each document. Record the source URL of rights evidence.
 2. Require an independently dated source published no later than 2022-12-31, and prefer older material when available. For strict evaluation positives, prioritize pre-2020 edited publications, public-domain classics, or similarly well-documented human work. Flag later revisions and uncertain authorship rather than silently labeling them human.
 3. Keep only body prose intended for readers. Remove references, tables, boilerplate, quotations of other works, supplementary files, OCR garbage, and markup; do not let extracted paper text mix with reviews or comments.
-4. Resolve rights at the **item/edition/version** level. Record attribution for CC BY. Use CC0, public-domain (in relevant jurisdictions), and clearly CC BY items for the first training pass; quarantine NC, SA, ND, unclear, and platform-restricted material for separate review.
+4. Resolve rights at the **item/edition/version** level. Record attribution and license obligations. CC0, public-domain (in relevant jurisdictions), CC BY, and compatible CC BY-NC items are in scope for noncommercial research. Review share-alike, no-derivatives, unclear, and platform-restricted terms before inclusion; noncommercial status alone does not resolve those conditions.
 5. Deduplicate by DOI/PMCID/Anthology ID where available and by normalized text/near-duplicate matching across sources. Split by whole work before chunking, and keep journal/venue/author or source-family holdouts to expose leakage and domain shift.
 6. Store raw and cleaned text outside Git. Commit manifests, parsers, rights rules, and small non-sensitive fixtures only. Preserve a removal path keyed by source ID and hash.
 
