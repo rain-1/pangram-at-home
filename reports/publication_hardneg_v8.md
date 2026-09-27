@@ -68,7 +68,7 @@ AI-token recall weighs long passages more heavily. The half-covered span rate gi
 | --- | ---: | ---: |
 | LLMTrace | 2261 | 22 words |
 | Synthetic v4 | 603 | 90 words |
-| AITDNA | 4172 | 1 words |
+| AITDNA | 4172 | 1 word |
 | CoAuthor | 407 | 14 words |
 
 ## Human article false alarms by publication

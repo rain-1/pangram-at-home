@@ -145,7 +145,7 @@ def main():
                  f'v6 {substantial_v6}/150 → v8 {substantial_v8}/150.',fontsize=11)
         fig.text(.07,.52,f'MIXED TEXT HIGHLIGHTING  |  {mixed_verdict}',fontsize=16,weight='bold',
                  color='#16806d' if mixed_gate else '#a9403b')
-        fig.text(.08,.46,'AI words highlighted / human words falsely marked:',fontsize=12)
+        fig.text(.08,.46,'AI tokens highlighted / human tokens falsely marked:',fontsize=12)
         for j,source in enumerate(['LLMTrace test','Synthetic v4 validation','AITDNA collaboration','CoAuthor collaboration']):
             m=v8_mix[source]['models'][0]
             fig.text(.09,.40-j*.055,f'{source}: {100*m["ai_recall"]:.1f}% / '
@@ -195,8 +195,8 @@ def main():
         bundles=[models(v6_pure,v8_pure,s) for s in sources]
         bars(axes[1],['LLMTrace AI','Synthetic AI','Article AI'],
              [[b[i]['ai_recall'] for b in bundles] for i in range(4)],'AI documents caught (%)')
-        fig.legend(*axes[0].get_legend_handles_labels(),loc='upper left',
-                   bbox_to_anchor=(.055,.885),ncol=4,frameon=False)
+        fig.legend([plt.Rectangle((0,0),1,1,color=color) for color in COLORS],NAMES,
+                   loc='upper left',bbox_to_anchor=(.055,.885),ncol=4,frameon=False)
         fig.tight_layout(rect=(.04,.04,.98,.85));pages.savefig(fig);plt.close(fig)
 
         fig,axes=plt.subplots(2,1,figsize=(11.7,8.3))
@@ -208,8 +208,8 @@ def main():
              'AI tokens highlighted (%)')
         bars(axes[1],labels,[[b[i]['human_fpr'] for b in bundles] for i in range(4)],
              'Human tokens falsely marked (%)',True)
-        fig.legend(*axes[0].get_legend_handles_labels(),loc='upper left',
-                   bbox_to_anchor=(.055,.885),ncol=4,frameon=False)
+        fig.legend([plt.Rectangle((0,0),1,1,color=color) for color in COLORS],NAMES,
+                   loc='upper left',bbox_to_anchor=(.055,.885),ncol=4,frameon=False)
         fig.tight_layout(rect=(.04,.04,.98,.85));pages.savefig(fig);plt.close(fig)
 
         fig,ax=plt.subplots(figsize=(11.7,8.3))
@@ -280,7 +280,7 @@ def main():
         ('AITDNA','span_sources_v5/normalized_aitdna_real','locked_test.jsonl'),
         ('CoAuthor','span_realistic_eval_v1','test.jsonl')):
         n,median=mixed_span_lengths(folder,filename)
-        lines.append(f'| {label} | {n} | {median:g} words |')
+        lines.append(f'| {label} | {n} | {median:g} {"word" if median==1 else "words"} |')
     lines+=['','## Human article false alarms by publication','',
             '| Publication | Human articles | Qwen v6 | Qwen v8 | Pangram RoBERTa | Pangram Llama |',
             '| --- | ---: | ---: | ---: | ---: | ---: |']
