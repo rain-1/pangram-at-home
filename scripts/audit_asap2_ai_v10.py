@@ -5,6 +5,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
+import pyarrow.parquet as pq
 from transformers import AutoTokenizer
 
 from build_span_balanced_v6 import phrase_fingerprints
@@ -23,6 +24,9 @@ def main():
     for name in ('train_candidates', 'locked_test_human'):
         for line in (ROOT/f'{name}.jsonl').open():
             protected.update(phrase_fingerprints(json.loads(line)['text']))
+    persuade = Path('/mnt/f/pangram-at-home/data/persuade_essays_v1/human_eval.parquet')
+    for text in pq.read_table(persuade, columns=['text']).column('text').to_pylist():
+        protected.update(phrase_fingerprints(text))
     protected_readings = {name: phrase_fingerprints(text)
                           for name, text in source_texts().items()}
     rejected = Counter()
