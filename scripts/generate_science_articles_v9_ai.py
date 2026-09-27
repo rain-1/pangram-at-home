@@ -22,15 +22,20 @@ def main():
     p.add_argument('--calibration-limit', type=int, default=41)
     p.add_argument('--test-limit', type=int, default=80)
     p.add_argument('--batch-size', type=int, default=2)
+    p.add_argument('--prompt-file', type=Path, default=ROOT/'matched_ai_prompts.jsonl')
+    p.add_argument('--output-file', type=Path)
     args = p.parse_args()
     model_name, model_path = MODELS[args.model]
-    prompts = [json.loads(line) for line in (ROOT/'matched_ai_prompts.jsonl').open()]
-    by_split = {'calibration_ai_candidate': [], 'locked_test_ai_candidate': []}
-    for row in prompts:
-        by_split[row['split']].append(row)
-    chosen = (by_split['calibration_ai_candidate'][:args.calibration_limit]
-              + by_split['locked_test_ai_candidate'][:args.test_limit])
-    out = ROOT/f'generated_{args.model}_pilot.jsonl'
+    prompts = [json.loads(line) for line in args.prompt_file.open()]
+    if args.prompt_file == ROOT/'matched_ai_prompts.jsonl':
+        by_split = {'calibration_ai_candidate': [], 'locked_test_ai_candidate': []}
+        for row in prompts:
+            by_split[row['split']].append(row)
+        chosen = (by_split['calibration_ai_candidate'][:args.calibration_limit]
+                  + by_split['locked_test_ai_candidate'][:args.test_limit])
+    else:
+        chosen = prompts
+    out = args.output_file or ROOT/f'generated_{args.model}_pilot.jsonl'
     done = set()
     if out.exists():
         with out.open() as f:

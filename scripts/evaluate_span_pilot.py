@@ -122,7 +122,8 @@ def main():
             for construction,family in sorted({(r["row"].get("construction","unspecified_source"),
                                                 r["row"]["source"].split(":")[0])
                                                for r in results})},
-        "by_domain":{d:summarize([r for r in results if r["row"]["domain"]==d]) for d in sorted({r["row"]["domain"] for r in results})}}
+        "by_domain":{d:summarize([r for r in results if r["row"].get("domain","unspecified")==d])
+                     for d in sorted({r["row"].get("domain","unspecified") for r in results})}}
     manifest_path=data.parent/"manifest.json"
     report["dataset_manifest_sha256"]=hashlib.sha256(manifest_path.read_bytes()).hexdigest() if manifest_path.exists() else None
     (run/f"{args.output_name}.json").write_text(json.dumps(report,indent=2)+"\n")
