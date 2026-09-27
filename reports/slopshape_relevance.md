@@ -56,6 +56,10 @@ for long, coherent documents.
 - Their 98% figure does not establish cross-domain performance on science
   articles, fiction, social media, or real human-AI collaboration. We should
   test any structural signal on our own held-out domains before adopting it.
+- The paper does not report its ModernBERT or stylometric baselines on the
+  reworded test set alongside Table 4. Its observed structural stability is
+  valuable, but it does not itself quantify the gain over those same baselines
+  under that attack.
 - The code is PolyForm Noncommercial; the instrument, prompts, and other
   non-code release materials are all-rights-reserved for audit/verification.
   Post-level feature answers and mirror texts are gated under a research
