@@ -60,7 +60,7 @@ def main():
              'archived_epa': args.archived_epa_test}
     scores = {key: load_scores(run/(stem+'_scores.npz')) for key, stem in stems.items()}
     thresholds = {}
-    for target in (.01, .02, .05):
+    for target in (.01, .02, .05, .10):
         generic = calibration_threshold(scores['generic'], target)
         magazine = calibration_threshold(scores['magazine'], target)
         thresholds[f'{int(target*100)}pct'] = {'generic': generic, 'magazine': magazine,
