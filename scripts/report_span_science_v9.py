@@ -66,6 +66,24 @@ def report_json(run, stem):
     return json.loads((RUNS/run/(stem+'.json')).read_text())
 
 
+def publisher_false_alarms(run, stem):
+    rows = [json.loads(line) for line in (ROOT/'data/span_ai_eval_candidate_v1/test.jsonl').open()]
+    threshold = report_json(run, stem)['threshold']
+    counts = {}
+    with np.load(RUNS/run/(stem+'_scores.npz')) as data:
+        scores, offsets = data['score'], data['document_offsets']
+        assert len(rows) == len(offsets)-1
+        for i, row in enumerate(rows):
+            if row['kind'] != 'human':
+                continue
+            publisher = row['publication'].replace('Readers Digest', "Reader's Digest")
+            flagged = bool((scores[offsets[i]:offsets[i+1]] >= threshold).any())
+            counts.setdefault(publisher, [0,0])
+            counts[publisher][0] += int(flagged)
+            counts[publisher][1] += 1
+    return counts
+
+
 def main():
     REPORTS.mkdir(exist_ok=True)
     qwen = []
@@ -103,6 +121,9 @@ def main():
     recall = [(label, 100*report_json(v8_run, old)['overall']['ai_recall'],
                100*report_json(v9_run, new)['overall']['ai_recall'])
               for label, old, new in mixed_sets]
+    publishers_v8 = publisher_false_alarms(v8_run, 'v8_external_articles')
+    publishers_v9 = publisher_false_alarms(v9_run, 'v9_external_articles')
+    assert publishers_v8.keys() == publishers_v9.keys()
     pdf = REPORTS/'science_paired_v9_comparison.pdf'
     with PdfPages(pdf) as pages:
         fig, axes = plt.subplots(1, 2, figsize=(12, 5.7))
@@ -161,6 +182,20 @@ def main():
                  fontsize=8)
         fig.tight_layout(rect=[0,.05,1,.94]);pages.savefig(fig);plt.close(fig)
 
+        fig, ax = plt.subplots(figsize=(10, 6))
+        names = sorted(publishers_v8)
+        pos = np.arange(len(names));width=.36
+        old = [100*publishers_v8[name][0]/publishers_v8[name][1] for name in names]
+        new = [100*publishers_v9[name][0]/publishers_v9[name][1] for name in names]
+        ax.barh(pos-width/2, old, width, color=QWEN[1][-1], label='v8')
+        ax.barh(pos+width/2, new, width, color=QWEN[2][-1], label='v9')
+        ax.axvline(10, color='#333333', lw=1, ls='--', label='10% goal')
+        ax.set_yticks(pos, names);ax.invert_yaxis()
+        ax.set_xlim(0, 100);ax.set_xlabel('Human articles with any false highlight (%)')
+        ax.set_title('False alarms by publisher on external articles', loc='left')
+        ax.legend();ax.grid(axis='x', alpha=.2);ax.set_axisbelow(True)
+        fig.tight_layout();pages.savefig(fig);plt.close(fig)
+
     markdown = [
         '# Paired science v9 comparison', '',
         'The v9 run changes paired science article windows while retaining the v8 architecture, '
@@ -189,10 +224,20 @@ def main():
     markdown += ['', '## Mixed-document AI-token recall', '',
                  '| Source | v8 | v9 |', '|---|---:|---:|']
     markdown += [f'| {label} | {old:.1f}% | {new:.1f}% |' for label, old, new in recall]
+    markdown += ['', '## External human false alarms by publisher', '',
+                 '| Publisher | v8 | v9 |', '|---|---:|---:|']
+    for publisher in sorted(publishers_v8):
+        old, n_old = publishers_v8[publisher]
+        new, n_new = publishers_v9[publisher]
+        assert n_old == n_new
+        markdown.append(f'| {publisher} | {old}/{n_old} | {new}/{n_new} |')
     markdown += ['', 'The external Human Detectors human labels have attributed bylines but no independently '
                  'verified AI-free workflow. The archived EPA and magazine extracts were captured before 2023. '
                  'External article results have informed development and are no longer a pristine blind test. '
-                 'The magazine test is author-exclusive from its candidate training pool.', '',
+                 'The magazine test is author-exclusive from its candidate training pool. '
+                 'The original Human Detectors source IDs repeat, although all 300 text hashes are distinct '
+                 'across 150 source article URLs; numeric results use row order, and new prediction exports include row index and '
+                 'text hash for unambiguous case review.', '',
                  f'[Download the comparison charts]({pdf.name})', '']
     (REPORTS/'science_paired_v9_comparison.md').write_text('\n'.join(markdown))
     print(pdf)
