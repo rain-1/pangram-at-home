@@ -24,10 +24,10 @@ for long, coherent documents.
 ## Where it could help us
 
 1. **Better provenance.** Their human material comes from actual pre-2023
-   archived snapshots. Our new science-article v9 pool currently has old
-   publication dates but contemporary page snapshots; we should locate dated
-   archived HTML for at least the locked-test articles before treating them as
-   definitive human ground truth.
+   archived snapshots. Applying this idea to our science-article v9 pool found
+   151 substantial EPA articles in dated pre-2023 Common Crawl WARC captures.
+   Those historical extracts now form a stronger human-only publication test;
+   other current-page records remain provisional until similarly verified.
 2. **A new domain.** B2B company blogs are missing from our publication data.
    Collect an independent pre-2023 archive-based B2B pool with company-domain
    splits and matched AI writing tasks. Keep companies disjoint across train,
@@ -67,7 +67,7 @@ for long, coherent documents.
   its code, feature taxonomy, or corpus into this open-source project without
   suitable permission.
 
-**Recommendation:** prioritize archived-snapshot verification and a held-out
+**Recommendation:** continue archived-snapshot verification and build a held-out
 B2B blog evaluation. Then run a small, independently implemented structural
 feature ablation as an optional document-level second opinion. Continue to
 develop the window/span detector for heterogeneous text.

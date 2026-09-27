@@ -45,7 +45,14 @@ def main():
             for line in (ROOT/filename).open()]
     selected = {normalized(r['url']): r for r in rows if r['source'] == args.source}
     captures = {}
+    out = ROOT/f'archive_ledger_{args.source}.jsonl'
+    if out.exists():
+        for line in out.open():
+            item = json.loads(line)
+            captures[normalized(item['source_url'])] = item
     failures = {}
+    # Common Crawl asks clients to avoid parallel index requests and pause
+    # between calls; keep this loop sequential.
     for index in indices:
         try:
             _, found = query(index, args.source)
@@ -65,12 +72,12 @@ def main():
                 captures[key] = item
         print(index, 'captures', len(found), 'matched_unique', len(captures), flush=True)
         time.sleep(args.interval)
-    out = ROOT/f'archive_ledger_{args.source}.jsonl'
     with out.open('w') as f:
         for item in sorted(captures.values(), key=lambda x: x['human_id']):
             f.write(json.dumps(item)+'\n')
     manifest = {'source': args.source, 'article_count': len(selected), 'archive_matched': len(captures),
-                'indices_queried': len(indices), 'index_failures': failures,
+                'years_queried_this_run': args.years, 'indices_queried_this_run': len(indices),
+                'index_failures_this_run': failures,
                 'capture_years': dict(Counter(v['timestamp'][:4] for v in captures.values())),
                 'note': 'A capture entry proves an archived page existed; its text must be fetched and compared before labeling the current extract as historically human.'}
     (ROOT/f'archive_ledger_{args.source}_manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
