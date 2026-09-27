@@ -178,13 +178,14 @@ def build_stories() -> dict:
                 if not text:
                     continue
                 eid = str(source['example_id'])
+                story_id = f'{split}:{eid}'  # Upstream example IDs restart in each split.
                 rows.append({
-                    'id': f'tell-me-a-story-{eid}', 'text': text,
+                    'id': f'tell-me-a-story-{story_id}', 'text': text,
                     'kind': 'human', 'domain': 'creative_fiction',
                     'human_origin_confidence': 'dataset-asserted human-written target; collection date unknown',
                     'spans': [{'start': 0, 'end': len(text), 'label': 0}],
-                    'source': 'virtualkevin/tell-me-a-story', 'source_id': eid,
-                    'group_id': eid, 'source_split': split,
+                    'source': 'virtualkevin/tell-me-a-story', 'source_id': story_id,
+                    'group_id': story_id, 'source_split': split,
                     'original_publication_date': None,
                     'source_collection_period': None,
                     'source_version': STORY_REVISION, 'license': 'CC BY 4.0',

@@ -14,7 +14,12 @@ For the scientific-journalism sample, the normalized `kind` is `human_candidate`
 
 ## Overlap and quality checks
 
-The preparation script samples at fixed seed `20260927` and stores all text outside Git. A sampled normalized 24-word-shingle audit found **zero candidate rows with a match** against local `span_balanced_v6`, `span_publication_hardneg_v8`, or `span_essay_paired_v10` training data, the v2 human calibration/test, the CoAuthor test, or the AI candidate test. This is a sampled fingerprint audit, not proof of zero overlap; do another exact and near-duplicate audit against any new target training parents before intake. Amazon is split by unique `reviewer_id` across its output partitions. Tell Me A Story keeps the upstream split and unique example IDs. SciTechNews partitions by record ID from the upstream training split.
+The preparation script samples at fixed seed `20260927` and stores all text outside Git. A sampled normalized 24-word-shingle audit found **zero candidate rows with a match** against local `span_balanced_v6`, `span_publication_hardneg_v8`, or `span_essay_paired_v10` training data, the v2 human calibration/test, the CoAuthor test, or the AI candidate test. This is a sampled fingerprint audit, not proof of zero overlap; do another exact and near-duplicate audit against any new target training parents before intake. Amazon is split by unique `reviewer_id` across its output partitions. Tell Me A Story keeps the upstream split and split-qualified example IDs. SciTechNews partitions by record ID from the upstream training split.
+
+The Tell Me A Story source restarts `example_id` numbering in each upstream
+split. Normalized record and group IDs therefore include the split name; all
+230 IDs are unique across train, validation, and test. A separate sampled
+24-word cross-split check found no text overlap.
 
 The local normalized files, raw HF snapshots, and per-row metadata are under `/mnt/f/pangram-at-home/data/candidate_span_sources/human/normalized/`. Recreate normalized candidates with:
 
