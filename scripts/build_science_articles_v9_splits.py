@@ -38,9 +38,10 @@ def main():
         split = ASSIGNMENT[row['source']]
         outputs[split].append(row)
         if split != 'train_candidates':
+            topic = row['title'].split(' | ')[0].removesuffix(' - NASA Science').strip()
             prompts.append({
                 'human_id': row['id'], 'split': split.replace('_human', '_ai_candidate'),
-                'source': row['source'], 'topic_title': row['title'],
+                'source': row['source'], 'topic_title': topic,
                 'human_text_sha256': row['text_sha256'],
                 'prompt_version': 'science_feature_topic_v1',
                 'prompt': (
@@ -48,7 +49,7 @@ def main():
                     'on the topic below. Explain the scientific context, evidence, and limitations '
                     'in coherent paragraphs. Write the article itself, with no title, byline, '
                     'bullet list, or introductory note. Do not quote or paraphrase a particular '
-                    f'published article.\n\nTopic: {row["title"]}'
+                    f'published article.\n\nTopic: {topic}'
                 ),
             })
     for name, values in outputs.items():

@@ -14,14 +14,24 @@ this repository contains only collection code and aggregate documentation.
 | NOAA Climate.gov science explainers | Calibration human pool | Page `article:published_time` and byline | [Climate.gov about](https://www.climate.gov/about) and [NOAA reuse policy](https://sos.noaa.gov/copyright/) |
 | EPA Science Matters | Locked human test pool | Visible `Published` line in the 2017–2022 archives | [EPA disclaimers](https://www.epa.gov/web-policies-and-procedures/epa-disclaimers) |
 
+Current accepted counts: 41 NASA Earth Observatory, 105 NOAA Fisheries,
+41 NOAA Climate.gov, and 240 EPA Science Matters articles. The source-exclusive
+split is 146 training candidates, 41 calibration-human documents, and 240
+locked-test-human documents. The split manifest, data and raw HTML are on F.
+The full overlap audit found zero sampled 24-word matches against the listed
+prior train/validation/test partitions and zero matches across the four new
+sources (`overlap_audit.json` on F).
+
 All accepted pages carry an original publication date before 2023. Text comes
 from article paragraphs after figures, figure captions, navigation, references,
 and boilerplate are removed. We require about 450–500 words, preserve the raw
 page and hashes, and reject sampled 24-word phrase overlap with existing v6/v8
 training and protected evaluation files. Scripts are
 `scripts/collect_science_articles_v9.py`,
-`scripts/collect_epa_science_matters_v9.py`, and
-`scripts/build_science_articles_v9_splits.py`.
+`scripts/collect_epa_science_matters_v9.py`,
+`scripts/clean_science_articles_v9.py`, and
+`scripts/build_science_articles_v9_splits.py`. The overlap check is
+`scripts/audit_science_articles_v9.py`.
 
 The date is evidence of original publication, not proof that every word in the
 current page snapshot predates 2023. NASA pages in particular may show later CMS
