@@ -21,7 +21,6 @@ EVALS = [
     ('span_human_eval_v2', 'test.jsonl', 'v10_human_locked_test'),
     ('span_size_curve_v5/size_20000', 'test_llmtrace.jsonl', 'v10_llmtrace_heldout'),
     ('span_sources_v5/normalized_aitdna_real', 'locked_test.jsonl', 'v10_aitdna'),
-    ('span_realistic_eval_v1', 'test.jsonl', 'v10_coauthor'),
     ('pmc_publication_v6', 'test.jsonl', 'v10_pmc_article_test'),
     ('cnn_dailymail_v1', 'locked_test.jsonl', 'v10_cnn_article_test'),
     ('science_articles_v9', 'archived_epa_science_matters_human.jsonl', 'v10_archived_epa_human'),

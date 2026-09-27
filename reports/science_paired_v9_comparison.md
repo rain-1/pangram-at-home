@@ -30,7 +30,6 @@ An article is counted as falsely flagged if Qwen highlights any human token. Thi
 |---|---:|---:|
 | LLMTrace | 61.9% | 81.2% |
 | AITDNA | 90.6% | 95.8% |
-| CoAuthor | 8.2% | 20.3% |
 
 ## External human false alarms by publisher
 

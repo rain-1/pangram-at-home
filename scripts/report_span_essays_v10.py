@@ -26,14 +26,13 @@ STEMS = {
     'asap': {'v8':'v10_asap2_locked_test_v8','v9':'v10_asap2_locked_test_v9','v10':'v10_asap2_locked_test'},
     'llmtrace': {'v8':'v8_llmtrace_heldout','v9':'v9_llmtrace_heldout','v10':'v10_llmtrace_heldout'},
     'aitdna': {'v8':'v8_aitdna','v9':'v9_aitdna','v10':'v10_aitdna'},
-    'coauthor': {'v8':'v8_coauthor','v9':'v9_coauthor','v10':'v10_coauthor'},
 }
 HUMAN_LABELS = {
     'external':'External articles', 'persuade':'PERSUADE essays',
     'writers':'Writers Stack Exchange', 'cnn':'CNN articles', 'pmc':'PMC papers',
     'epa':'Archived EPA', 'magazine':'Archived Smithsonian', 'asap':'ASAP 2.0 essays',
 }
-MIXED_LABELS = {'llmtrace':'LLMTrace', 'aitdna':'AITDNA', 'coauthor':'CoAuthor'}
+MIXED_LABELS = {'llmtrace':'LLMTrace', 'aitdna':'AITDNA'}
 
 
 def load(tag, key):

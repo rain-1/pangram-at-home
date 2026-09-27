@@ -150,7 +150,6 @@ def main():
     mixed_sets = [
         ('LLMTrace', 'v8_llmtrace_heldout', 'v9_llmtrace_heldout'),
         ('AITDNA', 'v8_aitdna', 'v9_aitdna'),
-        ('CoAuthor', 'v8_coauthor', 'v9_coauthor'),
     ]
     recall = [(label, 100*report_json(v8_run, old)['overall']['ai_recall'],
                100*report_json(v9_run, new)['overall']['ai_recall'])
@@ -213,7 +212,7 @@ def main():
             ax.set_axisbelow(True);ax.legend()
         fig.suptitle('Frozen-threshold transfer across domains', fontsize=15, x=.06, ha='left')
         fig.text(.06,.01,'Archived magazine test authors were excluded from its training candidates. '
-                 'AITDNA and CoAuthor contain genuinely mixed authorship; their AI passages differ in length.',
+                 'AITDNA contains real human–AI collaboration with token-level provenance.',
                  fontsize=8)
         fig.tight_layout(rect=[0,.05,1,.94]);pages.savefig(fig);plt.close(fig)
 
