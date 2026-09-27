@@ -16,6 +16,7 @@ for name,metadata in manifest['files'].items():
 print('Upload checksums verified',flush=True)
 PY
 export PIP_BREAK_SYSTEM_PACKAGES=1
+python -m pip install -q --index-url https://download.pytorch.org/whl/cu126 'torch==2.7.1'
 python -m pip install -q -r requirements-span.txt
 python -m pip uninstall -y torchvision torchaudio >/dev/null 2>&1 || true
 python - <<'PY'
