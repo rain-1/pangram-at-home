@@ -197,7 +197,8 @@ def fit_head(task: str, wb) -> dict:
     np.savez_compressed(RUN/task/'normalization.npz',mean=mean,std=std)
     report={'task':task,'labels':labels,'best_epoch':best['epoch'],
             'train_rows':len(rows['train']),'validation':outputs['val'],
-            'test':outputs['test'],'adapter_sha256':sha(ADAPTER/'adapter_model.safetensors'),
+            'test':outputs['test'],
+            'adapter_sha256':sha(ADAPTER/'adapter_model.safetensors') if ADAPTER else None,
             'base_revision':'70d244cc86ccca08cf5af4e1e306ecf908b1ad5e',
             'feature_recipe':{'repeat2':True,'source_tokens':MAX_SOURCE_TOKENS,
                               'stride':STRIDE,'max_windows_per_document':MAX_WINDOWS,
@@ -215,22 +216,27 @@ def fit_head(task: str, wb) -> dict:
 
 
 def main() -> None:
+    global RUN, ADAPTER
     parser=argparse.ArgumentParser()
     parser.add_argument('--task',choices=TASKS,help='Run only one task; default runs both')
+    parser.add_argument('--init',choices=('v10','base'),default='v10')
     parser.add_argument('--features-only',action='store_true')
     parser.add_argument('--smoke',action='store_true',help='Encode one document and exit')
     args=parser.parse_args()
+    if args.init=='base':
+        RUN=ROOT/'runs/attribution_base_frozen_v1'
+        ADAPTER=None
     torch.manual_seed(SEED);random.seed(SEED);np.random.seed(SEED)
     torch.set_num_threads(4)
     RUN.mkdir(parents=True,exist_ok=True)
     tasks=(args.task,) if args.task else TASKS
-    tokenizer=AutoTokenizer.from_pretrained(ADAPTER)
+    tokenizer=AutoTokenizer.from_pretrained(ADAPTER or BASE)
     tokenizer.pad_token=tokenizer.eos_token
     base=AutoModelForTokenClassification.from_pretrained(
         BASE,num_labels=2,dtype=torch.bfloat16,device_map={'':0})
     base.config.pad_token_id=tokenizer.pad_token_id
     base.config.use_cache=False
-    model=PeftModel.from_pretrained(base,ADAPTER).eval()
+    model=(PeftModel.from_pretrained(base,ADAPTER) if ADAPTER else base).eval()
     if args.smoke:
         row=read_rows(tasks[0],'train')[0]
         vector,nwindows=feature(row['text'],tokenizer,model)
@@ -247,8 +253,9 @@ def main() -> None:
     import wandb
     for task in tasks:
         wb=wandb.init(project='pangram-at-home',entity='eac-adsf',
-                      name='attribution_heads_v1_'+task,job_type='frozen-attribution-head',
-                      config={'task':task,'backbone':'qwen3_token_repeat2_essay_paired_v10_20k',
+                      name=('attribution_heads_v1_' if ADAPTER else 'attribution_base_frozen_v1_')+task,
+                      job_type='frozen-attribution-head',
+                      config={'task':task,'backbone':'qwen3_token_repeat2_essay_paired_v10_20k' if ADAPTER else 'Qwen3-1.7B original',
                               'frozen_backbone':True,'seed':SEED})
         try:
             fit_head(task,wb)

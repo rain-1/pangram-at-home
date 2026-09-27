@@ -20,7 +20,7 @@ from safetensors.torch import load_file, save_file
 from transformers import AutoModelForTokenClassification, AutoTokenizer
 
 from train_attribution_heads_v1 import (ADAPTER, BASE, DATA, MAX_SOURCE_TOKENS,
-                                        RUN, SEED, feature, read_rows, score,
+                                        RUN, ROOT, SEED, read_rows, score,
                                         sha, starts)
 
 OUT = RUN.parent/'attribution_unfrozen_v1'
@@ -67,26 +67,27 @@ def evaluate(rows, labels, index, tokenizer, model, head, mean, scale, weights):
     return result,outputs
 
 
-def train_task(task, epochs, learning_rate, wb):
+def train_task(task, epochs, learning_rate, wb, init):
     rows={split:read_rows(task,split) for split in ('train','val','test')}
     labels=sorted({row['label'] for split_rows in rows.values() for row in split_rows})
     index={label:i for i,label in enumerate(labels)}
-    output=OUT/task
+    output=(OUT if init=='v10' else ROOT/'runs/attribution_base_unfrozen_v1')/task
     output.mkdir(parents=True,exist_ok=True)
-    tokenizer=AutoTokenizer.from_pretrained(ADAPTER)
+    tokenizer=AutoTokenizer.from_pretrained(ADAPTER if init=='v10' else BASE)
     tokenizer.pad_token=tokenizer.eos_token
     base=AutoModelForTokenClassification.from_pretrained(
         BASE,num_labels=2,dtype=torch.bfloat16,device_map={'':0})
     base.config.pad_token_id=tokenizer.pad_token_id
     base.config.use_cache=False
-    model=PeftModel.from_pretrained(base,ADAPTER).merge_and_unload()
+    model=(PeftModel.from_pretrained(base,ADAPTER).merge_and_unload()
+           if init=='v10' else base)
     model.gradient_checkpointing_enable()
     for parameter in model.parameters():
         parameter.requires_grad_(True)
     trainable=sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(task,'trainable backbone parameters',trainable,flush=True)
     assert trainable>1_000_000_000
-    frozen=RUN/task
+    frozen=(RUN if init=='v10' else ROOT/'runs/attribution_base_frozen_v1')/task
     norm=np.load(frozen/'normalization.npz')
     mean=torch.tensor(norm['mean'],device='cuda')
     scale=torch.tensor(norm['std']+1e-4,device='cuda')
@@ -151,7 +152,8 @@ def train_task(task, epochs, learning_rate, wb):
                   'predicted':labels[int(logit.argmax())]}
                  for row,logit in zip(rows['test'],logits)]
     (output/'test_predictions.jsonl').write_text(''.join(json.dumps(x)+'\n' for x in predictions))
-    report={'task':task,'method':'full_backbone_finetune','start':'merged v10 adapter',
+    report={'task':task,'method':'full_backbone_finetune',
+            'start':'merged v10 adapter' if init=='v10' else 'original Qwen3-1.7B',
             'trainable_backbone_parameters':trainable,'train_rows':len(rows['train']),
             'validation_rows':len(rows['val']),'test_rows':len(rows['test']),
             'labels':labels,'epochs':epochs,'best_epoch':best['epoch'],
@@ -159,7 +161,7 @@ def train_task(task, epochs, learning_rate, wb):
             'training_windows_per_document_per_epoch':1,
             'evaluation_windows':'all up to 8, 512 source tokens, stride 256',
             'validation':best['val'],'test':test,'wandb_url':wb.url,
-            'adapter_sha256':sha(ADAPTER/'adapter_model.safetensors'),
+            'adapter_sha256':sha(ADAPTER/'adapter_model.safetensors') if init=='v10' else None,
             'data_sha256':{split:sha(DATA/task/(split+'.jsonl')) for split in rows}}
     (output/'report.json').write_text(json.dumps(report,indent=2)+'\n')
     wb.summary.update({'test_accuracy':test['accuracy'],
@@ -171,25 +173,27 @@ def train_task(task, epochs, learning_rate, wb):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--task',choices=('arena','authors'))
+    parser.add_argument('--init',choices=('v10','base'),default='v10')
     parser.add_argument('--smoke',action='store_true')
     args=parser.parse_args()
     torch.manual_seed(SEED);np.random.seed(SEED);random.seed(SEED)
     torch.set_num_threads(4)
     tasks=(args.task,) if args.task else ('arena','authors')
     if args.smoke:
-        assert all((RUN/task/'report.json').exists() for task in tasks)
+        frozen=RUN if args.init=='v10' else ROOT/'runs/attribution_base_frozen_v1'
+        assert all((frozen/task/'report.json').exists() for task in tasks)
         print('Frozen reports and trainable-run inputs available')
         return
     import wandb
     for task in tasks:
         epochs=2 if task=='arena' else 3
         wb=wandb.init(project='pangram-at-home',entity='eac-adsf',
-                      name='attribution_unfrozen_v1_'+task,
+                      name=('attribution_unfrozen_v1_' if args.init=='v10' else 'attribution_base_unfrozen_v1_')+task,
                       job_type='full-backbone-attribution',
                       config={'task':task,'epochs':epochs,'backbone_lr':5e-6,
-                              'full_backbone':True,'seed':SEED})
+                              'full_backbone':True,'seed':SEED,'init':args.init})
         try:
-            train_task(task,epochs,5e-6,wb)
+            train_task(task,epochs,5e-6,wb,args.init)
         finally:
             wb.finish()
 
