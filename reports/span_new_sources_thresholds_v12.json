@@ -1,0 +1,1062 @@
+{
+  "v10": {
+    "0.5%": {
+      "generic_threshold": 6.234375000000001,
+      "essay_threshold": 2.2656250000000004,
+      "variants": {
+        "generic": {
+          "threshold": 6.234375000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 3,
+            "human_token_fpr": 0.0017054557356715877,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 9,
+            "human_token_fpr": 0.011893138052617304,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9006679213777293
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 454,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.6673221096154075
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 323,
+            "human_token_fpr": 0.0028266313240011493,
+            "ai_token_recall": 0.23048439052292502
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 231,
+            "human_token_fpr": 0.09063702436938863,
+            "ai_token_recall": 0.7925759487826649
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 15,
+            "human_token_fpr": 0.006388986261638712,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 113,
+            "human_token_fpr": 0.0008136338647608576,
+            "ai_token_recall": 0.27370602279381956
+          }
+        },
+        "source_aware_max": {
+          "threshold": 6.234375000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 3,
+            "human_token_fpr": 0.0017054557356715877,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 9,
+            "human_token_fpr": 0.011893138052617304,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9006679213777293
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 454,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.6673221096154075
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 323,
+            "human_token_fpr": 0.0028266313240011493,
+            "ai_token_recall": 0.23048439052292502
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 231,
+            "human_token_fpr": 0.09063702436938863,
+            "ai_token_recall": 0.7925759487826649
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 15,
+            "human_token_fpr": 0.006388986261638712,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 113,
+            "human_token_fpr": 0.0008136338647608576,
+            "ai_token_recall": 0.27370602279381956
+          }
+        }
+      }
+    },
+    "1.0%": {
+      "generic_threshold": 5.406250000000001,
+      "essay_threshold": 1.7851562500000002,
+      "variants": {
+        "generic": {
+          "threshold": 5.406250000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 4,
+            "human_token_fpr": 0.001972471532670675,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 11,
+            "human_token_fpr": 0.01466639544344996,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9355498323121118
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 467,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.7480722848622382
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 387,
+            "human_token_fpr": 0.004626996088458313,
+            "ai_token_recall": 0.3115673701217248
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 233,
+            "human_token_fpr": 0.11351004702864471,
+            "ai_token_recall": 0.837462936173269
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 17,
+            "human_token_fpr": 0.006912398138766573,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 131,
+            "human_token_fpr": 0.0013633864760857614,
+            "ai_token_recall": 0.36524167755304293
+          }
+        },
+        "source_aware_max": {
+          "threshold": 5.406250000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 4,
+            "human_token_fpr": 0.001972471532670675,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 11,
+            "human_token_fpr": 0.01466639544344996,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9355498323121118
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 467,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.7480722848622382
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 387,
+            "human_token_fpr": 0.004626996088458313,
+            "ai_token_recall": 0.3115673701217248
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 233,
+            "human_token_fpr": 0.11351004702864471,
+            "ai_token_recall": 0.837462936173269
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 17,
+            "human_token_fpr": 0.006912398138766573,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 131,
+            "human_token_fpr": 0.0013633864760857614,
+            "ai_token_recall": 0.36524167755304293
+          }
+        }
+      }
+    },
+    "2.0%": {
+      "generic_threshold": 4.609375000000001,
+      "essay_threshold": 1.1640625000000002,
+      "variants": {
+        "generic": {
+          "threshold": 4.609375000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 2,
+            "human_token_fpr": 5.353296768333703e-06,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 7,
+            "human_token_fpr": 0.002506503126668849,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 16,
+            "human_token_fpr": 0.01800922158936805,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9588634015877283
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 2,
+            "human_token_fpr": 3.263246059630383e-05,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 479,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.8023750400988511
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 433,
+            "human_token_fpr": 0.00757677939960474,
+            "ai_token_recall": 0.38603727007255323
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 235,
+            "human_token_fpr": 0.1338445917058572,
+            "ai_token_recall": 0.8730236900694595
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 19,
+            "human_token_fpr": 0.0074766265384227535,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 149,
+            "human_token_fpr": 0.0018471687740516766,
+            "ai_token_recall": 0.44492995179963063
+          }
+        },
+        "source_aware_max": {
+          "threshold": 4.609375000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 2,
+            "human_token_fpr": 5.353296768333703e-06,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 7,
+            "human_token_fpr": 0.002506503126668849,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 16,
+            "human_token_fpr": 0.01800922158936805,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9588634015877283
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 2,
+            "human_token_fpr": 3.263246059630383e-05,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 479,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.8023750400988511
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 433,
+            "human_token_fpr": 0.00757677939960474,
+            "ai_token_recall": 0.38603727007255323
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 235,
+            "human_token_fpr": 0.1338445917058572,
+            "ai_token_recall": 0.8730236900694595
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 19,
+            "human_token_fpr": 0.0074766265384227535,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 149,
+            "human_token_fpr": 0.0018471687740516766,
+            "ai_token_recall": 0.44492995179963063
+          }
+        }
+      }
+    },
+    "5.0%": {
+      "generic_threshold": 2.9570312500000004,
+      "essay_threshold": -0.12548828124999997,
+      "variants": {
+        "generic": {
+          "threshold": 2.9570312500000004,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 15,
+            "human_token_fpr": 8.803199130148756e-05,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 19,
+            "human_token_fpr": 0.005374769591207428,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 22,
+            "human_token_fpr": 0.030519392459994577,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9864859128022981
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 14,
+            "human_token_fpr": 0.0035243057444008137,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 494,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.8731153539985981
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 505,
+            "human_token_fpr": 0.021164548647967112,
+            "ai_token_recall": 0.5169341000090315
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 239,
+            "human_token_fpr": 0.18073963232150492,
+            "ai_token_recall": 0.9223224270778828
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 33,
+            "human_token_fpr": 0.009210128259919615,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 167,
+            "human_token_fpr": 0.008752061572292469,
+            "ai_token_recall": 0.5693499707194017
+          }
+        },
+        "source_aware_max": {
+          "threshold": 2.9570312500000004,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 15,
+            "human_token_fpr": 8.803199130148756e-05,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 19,
+            "human_token_fpr": 0.005374769591207428,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 22,
+            "human_token_fpr": 0.030519392459994577,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9864859128022981
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 14,
+            "human_token_fpr": 0.0035243057444008137,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 494,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.8731153539985981
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 505,
+            "human_token_fpr": 0.021164548647967112,
+            "ai_token_recall": 0.5169341000090315
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 239,
+            "human_token_fpr": 0.18073963232150492,
+            "ai_token_recall": 0.9223224270778828
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 33,
+            "human_token_fpr": 0.009210128259919615,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 167,
+            "human_token_fpr": 0.008752061572292469,
+            "ai_token_recall": 0.5693499707194017
+          }
+        }
+      }
+    }
+  },
+  "v12": {
+    "0.5%": {
+      "generic_threshold": 5.765625000000001,
+      "essay_threshold": 3.6406250000000004,
+      "variants": {
+        "generic": {
+          "threshold": 5.765625000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 2,
+            "human_token_fpr": 8.327350528519093e-06,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 5,
+            "human_token_fpr": 0.0017915898637358093,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 9,
+            "human_token_fpr": 0.010991320857065365,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9639081891123155
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 457,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.7319436358667887
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 391,
+            "human_token_fpr": 0.006298344485429947,
+            "ai_token_recall": 0.34239495840483286
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 233,
+            "human_token_fpr": 0.1189878153056862,
+            "ai_token_recall": 0.8404690818430853
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 6,
+            "human_token_fpr": 0.003066041133450821,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 159,
+            "human_token_fpr": 0.00021990104452996153,
+            "ai_token_recall": 0.46240821658633274
+          }
+        },
+        "source_aware_max": {
+          "threshold": 5.765625000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 2,
+            "human_token_fpr": 8.327350528519093e-06,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 5,
+            "human_token_fpr": 0.0017915898637358093,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 9,
+            "human_token_fpr": 0.010991320857065365,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9639081891123155
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 0,
+            "human_token_fpr": 0.0,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 457,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.7319436358667887
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 391,
+            "human_token_fpr": 0.006298344485429947,
+            "ai_token_recall": 0.34239495840483286
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 233,
+            "human_token_fpr": 0.1189878153056862,
+            "ai_token_recall": 0.8404690818430853
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 6,
+            "human_token_fpr": 0.003066041133450821,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 159,
+            "human_token_fpr": 0.00021990104452996153,
+            "ai_token_recall": 0.46240821658633274
+          }
+        }
+      }
+    },
+    "1.0%": {
+      "generic_threshold": 5.078125000000001,
+      "essay_threshold": 3.1250000000000004,
+      "variants": {
+        "generic": {
+          "threshold": 5.078125000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 8,
+            "human_token_fpr": 4.4610806402780856e-05,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 9,
+            "human_token_fpr": 0.0026443177315716034,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 10,
+            "human_token_fpr": 0.012944128017358286,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9741251220513111
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 2,
+            "human_token_fpr": 4.350994746173844e-05,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 468,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.7766820725462473
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 431,
+            "human_token_fpr": 0.009564804334949948,
+            "ai_token_recall": 0.40451174599351736
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 233,
+            "human_token_fpr": 0.1330696879008123,
+            "ai_token_recall": 0.8631434229021104
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 8,
+            "human_token_fpr": 0.004228111539551211,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 170,
+            "human_token_fpr": 0.0008136338647608576,
+            "ai_token_recall": 0.536465606558854
+          }
+        },
+        "source_aware_max": {
+          "threshold": 5.078125000000001,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 8,
+            "human_token_fpr": 4.4610806402780856e-05,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 9,
+            "human_token_fpr": 0.0026443177315716034,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 10,
+            "human_token_fpr": 0.012944128017358286,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9741251220513111
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 2,
+            "human_token_fpr": 4.350994746173844e-05,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 468,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.7766820725462473
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 431,
+            "human_token_fpr": 0.009564804334949948,
+            "ai_token_recall": 0.40451174599351736
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 233,
+            "human_token_fpr": 0.1330696879008123,
+            "ai_token_recall": 0.8631434229021104
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 8,
+            "human_token_fpr": 0.004228111539551211,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 170,
+            "human_token_fpr": 0.0008136338647608576,
+            "ai_token_recall": 0.536465606558854
+          }
+        }
+      }
+    },
+    "2.0%": {
+      "generic_threshold": 3.5312500000000004,
+      "essay_threshold": 2.5078125000000004,
+      "variants": {
+        "generic": {
+          "threshold": 3.5312500000000004,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 31,
+            "human_token_fpr": 0.0004597887113246614,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 14,
+            "human_token_fpr": 0.00597770848765698,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 11,
+            "human_token_fpr": 0.01760916734472471,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9889764670921364
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 18,
+            "human_token_fpr": 0.004282103996026091,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 483,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.8378164838951133
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 506,
+            "human_token_fpr": 0.021041396660821835,
+            "ai_token_recall": 0.5179978123651544
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 236,
+            "human_token_fpr": 0.16500106883283455,
+            "ai_token_recall": 0.9012999271548319
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 15,
+            "human_token_fpr": 0.005702308294397572,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 201,
+            "human_token_fpr": 0.0038482682792743265,
+            "ai_token_recall": 0.6647596738591829
+          }
+        },
+        "source_aware_max": {
+          "threshold": 3.5312500000000004,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 31,
+            "human_token_fpr": 0.0004597887113246614,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 14,
+            "human_token_fpr": 0.00597770848765698,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 11,
+            "human_token_fpr": 0.01760916734472471,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9889764670921364
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 18,
+            "human_token_fpr": 0.004282103996026091,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 483,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.8378164838951133
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 506,
+            "human_token_fpr": 0.021041396660821835,
+            "ai_token_recall": 0.5179978123651544
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 236,
+            "human_token_fpr": 0.16500106883283455,
+            "ai_token_recall": 0.9012999271548319
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 15,
+            "human_token_fpr": 0.005702308294397572,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 201,
+            "human_token_fpr": 0.0038482682792743265,
+            "ai_token_recall": 0.6647596738591829
+          }
+        }
+      }
+    },
+    "5.0%": {
+      "generic_threshold": 0.32128906250000006,
+      "essay_threshold": 1.360026041666667,
+      "variants": {
+        "generic": {
+          "threshold": 0.32128906250000006,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 240,
+            "human_token_fpr": 0.004470597612310679,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 45,
+            "human_token_fpr": 0.015357715033850713,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 22,
+            "human_token_fpr": 0.03426905343097369,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9985919877736426
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 66,
+            "human_token_fpr": 0.03174413250229334,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 499,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9105825323464065
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 593,
+            "human_token_fpr": 0.07889350871740138,
+            "ai_token_recall": 0.6849003020541691
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 247,
+            "human_token_fpr": 0.2481028217186832,
+            "ai_token_recall": 0.9495624159972094
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 38,
+            "human_token_fpr": 0.00858107361860081,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 226,
+            "human_token_fpr": 0.022539857064321055,
+            "ai_token_recall": 0.8094508761655931
+          }
+        },
+        "source_aware_max": {
+          "threshold": 1.360026041666667,
+          "persuade": {
+            "documents": 3000,
+            "flagged_documents": 148,
+            "human_token_fpr": 0.0023970873307094247,
+            "ai_token_recall": null
+          },
+          "writers": {
+            "documents": 579,
+            "flagged_documents": 30,
+            "human_token_fpr": 0.010956261089768988,
+            "ai_token_recall": null
+          },
+          "external_human": {
+            "documents": 150,
+            "flagged_documents": 17,
+            "human_token_fpr": 0.027956333062110116,
+            "ai_token_recall": null
+          },
+          "external_ai": {
+            "documents": 150,
+            "flagged_documents": 150,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.9972052018622554
+          },
+          "llmtrace_human": {
+            "documents": 720,
+            "flagged_documents": 48,
+            "human_token_fpr": 0.02080863237357641,
+            "ai_token_recall": null
+          },
+          "llmtrace_ai": {
+            "documents": 516,
+            "flagged_documents": 494,
+            "human_token_fpr": null,
+            "ai_token_recall": 0.8940439839842218
+          },
+          "llmtrace_mixed": {
+            "documents": 764,
+            "flagged_documents": 565,
+            "human_token_fpr": 0.05352419936547405,
+            "ai_token_recall": 0.6385686044294588
+          },
+          "aitdna_mixed": {
+            "documents": 258,
+            "flagged_documents": 244,
+            "human_token_fpr": 0.2160378366823429,
+            "ai_token_recall": 0.9370248391763366
+          },
+          "new_human": {
+            "documents": 590,
+            "flagged_documents": 31,
+            "human_token_fpr": 0.0076831101229777815,
+            "ai_token_recall": null
+          },
+          "new_mixed": {
+            "documents": 250,
+            "flagged_documents": 221,
+            "human_token_fpr": 0.015239142385926333,
+            "ai_token_recall": 0.7740438758502636
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import numpy as np
 
 ROOT = Path('/mnt/f/pangram-at-home')
@@ -88,7 +91,41 @@ def report_point(caches: dict, threshold: float) -> dict:
 
 
 def pct(value) -> str:
-    return '—' if value is None else f'{100*value:.1f}%'
+    if value is None:
+        return '—'
+    return f'{100*value:.2f}%' if value < .01 else f'{100*value:.1f}%'
+
+
+def chart(output: dict, path: Path) -> None:
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.8))
+    colors={'v10':'#888888','v12':'#087e8b'}
+    targets=('0.5%', '1.0%', '2.0%')
+    for model in MODELS:
+        points=[output[model][target]['variants']['generic'] for target in targets]
+        alarms=[p['persuade']['flagged_documents']+p['writers']['flagged_documents']
+                for p in points]
+        llm=[100*p['llmtrace_mixed']['ai_token_recall'] for p in points]
+        new=[100*p['new_mixed']['ai_token_recall'] for p in points]
+        ext=[100*p['external_ai']['ai_token_recall'] for p in points]
+        for ax, y in zip(axes, (llm,new,ext)):
+            ax.plot(alarms,y,marker='o',lw=2,color=colors[model],label=model)
+            for x_value,y_value,target in zip(alarms,y,targets):
+                ax.annotate(target,(x_value,y_value),xytext=(4,4),
+                            textcoords='offset points',fontsize=8)
+    labels=('LLMTrace mixed AI-token recall (%)',
+            'New GRADTEX mixed AI-token recall (%)',
+            'External AI-token recall (%)')
+    for ax,label in zip(axes,labels):
+        ax.set_xlabel('Broad human documents falsely highlighted (of 3,579)')
+        ax.set_ylabel(label)
+        ax.grid(alpha=.25)
+        ax.legend()
+    fig.suptitle('v10 and v12: thresholds set only on generic human calibration',fontsize=14)
+    fig.text(.5,.01,'Point labels are calibration targets. Fewer human false alarms and more AI recall are better.',
+             ha='center',fontsize=9)
+    fig.tight_layout(rect=(0,.04,1,.94))
+    fig.savefig(path)
+    plt.close(fig)
 
 
 def main() -> None:
@@ -122,11 +159,31 @@ def main() -> None:
                     f'{pct(l["ai_token_recall"])} / {pct(l["human_token_fpr"])} |')
     out=REPO/'reports/span_new_sources_thresholds_v12'
     out.with_suffix('.json').write_text(json.dumps(output,indent=2)+'\n')
+    lines += ['', '## Key operating points', '',
+              '| Model | Calibration | Broad human alarms | External human alarms | '
+              'External AI-token recall | LLMTrace pure-AI documents caught | '
+              'LLMTrace mixed AI-token recall / human-token FPR | '
+              'New GRADTEX mixed AI-token recall / human-token FPR |',
+              '|---|---:|---:|---:|---:|---:|---:|---:|']
+    for model,target in (('v10','2.0%'),('v12','0.5%'),('v12','1.0%'),('v12','2.0%')):
+        point=output[model][target]['variants']['generic']
+        alarms=point['persuade']['flagged_documents']+point['writers']['flagged_documents']
+        llm=point['llmtrace_mixed'];new=point['new_mixed']
+        lines.append(f'| {model} | {target} | {alarms}/3,579 | '
+                     f'{point["external_human"]["flagged_documents"]}/150 | '
+                     f'{pct(point["external_ai"]["ai_token_recall"])} | '
+                     f'{point["llmtrace_ai"]["flagged_documents"]}/516 | '
+                     f'{pct(llm["ai_token_recall"])} / {pct(llm["human_token_fpr"])} | '
+                     f'{pct(new["ai_token_recall"])} / {pct(new["human_token_fpr"])} |')
     lines += ['', 'The new-source holdout contains no pure AI documents; its mixed',
               'recall/FPR and human alarms are included in the JSON report. A tighter',
               'threshold changes the recall–FPR balance; it does not repair a lack of',
-              'discrimination on a source. Treat these as development operating points.', '']
+              'discrimination on a source. Treat these as development operating points.',
+              'The source-aware maximum changes neither model at targets up to 2%;',
+              'the generic calibration cutoff is already stricter.', '',
+              '[Download operating-point chart](span_new_sources_thresholds_v12.pdf)', '']
     out.with_suffix('.md').write_text('\n'.join(lines))
+    chart(output,out.with_suffix('.pdf'))
     print(out.with_suffix('.md'))
 
 

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
+import argparse
 import json
 from pathlib import Path
 
@@ -9,16 +10,19 @@ from transformers import AutoTokenizer
 from span_data import encode_document, window_starts
 
 ROOT = Path('/mnt/f/pangram-at-home')
-DATA = ROOT/'data/span_new_sources_v12'
 
 
 def main() -> None:
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--folder',default='span_new_sources_v12')
+    args=parser.parse_args()
+    data=ROOT/'data'/args.folder
     tokenizer = AutoTokenizer.from_pretrained(ROOT/'models/Qwen3-1.7B')
     source_tokens = defaultdict(Counter)
     class_tokens = Counter()
     source_windows = Counter()
     rows = 0
-    for line in (DATA/'train.jsonl').open():
+    for line in (data/'train.jsonl').open():
         row = json.loads(line)
         ids, _, labels = encode_document(row, tokenizer)
         rows += 1
@@ -43,7 +47,7 @@ def main() -> None:
         'source_class_supervised_tokens': {
             name: dict(count) for name, count in source_tokens.items()},
     }
-    (DATA/'exposure_audit.json').write_text(json.dumps(report, indent=2)+'\n')
+    (data/'exposure_audit.json').write_text(json.dumps(report, indent=2)+'\n')
     assert rows == 20000
     assert .42 <= report['ai_supervised_token_fraction'] <= .58
     assert max(report['source_supervised_token_fraction'].values()) < .35
