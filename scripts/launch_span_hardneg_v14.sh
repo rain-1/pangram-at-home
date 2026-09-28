@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 cd /workspace/pangram-at-home
+export PATH=/venv/main/bin:$PATH
 set -a
 source /workspace/span-v14-runtime.env
 set +a

@@ -26,8 +26,8 @@ and diverse-pyramid validation/test files. The new human corpus is limited to
 the project's noncommercial research use; PERSUADE carries CC BY-NC-SA 4.0,
 and Writers posts retain their per-post CC BY-SA attribution metadata.
 
-The remote package is `artifacts/span_hardneg_v14_package.tar.gz` (159,446,549
-bytes; SHA-256 `0dd30745fb4c01874be1c65a215203cb992075a2707b47c8b4af42c26426f29b`).
+The remote package is `artifacts/span_hardneg_v14_package.tar.gz` (159,446,515
+bytes; SHA-256 `61dd1faff5fc819ff84d6bcf096e78505e188868f7f8b8cf72701c5a396a2d8d`).
 Its 29 files were checked against the embedded manifest; it contains no API
 keys or `.env` file. The controller trains Qwen3-1.7B Repeat2 for 3,352
 optimizer steps with the previously selected LoRA settings, logs to W&B,
@@ -37,15 +37,12 @@ Its export contains the adapter, per-set scores, reports, logs, and status.
 
 ## Launch status
 
-**Prepared, not launched.** The current session has
-`CODEX_SANDBOX_NETWORK_DISABLED`; the Vast CLI fails DNS resolution for
-`console.vast.ai`, and no Vast connector is available. The external drive and
-Git metadata are read-only in this session, so outputs are in the repository's
-ignored `data/` and `artifacts/` folders. The run requires a network-enabled
-session to search current offers, rent a GPU, upload the package and runtime
-credentials, monitor the controller, retrieve/verify its export, and close the
-instance. The last recorded Vast 4090 rental was about $0.42/hour; this is
-historical, not a current offer or cost estimate.
+**Starting on Vast.ai.** Instance 53167732 uses one RTX 3090 at
+$0.1733/hour with a host driver supporting CUDA 12.8. The first instance
+(53167175) was closed after a CUDA driver mismatch, before any data was
+uploaded. A GPU preflight, package upload, training, and evaluation follow.
+The prepared controller records each phase and exports the weights and scores
+for local verification before the replacement instance is closed.
 
 Files: `scripts/build_span_hardneg_v14.py`, `scripts/audit_span_hardneg_v14.py`,
 `scripts/package_span_hardneg_v14.py`, `scripts/bootstrap_span_hardneg_v14.sh`,
