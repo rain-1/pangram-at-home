@@ -101,7 +101,7 @@ def chart(values: dict, v12_reports: dict) -> Path:
     ax.set_xticks(x, names, rotation=22, ha='right')
     ax.set_ylim(0, 100)
     ax.set_ylabel('Tokens (%)')
-    ax.set_title('GRADTEX mixed spans: recall up, FPR down')
+    ax.set_title('GRADTEX mixed spans: recall and FPR')
     ax.grid(axis='y', alpha=.25)
     ax.legend(fontsize=8)
 
@@ -139,6 +139,8 @@ def chart(values: dict, v12_reports: dict) -> Path:
     ax.set_xlabel('Human articles falsely highlighted (%)')
     ax.set_ylabel('AI articles detected (%)')
     ax.set_title('External articles')
+    ax.set_xlim(-.5, 13)
+    ax.set_ylim(75, 102)
     ax.grid(alpha=.25)
     fig.text(.5, .015,
              'EditLens broadcasts window scores for mixed spans; Qwen predicts token scores directly. '
@@ -249,6 +251,15 @@ def main() -> None:
               'appear on both sides. Its author rows test held-out prose, not unknown authors.',
               '- External articles and other established evaluations have informed model '
               'development. They are useful comparisons, not untouched final tests.', '']
+    lines += ['## Interpretation', '',
+              'At the shared 2% generic-human calibration target, v12 substantially improves '
+              'mixed GRADTEX and LLMTrace AI-token recall and lowers external-article false '
+              'alarms. It also raises broad human false alarms from 9/3,579 to 45/3,579, '
+              'especially on student essays. This checkpoint is therefore an informative '
+              'data-mixture experiment, not a replacement for v10 at this operating point. '
+              'A separate, disjoint essay-calibration threshold analysis is the next check; '
+              'if that cannot retain the recall gain at acceptable false alarms, the next '
+              'mixture should restore more student-essay human coverage.', '']
     out = REPO/'reports/span_new_sources_v12.md'
     chart_path = chart(values, {
         'llmtrace': json.loads((V12/'v12_llmtrace_heldout.json').read_text()),
