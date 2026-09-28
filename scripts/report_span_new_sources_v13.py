@@ -196,6 +196,17 @@ def main() -> None:
             f'{summary["train_runtime_seconds"]/3600:.2f} hours. '
             f'Best validation partial AUROC: {summary["best_metric"]:.4f}.',
             f'- [Weights & Biases run]({summary["wandb_run_url"]}).',
+            '- V13 trades some of v12\'s mixed-span recall for fewer broad-human '
+            'false alarms: 19/3,579 versus 45/3,579. V10 still has the fewest '
+            'broad-human alarms among our checkpoints (9/3,579), while v13 '
+            'improves LLMTrace mixed AI-token recall from 38.6% to 48.7%. '
+            'Keep v10 as the conservative default until a calibration-only '
+            'threshold sweep shows whether v13 can retain that gain at an '
+            'acceptable false-positive rate.',
+            '- The Pangram baselines produce fewer pure-human false alarms '
+            'on these sets, but their mixed-span recall is lower. Their '
+            'window-broadcast localization and our token-level output '
+            'represent different resolution levels.',
             '- These evaluations have informed development and are not untouched '
             'final tests. The new-source holdout is disjoint by work/group, not by author. '
             'GRADTEX span boundaries are inferred from preserved context.', '',
