@@ -37,12 +37,18 @@ Its export contains the adapter, per-set scores, reports, logs, and status.
 
 ## Launch status
 
-**Starting on Vast.ai.** Instance 53167732 uses one RTX 3090 at
-$0.1733/hour with a host driver supporting CUDA 12.8. The first instance
-(53167175) was closed after a CUDA driver mismatch, before any data was
-uploaded. A GPU preflight, package upload, training, and evaluation follow.
-The prepared controller records each phase and exports the weights and scores
-for local verification before the replacement instance is closed.
+**Complete.** Vast.ai instance 53167732 (RTX 3090, $0.1733/hour) ran
+all 3,352 training steps and nine planned evaluations. The exported adapter,
+reports, scores, and logs (140,913,498 bytes; SHA-256
+`0c69f3ae9d37d91ccd3d18fceb00fccf07569cc8065f1df79fc187b26d7b5798`)
+were verified against the embedded per-file manifest and copied to the
+external drive. The 21,200-document dataset was also copied to the drive, and
+the local run configuration was adjusted to use local model paths. The rental
+was destroyed; the Vast API reports zero active instances. Results are in
+[span_hardneg_v14_results.md](span_hardneg_v14_results.md).
+
+The first rental (53167175) was closed before data upload after a CUDA driver
+mismatch. The replacement host passed CUDA and BF16 checks before training.
 
 Files: `scripts/build_span_hardneg_v14.py`, `scripts/audit_span_hardneg_v14.py`,
 `scripts/package_span_hardneg_v14.py`, `scripts/bootstrap_span_hardneg_v14.sh`,
