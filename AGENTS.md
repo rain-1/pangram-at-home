@@ -25,3 +25,12 @@ User preference October 3, 2026: Put every classifier training run in the same W
 # Training weight and checkpoint precision
 
 User direction October 3, 2026: Storage is a hard cap. Use BF16 for trainable adapter/classifier weights and saved model checkpoints rather than defaulting to FP32 or keeping duplicate FP32 copies. Address any numerical issues through backend optimization instead of silently increasing weight/checkpoint precision. Full-precision metrics and standard mixed-precision accumulation remain allowed. Preserve existing trained Space checkpoints unless deletion is explicitly authorized; do not interrupt active runs merely to change this preference.
+
+# Git repository and publication standard
+
+User direction October 3, 2026: This folder is a git repository pushed to the private GitHub repo `woog97/paingram`. It stays private until the user announces the project, then becomes public with its full history. Treat every commit as eventually public.
+
+- Commit code, docs, configs, prompts, reports and small records. Datasets, model weights, classification outputs, extractions and receipts larger than a few MB stay on Hugging Face/R2; extend `.gitignore` rather than committing them.
+- Never commit credentials, `docs/HANDOFF.md` or `docs/handoff/`, infrastructure addresses, LLM call records or datasets containing third-party paper text, per-paper detector scores (`app/public/catalogue/`), or Pangram brand assets.
+- Reach the H200 node with `ssh pangram-h200` (an alias in the local `~/.ssh/config`); never hardcode its address or port in repository files.
+- A local pre-commit hook rejects files over 10 MB, credential-like strings and the H200 address. Fix the cause instead of bypassing it with `--no-verify`.
