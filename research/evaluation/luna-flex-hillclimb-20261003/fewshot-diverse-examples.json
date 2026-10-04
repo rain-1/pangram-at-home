@@ -1,0 +1,26 @@
+[
+  {
+    "paper_id": "acl-2019-e233da58dd3dfddd",
+    "source_id": "acl-2019-e233da58dd3dfddd/g01/substantial_rewrite/paragraph",
+    "split": "calibration",
+    "conference": "ACL",
+    "HUMAN": "Our main research problem is to investigate the content of UGTs with the aim to learn the transition between a laypersons language and formal medical language. Examples from Table 1 show that an automated model has to account for the semantics of an entity mention. For example, it has to be able to map not only phases with shared ngrams no sexual interest and nonsexual being into the concept “Lack of libido” but also separate the phase bit of lower back pain from the broader concept “Pain” and map it to a narrower concept. While focusing on user-generated texts on social media, in this work we seek to answer the following research questions.",
+    "AI": "Our central research problem is to examine the content of UGTs in order to learn how to bridge lay language and formal medical language. The examples in Table 1 illustrate that an automated model must account for the semantics of an entity mention. For instance, it must map not only phrases sharing ngrams, such as “no sexual interest” and “nonsexual being,” to the concept “Lack of libido,” but also distinguish the phrase “bit of lower back pain” from the broader concept “Pain” and map it to a narrower concept. Focusing on user-generated social media texts, this work seeks to answer the following research questions."
+  },
+  {
+    "paper_id": "icml-2020-609bc1a709ab654f",
+    "source_id": "icml-2020-609bc1a709ab654f/g01/substantial_rewrite/paragraph",
+    "split": "calibration",
+    "conference": "ICML",
+    "HUMAN": "Ideal distributions where fairness and accuracy are in accord: Novel to this work, we examine the problem of fair classification through the lens of mismatched hypothesis testing. We show (in Theorem 2) that there exist ideal distributions such that both fairness (in the sense of equal opportunity on both the existing and the ideal distributions) and accuracy (with respect to the ideal distributions) are in accord. We also formulate an optimization to show how to go about finding such ideal distributions in practice. The ideal distributions provide a target to shift the given biased distributions toward and to evaluate accuracy on. Their interpretation can be two-fold: (i) plausible distributions in the observed space resulting from an “unbiased” mapping from the construct space; or (ii) candidate distributions in the construct space itself (discussed further in Section 3.2).",
+    "AI": "Ideal distributions in which fairness and accuracy are aligned: In this work, we newly examine fair classification through the lens of mismatched hypothesis testing. We show (in Theorem 2) that ideal distributions exist for which fairness—in the sense of equal opportunity on both the existing and ideal distributions—and accuracy, measured with respect to the ideal distributions, are aligned. We also formulate an optimization that shows how to find such ideal distributions in practice. These distributions provide a target toward which the given biased distributions can be shifted, as well as a basis for evaluating accuracy. They can be interpreted in two ways: (i) as plausible distributions in the observed space resulting from an “unbiased” mapping from the construct space, or (ii) as candidate distributions in the construct space itself (discussed further in Section 3.2)."
+  },
+  {
+    "paper_id": "97d98119037c5b8a9663cb21fb8ebf47",
+    "source_id": "97d98119037c5b8a9663cb21fb8ebf47/g01/substantial_rewrite/paragraph",
+    "split": "calibration",
+    "conference": "NeurIPS",
+    "HUMAN": "Approach. To cope with such general conditions, we study robustness through a statistical learning viewpoint [6, 7, 8] using finite-time sample complexity bounds on performance based on empirical runs. This is accomplished using concentration-of-measure inequalities [9] which provide only probabilistic bounds , i.e. they certify the algorithm execution in terms of statements such as: “in future executions, with 99% chance the expected cost will be less than X and the probability of collision will be less than Y”. While such bounds are generally applicable to any stochastic decision making process, our focus and initial evaluation is on stochastic control problems.",
+    "AI": "Approach. To address these general conditions, we examine robustness from a statistical learning perspective [6, 7, 8], using finite-time sample-complexity bounds on performance derived from empirical runs. We achieve this through concentration-of-measure inequalities [9], which yield probabilistic bounds only; that is, they certify algorithm execution through statements such as: “in future executions, with 99% chance the expected cost will be less than X and the probability of collision will be less than Y”. Although these bounds are generally applicable to any stochastic decision-making process, our focus and initial evaluation are on stochastic control problems."
+  }
+]

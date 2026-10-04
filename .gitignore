@@ -1,0 +1,95 @@
+.data/
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+node_modules/
+.wrangler/
+.sites-runtime/
+dist/
+.next/
+
+models/
+research/data/
+research/cache/
+
+# Generated locally from the pinned PDF.js package
+app/public/pdfjs/
+
+# Generated Cloudflare frontend
+app/dist-atlas/
+
+# --- Repository scope: code, docs and small records only (data lives on HF / R2) ---
+# Secrets and private material
+private-results/
+*.key
+*.pem
+.local-storage/
+.dev.vars
+
+# Bulk research outputs
+research/classifications/
+research/extractions/
+research/exports/
+research/benchmarks/
+research/iclr-*/
+research/local-storage-audit-*/
+benchmarks/pangram4/exports/
+pilot-viewer/dist/
+
+# Data and model formats
+*.pgf
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.gz
+*.parquet
+*.jsonl
+*.npy
+*.npz
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+*.sqlite3
+*.sqlite3-*
+*.sqlite
+*.sqlite-*
+*.db
+*.pdf
+*.log
+
+# Build output
+app/dist/
+app/dist-atlas-local/
+*.tsbuildinfo
+research/metadata-coverage-*/enrichment/queries*/
+research/metadata-coverage-*/enrichment/notes.json
+research/metadata-coverage-*/enrichment/identities.json
+research/metadata-coverage-*/live-papers.json
+benchmarks/pangram4/sources/*-tree.json
+benchmarks/pangram4/sources/*.html
+research/metadata-coverage-*/iclr-*-sample.json
+
+# --- Not for publication: internal notes, infrastructure details, third-party text ---
+docs/HANDOFF.md
+docs/handoff/
+research/gpu-monitor/RUNBOOK.txt
+research/gpu-monitor/*report*.json
+research/gpu-monitor/dashboard.html
+research/human-source-pool/evidence/
+research/evaluation/*/calls/
+research/evaluation/*/*/calls/
+research/evaluation/luna-*/dataset.json
+research/evaluation/luna-*/manuscripts.json
+research/evaluation/luna-*/errors.json
+research/evaluation/luna-*/manifest.json
+research/evaluation/luna-*/*/manifest.json
+app/public/catalogue/
+app/public/reference/
+research/measurements/
