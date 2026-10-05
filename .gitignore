@@ -96,3 +96,6 @@ research/measurements/
 
 # ICLR Space mirror inventories contain third-party metadata and private storage paths.
 research/iclr-hf-reconcile-*/
+
+# Local Claude Code orientation; not for other people.
+CLAUDE.md
