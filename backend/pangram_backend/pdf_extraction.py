@@ -83,11 +83,11 @@ def page_geometry(pdf, pages):
                        'crop_box':[float(x) for x in source.cropbox]})
     return result
 
-def extract(pdf, ocr_pages=None):
+def extract(pdf, ocr_pages=None, timeout=180):
     pdf=Path(pdf);digest=hashlib.sha256(pdf.read_bytes()).hexdigest()
     with tempfile.TemporaryDirectory(prefix='positioned-pdf-') as tmp:
         bbox=Path(tmp)/'words.xhtml'
-        subprocess.run(['pdftotext','-enc','UTF-8','-bbox-layout',str(pdf),str(bbox)],check=True,capture_output=True,timeout=180)
+        subprocess.run(['pdftotext','-enc','UTF-8','-bbox-layout',str(pdf),str(bbox)],check=True,capture_output=True,timeout=timeout)
         raw=bbox.read_text()
         # Preserve unsupported font codes as visible replacement characters, never delete them.
         raw=re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '\ufffd', raw)

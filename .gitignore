@@ -93,3 +93,6 @@ research/evaluation/luna-*/*/manifest.json
 app/public/catalogue/
 app/public/reference/
 research/measurements/
+
+# ICLR Space mirror inventories contain third-party metadata and private storage paths.
+research/iclr-hf-reconcile-*/
