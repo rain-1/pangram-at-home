@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys,base64
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from remote import run
 root=Path(__file__).resolve().parent
 payload={p.name:base64.b64encode(p.read_bytes()).decode() for p in [root/'prepare.py',root/'runtime.py']}

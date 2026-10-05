@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys,json
 HERE=Path(__file__).resolve().parent;PROJECT=HERE.parents[3]
-sys.path.insert(0,'/private/tmp/pangram-training-access');from remote import run
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'));from remote import run
 files={name:(HERE/name).read_text() for name in ['policy.py','build_remote.py','worker.py']}
 files['track.py']=(HERE.parent/'wandb-tracking/track.py').read_text()
 files['reservation.json']=(PROJECT/'research/evaluation/full-paper-holdout-20261003/reservation.json').read_text()

@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from remote import run
 src=Path(__file__).with_name('download_models.py').read_text()
 run('SOURCE='+repr(src)+'\n'+'''

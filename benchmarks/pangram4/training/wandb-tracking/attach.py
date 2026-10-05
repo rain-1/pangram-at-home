@@ -12,7 +12,7 @@ parser.add_argument('--root', required=True)
 parser.add_argument('--name', required=True)
 args = parser.parse_args()
 assert args.root.startswith('/data/workspace/')
-sys.path.insert(0, '/private/tmp/pangram-training-access')
+sys.path.insert(0, __import__('os').path.expanduser('~/.config/pangram'))
 from remote import run
 
 key = netrc.netrc().authenticators('api.wandb.ai')[2]

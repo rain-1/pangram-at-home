@@ -4,7 +4,7 @@ No model assets or checkpoints are written to the local computer.
 """
 from pathlib import Path
 import sys,subprocess,base64,json,time,hashlib,shlex
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from connect import connect
 SSH=['ssh','-o','BatchMode=yes','pangram-h200']
 ROOT='/workspace/woog/pangram/backbones-20261003'

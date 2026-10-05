@@ -3,7 +3,7 @@ import argparse,json,netrc,re,sys
 from pathlib import Path
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--name',required=True);p.add_argument('--gpu',type=int);p.add_argument('--check',action='store_true');a=p.parse_args()
 if not re.fullmatch(r'[a-z0-9][a-z0-9-]{2,70}',a.name):p.error('Use 3–71 lowercase letters, numbers, or hyphens')
-sys.path.insert(0,'/private/tmp/pangram-training-access');from remote import run
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'));from remote import run
 key=None if a.check else netrc.netrc().authenticators('api.wandb.ai')[2]
 code=r'''
 from pathlib import Path

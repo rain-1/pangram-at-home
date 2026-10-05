@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys,netrc
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from remote import run
 r=Path(__file__).resolve().parent
 files={n:(r/n).read_text() for n in ['train_short.py','adapters_short.py','worker_short.py']}

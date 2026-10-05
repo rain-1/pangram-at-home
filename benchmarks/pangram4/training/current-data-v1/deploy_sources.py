@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys,base64
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from huggingface_hub import get_token
 from remote import run
 payload=base64.b64encode(Path(__file__).with_name('download_sources.py').read_bytes()).decode()

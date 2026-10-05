@@ -1,7 +1,7 @@
 from pathlib import Path
 import sys
 from huggingface_hub import get_token
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from remote import run
 source=Path(__file__).with_name('supervisor.py').read_text()
 code='''from pathlib import Path

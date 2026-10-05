@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys,netrc
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from remote import run
 r=Path(__file__).resolve().parent
 files={p.name:p.read_text() for p in r.iterdir() if p.suffix in ('.py','.json') and not p.name.startswith('deploy')}

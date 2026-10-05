@@ -1,6 +1,6 @@
 from pathlib import Path
 import base64,sys
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from remote import run
 p=Path(__file__).with_name('validate_when_ready.py')
 run('PAYLOAD='+repr(base64.b64encode(p.read_bytes()).decode())+'\n'+'''

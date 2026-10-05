@@ -1,7 +1,7 @@
 """Retry only confirmed pre-training failures, preserving the failed attempt."""
 from pathlib import Path
 import netrc,sys
-sys.path.insert(0,'/private/tmp/pangram-training-access')
+sys.path.insert(0,__import__('os').path.expanduser('~/.config/pangram'))
 from remote import run
 key=netrc.netrc().authenticators('api.wandb.ai')[2]
 code='''
