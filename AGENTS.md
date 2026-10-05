@@ -12,6 +12,8 @@ Download new model weights, tokenizers, and model configuration assets only on t
 
 User exception on October 3, 2026: The three larger backbones in the initial parallel training batch (Gemma 4 12B, Qwen3.6-27B, Qwen3.6-35B-A3B) may be downloaded directly from Hugging Face to the H200 node. Use `/workspace/woog` for the user's work on that node. This does not authorize local-computer model downloads or removal of Space files; trained checkpoints should still be preserved on the Space.
 
+User exception on October 4, 2026: Qwen3.5-4B and Qwen3.5-9B may also be downloaded from the public Hugging Face Hub directly to the H200 node (pinned revisions 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a and c202236235762e1c871ad0ccb60c8ee5ba337b9a) for overnight training sweeps; the H200 has no Hugging Face login, so bucket copies are not reachable there.
+
 User approval on October 3, 2026: All data transfers to the existing Hugging Face training Space `open-text-detector/training` are authorized on an ongoing basis, including local datasets, source code, tokenizer/configuration assets, and existing model files. Do not ask again merely to transfer data to that Space. This approval does not change the requirements to download new model assets only on the Space, keep original trained checkpoints there, or ask before permanently removing anything from the Space. Other destinations are outside this standing approval.
 
 # Flex service tier preference

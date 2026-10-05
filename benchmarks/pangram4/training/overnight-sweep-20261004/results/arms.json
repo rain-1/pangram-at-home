@@ -1,0 +1,884 @@
+{
+ "q4b-A": {
+  "n_seeds": 2,
+  "dev:edits_one:recall_at_1pct": {
+   "mean": 0.14583333333333331,
+   "sd": 0.029462782549439473,
+   "values": [
+    0.16666666666666666,
+    0.125
+   ]
+  },
+  "dev:edits_two:recall_at_1pct": {
+   "mean": 0.3088235294117647,
+   "sd": 0.02079725827019258,
+   "values": [
+    0.3235294117647059,
+    0.29411764705882354
+   ]
+  },
+  "dev:edits_small:recall_at_1pct": {
+   "mean": 0.25666666666666665,
+   "sd": 0.02357022603955158,
+   "values": [
+    0.2733333333333333,
+    0.24
+   ]
+  },
+  "dev:edits_para:recall_at_1pct": {
+   "mean": 0.90625,
+   "sd": 0.026516504294495594,
+   "values": [
+    0.8875,
+    0.925
+   ]
+  },
+  "dev:edits_all:recall_at_1pct": {
+   "mean": 0.7690140845070422,
+   "sd": 0.015934800702795415,
+   "values": [
+    0.7577464788732394,
+    0.780281690140845
+   ]
+  },
+  "dev:edits_small:auroc": {
+   "mean": 0.9030686375615904,
+   "sd": 0.006592208974141998,
+   "values": [
+    0.9077300332302051,
+    0.8984072418929758
+   ]
+  },
+  "dev:v3_sentences:recall_at_1pct": {
+   "mean": 0.6113074204946997,
+   "sd": 0.29733465357314187,
+   "values": [
+    0.4010600706713781,
+    0.8215547703180212
+   ]
+  },
+  "dev:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.33673469387755106,
+   "sd": 0.4184917684573445,
+   "values": [
+    0.04081632653061224,
+    0.6326530612244898
+   ]
+  },
+  "dev:public_docs:auroc": {
+   "mean": 0.9655855032739455,
+   "sd": 0.01155719930673912,
+   "values": [
+    0.9574133292726258,
+    0.9737576772752652
+   ]
+  },
+  "dev:public_docs:recall_at_1pct": {
+   "mean": 0.5226130653266332,
+   "sd": 0.1208122138710684,
+   "values": [
+    0.4371859296482412,
+    0.6080402010050251
+   ]
+  },
+  "loss:edits_one:recall_at_1pct": {
+   "mean": 0.11458333333333334,
+   "sd": 0.014731391274719736,
+   "values": [
+    0.10416666666666667,
+    0.125
+   ]
+  },
+  "loss:edits_two:recall_at_1pct": {
+   "mean": 0.27941176470588236,
+   "sd": 0.062391774810577734,
+   "values": [
+    0.23529411764705882,
+    0.3235294117647059
+   ]
+  },
+  "loss:edits_small:recall_at_1pct": {
+   "mean": 0.22666666666666668,
+   "sd": 0.047140452079103175,
+   "values": [
+    0.19333333333333333,
+    0.26
+   ]
+  },
+  "loss:edits_para:recall_at_1pct": {
+   "mean": 0.8785714285714286,
+   "sd": 0.07071067811865474,
+   "values": [
+    0.8285714285714286,
+    0.9285714285714286
+   ]
+  },
+  "loss:edits_all:recall_at_1pct": {
+   "mean": 0.7408450704225351,
+   "sd": 0.06573105289903117,
+   "values": [
+    0.6943661971830986,
+    0.7873239436619718
+   ]
+  },
+  "loss:edits_small:auroc": {
+   "mean": 0.7908983614071273,
+   "sd": 0.011554191245239143,
+   "values": [
+    0.7827283144264925,
+    0.7990684083877622
+   ]
+  },
+  "loss:v3_sentences:recall_at_1pct": {
+   "mean": 0.799469964664311,
+   "sd": 0.06621317915704421,
+   "values": [
+    0.7526501766784452,
+    0.8462897526501767
+   ]
+  },
+  "loss:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.6377551020408163,
+   "sd": 0.19481513359221206,
+   "values": [
+    0.5,
+    0.7755102040816326
+   ]
+  },
+  "loss:public_docs:auroc": {
+   "mean": 0.9705471803461754,
+   "sd": 0.00956519756287579,
+   "values": [
+    0.9773107964062738,
+    0.9637835642860768
+   ]
+  },
+  "loss:public_docs:recall_at_1pct": {
+   "mean": 0.5753768844221105,
+   "sd": 0.12436551427904101,
+   "values": [
+    0.6633165829145728,
+    0.48743718592964824
+   ]
+  },
+  "last:edits_one:recall_at_1pct": {
+   "mean": 0.13541666666666669,
+   "sd": 0.014731391274719747,
+   "values": [
+    0.14583333333333334,
+    0.125
+   ]
+  },
+  "last:edits_two:recall_at_1pct": {
+   "mean": 0.3088235294117647,
+   "sd": 0.02079725827019258,
+   "values": [
+    0.3235294117647059,
+    0.29411764705882354
+   ]
+  },
+  "last:edits_small:recall_at_1pct": {
+   "mean": 0.2533333333333333,
+   "sd": 0.01885618083164127,
+   "values": [
+    0.26666666666666666,
+    0.24
+   ]
+  },
+  "last:edits_para:recall_at_1pct": {
+   "mean": 0.9089285714285715,
+   "sd": 0.02272843225242474,
+   "values": [
+    0.8928571428571429,
+    0.925
+   ]
+  },
+  "last:edits_all:recall_at_1pct": {
+   "mean": 0.7704225352112676,
+   "sd": 0.013942950614945989,
+   "values": [
+    0.7605633802816901,
+    0.780281690140845
+   ]
+  },
+  "last:edits_small:auroc": {
+   "mean": 0.8752268820900653,
+   "sd": 0.032781979213964155,
+   "values": [
+    0.8520465222871548,
+    0.8984072418929758
+   ]
+  },
+  "last:v3_sentences:recall_at_1pct": {
+   "mean": 0.7959363957597173,
+   "sd": 0.03622985274630715,
+   "values": [
+    0.7703180212014135,
+    0.8215547703180212
+   ]
+  },
+  "last:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.47959183673469385,
+   "sd": 0.21646125954690235,
+   "values": [
+    0.32653061224489793,
+    0.6326530612244898
+   ]
+  },
+  "last:public_docs:auroc": {
+   "mean": 0.974696715902746,
+   "sd": 0.001328001162575632,
+   "values": [
+    0.9756357545302269,
+    0.9737576772752652
+   ]
+  },
+  "last:public_docs:recall_at_1pct": {
+   "mean": 0.5703517587939698,
+   "sd": 0.053299506119589,
+   "values": [
+    0.5326633165829145,
+    0.6080402010050251
+   ]
+  }
+ },
+ "q4b-B": {
+  "n_seeds": 1,
+  "dev:edits_one:recall_at_1pct": {
+   "mean": 0.14583333333333334,
+   "sd": null,
+   "values": [
+    0.14583333333333334
+   ]
+  },
+  "dev:edits_two:recall_at_1pct": {
+   "mean": 0.23529411764705882,
+   "sd": null,
+   "values": [
+    0.23529411764705882
+   ]
+  },
+  "dev:edits_small:recall_at_1pct": {
+   "mean": 0.20666666666666667,
+   "sd": null,
+   "values": [
+    0.20666666666666667
+   ]
+  },
+  "dev:edits_para:recall_at_1pct": {
+   "mean": 0.65,
+   "sd": null,
+   "values": [
+    0.65
+   ]
+  },
+  "dev:edits_all:recall_at_1pct": {
+   "mean": 0.5563380281690141,
+   "sd": null,
+   "values": [
+    0.5563380281690141
+   ]
+  },
+  "dev:edits_small:auroc": {
+   "mean": 0.9353638134525037,
+   "sd": null,
+   "values": [
+    0.9353638134525037
+   ]
+  },
+  "dev:v3_sentences:recall_at_1pct": {
+   "mean": 0.2508833922261484,
+   "sd": null,
+   "values": [
+    0.2508833922261484
+   ]
+  },
+  "dev:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.061224489795918366,
+   "sd": null,
+   "values": [
+    0.061224489795918366
+   ]
+  },
+  "dev:public_docs:auroc": {
+   "mean": 0.9167047358002132,
+   "sd": null,
+   "values": [
+    0.9167047358002132
+   ]
+  },
+  "dev:public_docs:recall_at_1pct": {
+   "mean": 0.31155778894472363,
+   "sd": null,
+   "values": [
+    0.31155778894472363
+   ]
+  },
+  "loss:edits_one:recall_at_1pct": {
+   "mean": 0.125,
+   "sd": null,
+   "values": [
+    0.125
+   ]
+  },
+  "loss:edits_two:recall_at_1pct": {
+   "mean": 0.19607843137254902,
+   "sd": null,
+   "values": [
+    0.19607843137254902
+   ]
+  },
+  "loss:edits_small:recall_at_1pct": {
+   "mean": 0.17333333333333334,
+   "sd": null,
+   "values": [
+    0.17333333333333334
+   ]
+  },
+  "loss:edits_para:recall_at_1pct": {
+   "mean": 0.7267857142857143,
+   "sd": null,
+   "values": [
+    0.7267857142857143
+   ]
+  },
+  "loss:edits_all:recall_at_1pct": {
+   "mean": 0.6098591549295774,
+   "sd": null,
+   "values": [
+    0.6098591549295774
+   ]
+  },
+  "loss:edits_small:auroc": {
+   "mean": 0.8090626790420534,
+   "sd": null,
+   "values": [
+    0.8090626790420534
+   ]
+  },
+  "loss:v3_sentences:recall_at_1pct": {
+   "mean": 0.549469964664311,
+   "sd": null,
+   "values": [
+    0.549469964664311
+   ]
+  },
+  "loss:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.3877551020408163,
+   "sd": null,
+   "values": [
+    0.3877551020408163
+   ]
+  },
+  "loss:public_docs:auroc": {
+   "mean": 0.7476777828536623,
+   "sd": null,
+   "values": [
+    0.7476777828536623
+   ]
+  },
+  "loss:public_docs:recall_at_1pct": {
+   "mean": 0.4120603015075377,
+   "sd": null,
+   "values": [
+    0.4120603015075377
+   ]
+  },
+  "last:edits_one:recall_at_1pct": {
+   "mean": 0.0625,
+   "sd": null,
+   "values": [
+    0.0625
+   ]
+  },
+  "last:edits_two:recall_at_1pct": {
+   "mean": 0.20588235294117646,
+   "sd": null,
+   "values": [
+    0.20588235294117646
+   ]
+  },
+  "last:edits_small:recall_at_1pct": {
+   "mean": 0.16,
+   "sd": null,
+   "values": [
+    0.16
+   ]
+  },
+  "last:edits_para:recall_at_1pct": {
+   "mean": 0.7928571428571428,
+   "sd": null,
+   "values": [
+    0.7928571428571428
+   ]
+  },
+  "last:edits_all:recall_at_1pct": {
+   "mean": 0.6591549295774648,
+   "sd": null,
+   "values": [
+    0.6591549295774648
+   ]
+  },
+  "last:edits_small:auroc": {
+   "mean": 0.9400423971582446,
+   "sd": null,
+   "values": [
+    0.9400423971582446
+   ]
+  },
+  "last:v3_sentences:recall_at_1pct": {
+   "mean": 0.6607773851590106,
+   "sd": null,
+   "values": [
+    0.6607773851590106
+   ]
+  },
+  "last:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.42857142857142855,
+   "sd": null,
+   "values": [
+    0.42857142857142855
+   ]
+  },
+  "last:public_docs:auroc": {
+   "mean": 0.8753616567686919,
+   "sd": null,
+   "values": [
+    0.8753616567686919
+   ]
+  },
+  "last:public_docs:recall_at_1pct": {
+   "mean": 0.08542713567839195,
+   "sd": null,
+   "values": [
+    0.08542713567839195
+   ]
+  }
+ },
+ "q4b-C": {
+  "n_seeds": 1,
+  "dev:edits_one:recall_at_1pct": {
+   "mean": 0.0625,
+   "sd": null,
+   "values": [
+    0.0625
+   ]
+  },
+  "dev:edits_two:recall_at_1pct": {
+   "mean": 0.1568627450980392,
+   "sd": null,
+   "values": [
+    0.1568627450980392
+   ]
+  },
+  "dev:edits_small:recall_at_1pct": {
+   "mean": 0.12666666666666668,
+   "sd": null,
+   "values": [
+    0.12666666666666668
+   ]
+  },
+  "dev:edits_para:recall_at_1pct": {
+   "mean": 0.6678571428571428,
+   "sd": null,
+   "values": [
+    0.6678571428571428
+   ]
+  },
+  "dev:edits_all:recall_at_1pct": {
+   "mean": 0.5535211267605634,
+   "sd": null,
+   "values": [
+    0.5535211267605634
+   ]
+  },
+  "dev:edits_small:auroc": {
+   "mean": 0.8264478056605936,
+   "sd": null,
+   "values": [
+    0.8264478056605936
+   ]
+  },
+  "dev:v3_sentences:recall_at_1pct": {
+   "mean": 0.43462897526501765,
+   "sd": null,
+   "values": [
+    0.43462897526501765
+   ]
+  },
+  "dev:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.40816326530612246,
+   "sd": null,
+   "values": [
+    0.40816326530612246
+   ]
+  },
+  "dev:public_docs:auroc": {
+   "mean": 0.8796000203035379,
+   "sd": null,
+   "values": [
+    0.8796000203035379
+   ]
+  },
+  "dev:public_docs:recall_at_1pct": {
+   "mean": 0.23115577889447236,
+   "sd": null,
+   "values": [
+    0.23115577889447236
+   ]
+  },
+  "loss:edits_one:recall_at_1pct": {
+   "mean": 0.020833333333333332,
+   "sd": null,
+   "values": [
+    0.020833333333333332
+   ]
+  },
+  "loss:edits_two:recall_at_1pct": {
+   "mean": 0.13725490196078433,
+   "sd": null,
+   "values": [
+    0.13725490196078433
+   ]
+  },
+  "loss:edits_small:recall_at_1pct": {
+   "mean": 0.1,
+   "sd": null,
+   "values": [
+    0.1
+   ]
+  },
+  "loss:edits_para:recall_at_1pct": {
+   "mean": 0.5982142857142857,
+   "sd": null,
+   "values": [
+    0.5982142857142857
+   ]
+  },
+  "loss:edits_all:recall_at_1pct": {
+   "mean": 0.49295774647887325,
+   "sd": null,
+   "values": [
+    0.49295774647887325
+   ]
+  },
+  "loss:edits_small:auroc": {
+   "mean": 0.909673427294603,
+   "sd": null,
+   "values": [
+    0.909673427294603
+   ]
+  },
+  "loss:v3_sentences:recall_at_1pct": {
+   "mean": 0.5070671378091873,
+   "sd": null,
+   "values": [
+    0.5070671378091873
+   ]
+  },
+  "loss:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.5714285714285714,
+   "sd": null,
+   "values": [
+    0.5714285714285714
+   ]
+  },
+  "loss:public_docs:auroc": {
+   "mean": 0.8475458098573676,
+   "sd": null,
+   "values": [
+    0.8475458098573676
+   ]
+  },
+  "loss:public_docs:recall_at_1pct": {
+   "mean": 0.10050251256281408,
+   "sd": null,
+   "values": [
+    0.10050251256281408
+   ]
+  },
+  "last:edits_one:recall_at_1pct": {
+   "mean": 0.020833333333333332,
+   "sd": null,
+   "values": [
+    0.020833333333333332
+   ]
+  },
+  "last:edits_two:recall_at_1pct": {
+   "mean": 0.13725490196078433,
+   "sd": null,
+   "values": [
+    0.13725490196078433
+   ]
+  },
+  "last:edits_small:recall_at_1pct": {
+   "mean": 0.1,
+   "sd": null,
+   "values": [
+    0.1
+   ]
+  },
+  "last:edits_para:recall_at_1pct": {
+   "mean": 0.5982142857142857,
+   "sd": null,
+   "values": [
+    0.5982142857142857
+   ]
+  },
+  "last:edits_all:recall_at_1pct": {
+   "mean": 0.49295774647887325,
+   "sd": null,
+   "values": [
+    0.49295774647887325
+   ]
+  },
+  "last:edits_small:auroc": {
+   "mean": 0.909673427294603,
+   "sd": null,
+   "values": [
+    0.909673427294603
+   ]
+  },
+  "last:v3_sentences:recall_at_1pct": {
+   "mean": 0.5070671378091873,
+   "sd": null,
+   "values": [
+    0.5070671378091873
+   ]
+  },
+  "last:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.5714285714285714,
+   "sd": null,
+   "values": [
+    0.5714285714285714
+   ]
+  },
+  "last:public_docs:auroc": {
+   "mean": 0.8475458098573676,
+   "sd": null,
+   "values": [
+    0.8475458098573676
+   ]
+  },
+  "last:public_docs:recall_at_1pct": {
+   "mean": 0.10050251256281408,
+   "sd": null,
+   "values": [
+    0.10050251256281408
+   ]
+  }
+ },
+ "q9b-A": {
+  "n_seeds": 1,
+  "dev:edits_one:recall_at_1pct": {
+   "mean": 0.125,
+   "sd": null,
+   "values": [
+    0.125
+   ]
+  },
+  "dev:edits_two:recall_at_1pct": {
+   "mean": 0.20588235294117646,
+   "sd": null,
+   "values": [
+    0.20588235294117646
+   ]
+  },
+  "dev:edits_small:recall_at_1pct": {
+   "mean": 0.18,
+   "sd": null,
+   "values": [
+    0.18
+   ]
+  },
+  "dev:edits_para:recall_at_1pct": {
+   "mean": 0.8196428571428571,
+   "sd": null,
+   "values": [
+    0.8196428571428571
+   ]
+  },
+  "dev:edits_all:recall_at_1pct": {
+   "mean": 0.6845070422535211,
+   "sd": null,
+   "values": [
+    0.6845070422535211
+   ]
+  },
+  "dev:edits_small:auroc": {
+   "mean": 0.8745250372407471,
+   "sd": null,
+   "values": [
+    0.8745250372407471
+   ]
+  },
+  "dev:v3_sentences:recall_at_1pct": {
+   "mean": 0.38162544169611307,
+   "sd": null,
+   "values": [
+    0.38162544169611307
+   ]
+  },
+  "dev:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.3979591836734694,
+   "sd": null,
+   "values": [
+    0.3979591836734694
+   ]
+  },
+  "dev:public_docs:auroc": {
+   "mean": 0.9773615552510024,
+   "sd": null,
+   "values": [
+    0.9773615552510024
+   ]
+  },
+  "dev:public_docs:recall_at_1pct": {
+   "mean": 0.5778894472361809,
+   "sd": null,
+   "values": [
+    0.5778894472361809
+   ]
+  },
+  "loss:edits_one:recall_at_1pct": {
+   "mean": 0.125,
+   "sd": null,
+   "values": [
+    0.125
+   ]
+  },
+  "loss:edits_two:recall_at_1pct": {
+   "mean": 0.20588235294117646,
+   "sd": null,
+   "values": [
+    0.20588235294117646
+   ]
+  },
+  "loss:edits_small:recall_at_1pct": {
+   "mean": 0.18,
+   "sd": null,
+   "values": [
+    0.18
+   ]
+  },
+  "loss:edits_para:recall_at_1pct": {
+   "mean": 0.8196428571428571,
+   "sd": null,
+   "values": [
+    0.8196428571428571
+   ]
+  },
+  "loss:edits_all:recall_at_1pct": {
+   "mean": 0.6845070422535211,
+   "sd": null,
+   "values": [
+    0.6845070422535211
+   ]
+  },
+  "loss:edits_small:auroc": {
+   "mean": 0.8745250372407471,
+   "sd": null,
+   "values": [
+    0.8745250372407471
+   ]
+  },
+  "loss:v3_sentences:recall_at_1pct": {
+   "mean": 0.38162544169611307,
+   "sd": null,
+   "values": [
+    0.38162544169611307
+   ]
+  },
+  "loss:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.3979591836734694,
+   "sd": null,
+   "values": [
+    0.3979591836734694
+   ]
+  },
+  "loss:public_docs:auroc": {
+   "mean": 0.9773615552510024,
+   "sd": null,
+   "values": [
+    0.9773615552510024
+   ]
+  },
+  "loss:public_docs:recall_at_1pct": {
+   "mean": 0.5778894472361809,
+   "sd": null,
+   "values": [
+    0.5778894472361809
+   ]
+  },
+  "last:edits_one:recall_at_1pct": {
+   "mean": 0.14583333333333334,
+   "sd": null,
+   "values": [
+    0.14583333333333334
+   ]
+  },
+  "last:edits_two:recall_at_1pct": {
+   "mean": 0.22549019607843138,
+   "sd": null,
+   "values": [
+    0.22549019607843138
+   ]
+  },
+  "last:edits_small:recall_at_1pct": {
+   "mean": 0.2,
+   "sd": null,
+   "values": [
+    0.2
+   ]
+  },
+  "last:edits_para:recall_at_1pct": {
+   "mean": 0.8857142857142857,
+   "sd": null,
+   "values": [
+    0.8857142857142857
+   ]
+  },
+  "last:edits_all:recall_at_1pct": {
+   "mean": 0.7408450704225352,
+   "sd": null,
+   "values": [
+    0.7408450704225352
+   ]
+  },
+  "last:edits_small:auroc": {
+   "mean": 0.8975203391772659,
+   "sd": null,
+   "values": [
+    0.8975203391772659
+   ]
+  },
+  "last:v3_sentences:recall_at_1pct": {
+   "mean": 0.5618374558303887,
+   "sd": null,
+   "values": [
+    0.5618374558303887
+   ]
+  },
+  "last:standalone_rewrites:recall_at_1pct": {
+   "mean": 0.17346938775510204,
+   "sd": null,
+   "values": [
+    0.17346938775510204
+   ]
+  },
+  "last:public_docs:auroc": {
+   "mean": 0.9737069184305365,
+   "sd": null,
+   "values": [
+    0.9737069184305365
+   ]
+  },
+  "last:public_docs:recall_at_1pct": {
+   "mean": 0.507537688442211,
+   "sd": null,
+   "values": [
+    0.507537688442211
+   ]
+  }
+ }
+}
