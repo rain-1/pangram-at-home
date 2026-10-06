@@ -1,0 +1,5 @@
+label,train_examples,test_examples,v10 frozen correct,v10 trainable correct,Qwen frozen correct,Qwen trainable correct
+eliezer-yudkowsky,39,3,3,3,3,3
+gwern,69,3,3,3,3,3
+paul_graham,74,3,3,3,2,2
+scott-alexander,93,3,3,3,3,3

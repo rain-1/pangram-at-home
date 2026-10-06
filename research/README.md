@@ -1,5 +1,7 @@
 # Baseline collection
 
+For rain1's imported Qwen3 span-detection work (v1–v14: document-level any-highlight calibration, human hard negatives, extra evaluation sources, attribution heads), see [span detection 2026-09-28](span-detection-20260928/README.md).
+
 For the current cross-source inventory, see [Training data inventory](TRAINING_DATA_INVENTORY.md), audited October 3, 2026. It includes the new 600 manuscripts, source counts and token estimates, existing splits, storage locations, overlap, and the filtered-mirror recovery gap.
 
 For the October 1, 2026 Pangram-style human-source distribution research, see [curated source distribution](human-source-pool/README.md). It contains source allocations and admission rules, not an assembled training corpus; the baseline collections below remain unchanged.

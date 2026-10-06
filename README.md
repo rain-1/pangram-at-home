@@ -77,6 +77,9 @@ The tests use synthetic fixtures and a local HTTP test classifier. They do **not
 
 ## Local model and baseline data
 
+Rain1's separate span-detection project (Qwen3-1.7B token models, v1–v14) is imported under [research/span-detection-20260928](research/span-detection-20260928/README.md). It covers calibration lessons, hard negatives and extra evaluation sources.
+
+
 See [model serving](docs/PROVIDERS.md#local-qwen-editlens-v3-active) and [baseline inventory](research/README.md). The four collections include 100 ICLR 2023 papers, 100 ICLR 2026 papers, 100 historical books and 6,397 modern AI responses. These are research inputs, not a calibrated accuracy claim.
 
 ## Local PDF reading prototype

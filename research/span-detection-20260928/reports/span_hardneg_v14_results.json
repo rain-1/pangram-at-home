@@ -1,0 +1,228 @@
+{
+  "v13": {
+    "broad_human": 19,
+    "external_human": 13,
+    "external_ai": [
+      150,
+      150
+    ],
+    "llmtrace_human": 5,
+    "llmtrace_ai": [
+      479,
+      516
+    ],
+    "llmtrace_mixed": {
+      "documents": 764,
+      "tokens": 270172,
+      "human_tokens": 170521,
+      "ai_tokens": 99651,
+      "false_positive_tokens": 3381,
+      "true_positive_tokens": 48495,
+      "fpr": 0.019827469930389804,
+      "ai_recall": 0.4866484029262125,
+      "precision": 0.934825352764284,
+      "roc_auc": 0.8608849500316652,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "aitdna_mixed": {
+      "documents": 258,
+      "tokens": 134891,
+      "human_tokens": 37424,
+      "ai_tokens": 97467,
+      "false_positive_tokens": 5859,
+      "true_positive_tokens": 85425,
+      "fpr": 0.1565572894399316,
+      "ai_recall": 0.8764504909353935,
+      "precision": 0.9358156960694097,
+      "roc_auc": 0.9261612892817916,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human": 15,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 134,
+      "true_positive_tokens": 14203,
+      "fpr": 0.0029466739967014843,
+      "ai_recall": 0.6398035947565206,
+      "precision": 0.990653553742066,
+      "roc_auc": 0.9340322180934162,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human_sources": {
+      "Travis-ML/ShortStory-SFT-jsonl": 0,
+      "aaronsw.com/weblog": 0,
+      "craphound.com": 0,
+      "databricks/databricks-dolly-15k": 9,
+      "elisabeth-pl-pl/GRADTEX": 6
+    },
+    "cnn": 8,
+    "pmc": 0,
+    "asap": 1,
+    "external_auroc": 0.9975448330726014,
+    "llmtrace_auroc": 0.9466527240942618
+  },
+  "v14": {
+    "broad_human": 25,
+    "external_human": 11,
+    "external_ai": [
+      150,
+      150
+    ],
+    "llmtrace_human": 28,
+    "llmtrace_ai": [
+      488,
+      516
+    ],
+    "llmtrace_mixed": {
+      "documents": 764,
+      "tokens": 270172,
+      "human_tokens": 170521,
+      "ai_tokens": 99651,
+      "false_positive_tokens": 5829,
+      "true_positive_tokens": 58704,
+      "fpr": 0.0341834730033251,
+      "ai_recall": 0.5890959448475178,
+      "precision": 0.9096741202175631,
+      "roc_auc": 0.8619538202247884,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "aitdna_mixed": {
+      "documents": 258,
+      "tokens": 134891,
+      "human_tokens": 37424,
+      "ai_tokens": 97467,
+      "false_positive_tokens": 7158,
+      "true_positive_tokens": 89674,
+      "fpr": 0.19126763574177,
+      "ai_recall": 0.9200447330891481,
+      "precision": 0.9260781559814937,
+      "roc_auc": 0.9244340645723776,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human": 20,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 507,
+      "true_positive_tokens": 16372,
+      "fpr": 0.011148982957669048,
+      "ai_recall": 0.7375106986801208,
+      "precision": 0.9699626755139522,
+      "roc_auc": 0.9355924704372695,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human_sources": {
+      "Travis-ML/ShortStory-SFT-jsonl": 0,
+      "aaronsw.com/weblog": 1,
+      "craphound.com": 0,
+      "databricks/databricks-dolly-15k": 15,
+      "elisabeth-pl-pl/GRADTEX": 4
+    },
+    "cnn": 25,
+    "pmc": 1,
+    "asap": 1,
+    "external_auroc": 0.9982138124317765,
+    "llmtrace_auroc": 0.9486670405905085
+  },
+  "Pangram RoBERTa": {
+    "broad_human": 1,
+    "external_human": 0,
+    "external_ai": [
+      118,
+      150
+    ],
+    "llmtrace_human": 2,
+    "llmtrace_ai": [
+      353,
+      516
+    ],
+    "llmtrace_mixed": {
+      "ai_recall": 0.12086180770890408,
+      "fpr": 0.02906973334662593
+    },
+    "aitdna_mixed": {
+      "ai_recall": 0.5715472929299147,
+      "fpr": 0.20460132535271483
+    },
+    "new_human": 5,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 1331,
+      "true_positive_tokens": 1554,
+      "fpr": 0.02926882902693788,
+      "ai_recall": 0.07000315329519348,
+      "precision": 0.5386481802426343,
+      "roc_auc": 0.6086445454246252,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "cnn": 0,
+    "pmc": 0,
+    "asap": 0,
+    "external_auroc": 0.9989333333333333,
+    "llmtrace_auroc": 0.9506325366063739
+  },
+  "Pangram Llama": {
+    "broad_human": 1,
+    "external_human": 0,
+    "external_ai": [
+      149,
+      150
+    ],
+    "llmtrace_human": 2,
+    "llmtrace_ai": [
+      453,
+      516
+    ],
+    "llmtrace_mixed": {
+      "ai_recall": 0.22419243158623597,
+      "fpr": 0.06809718451099865
+    },
+    "aitdna_mixed": {
+      "ai_recall": 0.908892240450614,
+      "fpr": 0.5714514749893117
+    },
+    "new_human": 19,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 5192,
+      "true_positive_tokens": 3232,
+      "fpr": 0.11417262231995602,
+      "ai_recall": 0.14559214379026084,
+      "precision": 0.38366571699905033,
+      "roc_auc": 0.5730080071112466,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "cnn": 0,
+    "pmc": 0,
+    "asap": 0,
+    "external_auroc": 0.9999111111111111,
+    "llmtrace_auroc": 0.9834248492678725
+  }
+}

@@ -1,0 +1,306 @@
+{
+  "v10": {
+    "human": 9,
+    "external_human": 16,
+    "external_ai": [
+      150,
+      150
+    ],
+    "llmtrace_human": 2,
+    "llmtrace_ai": [
+      479,
+      516
+    ],
+    "llmtrace_mixed": {
+      "documents": 764,
+      "tokens": 270172,
+      "human_tokens": 170521,
+      "ai_tokens": 99651,
+      "false_positive_tokens": 1292,
+      "true_positive_tokens": 38469,
+      "fpr": 0.00757677939960474,
+      "ai_recall": 0.38603727007255323,
+      "precision": 0.9675058474384447,
+      "roc_auc": 0.863645380139661,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "aitdna_mixed": {
+      "documents": 258,
+      "tokens": 134891,
+      "human_tokens": 37424,
+      "ai_tokens": 97467,
+      "false_positive_tokens": 5009,
+      "true_positive_tokens": 85091,
+      "fpr": 0.1338445917058572,
+      "ai_recall": 0.8730236900694595,
+      "precision": 0.9444062153163152,
+      "roc_auc": 0.9333794522797738,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human": 19,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 84,
+      "true_positive_tokens": 9877,
+      "fpr": 0.0018471687740516766,
+      "ai_recall": 0.44492995179963063,
+      "precision": 0.9915671117357695,
+      "roc_auc": 0.915312157774418,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human_sources": {
+      "Travis-ML/ShortStory-SFT-jsonl": 0,
+      "aaronsw.com/weblog": 0,
+      "craphound.com": 0,
+      "databricks/databricks-dolly-15k": 15,
+      "elisabeth-pl-pl/GRADTEX": 4
+    },
+    "cnn": 4,
+    "pmc": 0,
+    "asap": 1,
+    "external_auroc": 0.9957523479660728,
+    "llmtrace_auroc": 0.9551093379933546,
+    "new_mixed_auroc": 0.915312157774418
+  },
+  "v12": {
+    "human": 45,
+    "external_human": 11,
+    "external_ai": [
+      150,
+      150
+    ],
+    "llmtrace_human": 18,
+    "llmtrace_ai": [
+      483,
+      516
+    ],
+    "llmtrace_mixed": {
+      "documents": 764,
+      "tokens": 270172,
+      "human_tokens": 170521,
+      "ai_tokens": 99651,
+      "false_positive_tokens": 3588,
+      "true_positive_tokens": 51619,
+      "fpr": 0.021041396660821835,
+      "ai_recall": 0.5179978123651544,
+      "precision": 0.935008241708479,
+      "roc_auc": 0.8628712907032767,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "aitdna_mixed": {
+      "documents": 258,
+      "tokens": 134891,
+      "human_tokens": 37424,
+      "ai_tokens": 97467,
+      "false_positive_tokens": 6175,
+      "true_positive_tokens": 87847,
+      "fpr": 0.16500106883283455,
+      "ai_recall": 0.9012999271548319,
+      "precision": 0.9343238816447215,
+      "roc_auc": 0.9269367211045347,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human": 15,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 175,
+      "true_positive_tokens": 14757,
+      "fpr": 0.0038482682792743265,
+      "ai_recall": 0.6647596738591829,
+      "precision": 0.9882802035896062,
+      "roc_auc": 0.9547264977663065,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human_sources": {
+      "Travis-ML/ShortStory-SFT-jsonl": 0,
+      "aaronsw.com/weblog": 0,
+      "craphound.com": 0,
+      "databricks/databricks-dolly-15k": 11,
+      "elisabeth-pl-pl/GRADTEX": 4
+    },
+    "cnn": 5,
+    "pmc": 0,
+    "asap": 1,
+    "external_auroc": 0.9980412946741056,
+    "llmtrace_auroc": 0.946944500666504,
+    "new_mixed_auroc": 0.9547264977663065
+  },
+  "v13": {
+    "human": 19,
+    "external_human": 13,
+    "external_ai": [
+      150,
+      150
+    ],
+    "llmtrace_human": 5,
+    "llmtrace_ai": [
+      479,
+      516
+    ],
+    "llmtrace_mixed": {
+      "documents": 764,
+      "tokens": 270172,
+      "human_tokens": 170521,
+      "ai_tokens": 99651,
+      "false_positive_tokens": 3381,
+      "true_positive_tokens": 48495,
+      "fpr": 0.019827469930389804,
+      "ai_recall": 0.4866484029262125,
+      "precision": 0.934825352764284,
+      "roc_auc": 0.8608849500316652,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "aitdna_mixed": {
+      "documents": 258,
+      "tokens": 134891,
+      "human_tokens": 37424,
+      "ai_tokens": 97467,
+      "false_positive_tokens": 5859,
+      "true_positive_tokens": 85425,
+      "fpr": 0.1565572894399316,
+      "ai_recall": 0.8764504909353935,
+      "precision": 0.9358156960694097,
+      "roc_auc": 0.9261612892817916,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human": 15,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 134,
+      "true_positive_tokens": 14203,
+      "fpr": 0.0029466739967014843,
+      "ai_recall": 0.6398035947565206,
+      "precision": 0.990653553742066,
+      "roc_auc": 0.9340322180934162,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human_sources": {
+      "Travis-ML/ShortStory-SFT-jsonl": 0,
+      "aaronsw.com/weblog": 0,
+      "craphound.com": 0,
+      "databricks/databricks-dolly-15k": 9,
+      "elisabeth-pl-pl/GRADTEX": 6
+    },
+    "cnn": 8,
+    "pmc": 0,
+    "asap": 1,
+    "external_auroc": 0.9975448330726014,
+    "llmtrace_auroc": 0.9466527240942618,
+    "new_mixed_auroc": 0.9340322180934162
+  },
+  "Pangram RoBERTa": {
+    "human": 1,
+    "external_human": 0,
+    "external_ai": [
+      118,
+      150
+    ],
+    "llmtrace_human": 2,
+    "llmtrace_ai": [
+      353,
+      516
+    ],
+    "llmtrace_mixed": {
+      "ai_recall": 0.12086180770890408,
+      "fpr": 0.02906973334662593
+    },
+    "aitdna_mixed": {
+      "ai_recall": 0.5715472929299147,
+      "fpr": 0.20460132535271483
+    },
+    "new_human": 5,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 1331,
+      "true_positive_tokens": 1554,
+      "fpr": 0.02926882902693788,
+      "ai_recall": 0.07000315329519348,
+      "precision": 0.5386481802426343,
+      "roc_auc": 0.6086445454246252,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human_sources": {},
+    "cnn": 0,
+    "pmc": 0,
+    "asap": 0,
+    "external_auroc": 0.9989333333333333,
+    "llmtrace_auroc": 0.9506325366063739,
+    "new_mixed_auroc": 0.6086445454246252
+  },
+  "Pangram Llama": {
+    "human": 1,
+    "external_human": 0,
+    "external_ai": [
+      149,
+      150
+    ],
+    "llmtrace_human": 2,
+    "llmtrace_ai": [
+      453,
+      516
+    ],
+    "llmtrace_mixed": {
+      "ai_recall": 0.22419243158623597,
+      "fpr": 0.06809718451099865
+    },
+    "aitdna_mixed": {
+      "ai_recall": 0.908892240450614,
+      "fpr": 0.5714514749893117
+    },
+    "new_human": 19,
+    "new_mixed": {
+      "documents": 250,
+      "tokens": 67674,
+      "human_tokens": 45475,
+      "ai_tokens": 22199,
+      "false_positive_tokens": 5192,
+      "true_positive_tokens": 3232,
+      "fpr": 0.11417262231995602,
+      "ai_recall": 0.14559214379026084,
+      "precision": 0.38366571699905033,
+      "roc_auc": 0.5730080071112466,
+      "pure_human_documents": 0,
+      "pure_human_documents_with_false_highlight": 0,
+      "pure_human_document_any_false_highlight_rate": null
+    },
+    "new_human_sources": {},
+    "cnn": 0,
+    "pmc": 0,
+    "asap": 0,
+    "external_auroc": 0.9999111111111111,
+    "llmtrace_auroc": 0.9834248492678725,
+    "new_mixed_auroc": 0.5730080071112466
+  }
+}
