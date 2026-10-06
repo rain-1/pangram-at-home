@@ -72,3 +72,16 @@ A lower separate LR for the expert adapters was considered and not used: it need
 - warmup 0.15 wins or ties → use 0.15;
 - head LR 2e-4 wins → adopt it;
 - higher alpha or LR wins → do not transfer to the MoE.
+
+## Unattended chain and benchmark scoring
+
+`pipeline.py <arm> --seeds 1 2 --fraction 0.5` runs one chain per arm on the Space. For each seed it:
+1. trains through `launch_moe.py`, which then scores the checkpoints with `sweep_eval.py` on the arm's first GPU;
+2. meanwhile scores the final checkpoint on rain1's aidet_eval benchmark-v3 with `benchmark/score_benchmark.py`, sharded over the arm's other three GPUs;
+3. starts the next seed.
+
+The benchmark inputs come from `benchmark/export_inputs.py`, run against `pangram-at-home-eval/artifacts/benchmark-v3`: 55,109 inputs (40,787 shared windows and 14,322 native documents), sha256 `02b6fdb5…` gzipped. They contain benchmark text, so they stay on the Space and out of git.
+
+Score files land in `benchmark/scores/`. Copy them to `pangram-at-home-eval/artifacts/external_scores/`, where that repo's `models/precomputed.py` adapter (model ids `moe_{base,mix}_s{1,2}_{mean,maxsent}`) serves them to the normal `predict`/`calibrate`/`evaluate` steps. The adapter checks each input's text hash against the scored text.
+
+Failures write `sweeps/ALERT-pipeline-<arm>`; progress goes to `pipeline-<arm>.log`.

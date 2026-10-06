@@ -119,8 +119,22 @@ def load_model(run):
     return model.to(dtype=torch.bfloat16, device='cuda').eval(), tok
 
 
+def align_expert_nesting(w, model):
+    """PEFT versions nest the two fused-expert adapters (gate_up_proj, down_proj) in opposite order under the same keys
+    (`experts.lora_X` vs `experts.base_layer.lora_X`); woog's H200 checkpoints use the other order. Swap a pair only when
+    the shapes are exactly swapped, which the different input widths make unambiguous."""
+    shapes = {n: tuple(p.shape) for n, p in model.named_parameters() if p.requires_grad}; swapped = 0
+    for k in [k for k in w if '.experts.base_layer.lora_' in k]:
+        o = k.replace('.experts.base_layer.lora_', '.experts.lora_')
+        if o in w and tuple(w[k].shape) != shapes[k] and tuple(w[o].shape) == shapes[k] and tuple(w[k].shape) == shapes[o]:
+            w[k], w[o] = w[o], w[k]; swapped += 1
+    return swapped
+
+
 def score_checkpoint(model, tok, path, rows):
     w = load_file(str(path)); assert set(w) == {n for n, p in model.named_parameters() if p.requires_grad}
+    if align_expert_nesting(w, model):
+        print(json.dumps({'checkpoint': path.name, 'expert_adapter_nesting': 'swapped to this PEFT version'}), flush=True)
     with torch.no_grad():
         for n, p in model.named_parameters():
             if n in w:
