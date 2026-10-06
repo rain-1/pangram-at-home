@@ -17,6 +17,8 @@ Evidence keys:
 
 ## Current training mixes
 
+In woog's trainer, `stage2-epochN` files are **shards** (fresh draws), not repeated passes. See `benchmarks/pangram4/training/hparam-sweep-20261006/README.md`.
+
 | Mix | Contents | Where |
 |---|---|---|
 | woog `prepared-v2` (base) | Per stage-2 epoch: mirrors 6,000, papers 6,000, GRADTEX 4,800 (document labels only), human 6,000, full papers 1,200 | Training Space, `backbone-launch-20261003/runs/<model>/prepared-v2` |

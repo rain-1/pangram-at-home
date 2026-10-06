@@ -12,6 +12,18 @@ Every arm is recipe A (LR 2e-4, head LR 2e-5, cosine, 6% warmup, 20% length, mic
 
 Arms are listed in `arms.json`; `build_queue.py --seeds 1` writes `sweeps/queue.json`. Combinations of the winners and repeat seeds follow once wave results are in.
 
+
+**Terminology: "epoch" in this trainer means a data shard, not a pass.** Stage 1 is one warm-up shard (`stage1-epoch0`).
+- It trains the segment and document heads on single-copy input.
+- It forms a two-stage curriculum with stage 2.
+
+Stage 2 reads three **different** files, `stage2-epoch{0,1,2}`.
+- Each is a fresh draw with the same per-source mix, under one cosine schedule.
+- Repetition across them depends on pool size: `papers` about 1.6×, `fullpapers` heavy (different crops of 377 papers), `human` and GRADTEX essentially none. rain1's additions never repeat.
+- A checkpoint and validation pass are taken at each shard boundary.
+
+Identifiers keep woog's names (file names, `stage2-epochN-adapters.safetensors`, the `epoch` field). Reports say "stage-2 shard N".
+
 ## Code
 
 The code is a copy of the overnight sweep, with only these changes:
