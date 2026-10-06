@@ -2,13 +2,13 @@
 export type ScoreSummary = { histogram: number[]; total: number; excluded?: number; policy?: number };
 export type ScoredPaper = { score_summaries?: Record<string, ScoreSummary> };
 export function modelLabel(id: string) {
-  return id === "laya" ? "Laya · Experimental" : id === "v5" || id === "v8" ? `MELD ${id}` : id;
+  return id === "laya" ? "Laya · Experimental" : id === "qwen35-4b" ? "Qwen3.5-4B · Experimental" : id === "v5" || id === "v8" ? `MELD ${id}` : id;
 }
 export const scoreThresholds = Array.from({ length: 21 }, (_, i) => i / 20);
 export function summaryFor(paper: ScoredPaper, model: string) {
   const summaries = paper.score_summaries;
   if (!summaries) return undefined;
-  return model === "all" ? summaries.v8 || summaries.v5 : summaries[model];
+  return model === "all" ? summaries.v8 || summaries.v5 || Object.values(summaries)[0] : summaries[model];
 }
 export function aboveCount(summary: ScoreSummary, threshold: number) {
   return summary.histogram.slice(Math.round(threshold * 20) + 1).reduce((a, b) => a + b, 0);

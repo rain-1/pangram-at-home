@@ -75,7 +75,7 @@ export default function PaperBrowser(){
     {related.length>0&&<section className="pb-related"><h2>Keep exploring</h2><p className="pb-muted">Shares keywords or a research area with this paper.</p><ol>{related.map(p=><li key={p.id}><a href={paperHref(p.id)} onClick={e=>{e.preventDefault();navigate(filters,p.id,page);}}>{p.number&&<span className="site-num">#{p.number}</span>}<span>{tidy(p.title)}</span></a></li>)}</ol></section>}
    </>}
   </aside>
-  <section className="pb-sheet" aria-label="PDF">{active&&<ReaderErrorBoundary key={selected} onBack={()=>navigate(filters)}><Suspense fallback={<p className="pb-sheet-wait">Opening PDF…</p>}><PDFReader availablePapers={papers} api={api} initialPaperId={selected} embedded hosted readingOnly/></Suspense></ReaderErrorBoundary>}</section>
+  <section className="pb-sheet" aria-label="PDF">{active&&<ReaderErrorBoundary key={selected} onBack={()=>navigate(filters)}><Suspense fallback={<p className="pb-sheet-wait">Opening PDF…</p>}><PDFReader availablePapers={papers} api={api} initialPaperId={selected} embedded hosted/></Suspense></ReaderErrorBoundary>}</section>
  </main>:<main className="pb-main">
   <section className="pb-hero">
    <p className="site-kicker">{filters.saved?`${saved.size} saved in this browser`:loaded?`${scopeTotal.toLocaleString()} papers · public OpenReview metadata`:'Opening the library…'}</p>

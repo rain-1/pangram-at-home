@@ -4,7 +4,7 @@ import {useEffect,useState,type ReactNode} from 'react';
 import {ArrowRight} from 'lucide-react';
 import './site.css';
 
-export type SitePage='discover'|'saved'|'classifications';
+export type SitePage='discover'|'saved'|'classifications'|'calibration';
 type NavTarget={href:string;onClick?:()=>void};
 
 /** Number of papers in the browser-local reading list (shared with the discover page). */
@@ -25,6 +25,7 @@ export function SiteHeader({page,savedCount,discover={href:'/'},saved={href:'/?s
    {browse&&<NavItem target={discover} current={page==='discover'}>Discover</NavItem>}
    {browse&&<NavItem target={saved} current={page==='saved'}><span className="site-long">Reading list</span><span className="site-short">Saved</span> <span className="site-count">{savedCount}</span></NavItem>}
    <NavItem target={classifications} current={page==='classifications'}>Classifications{page!=='classifications'&&<ArrowRight size={14}/>}</NavItem>
+   <NavItem target={{href:'/?view=calibration'}} current={page==='calibration'}>Calibration</NavItem>
    {extra}
   </nav></header>;
 }

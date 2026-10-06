@@ -254,6 +254,14 @@ function PageCanvas({
 }
 
 // Keep page-sized placeholders so scrolling stays continuous while only nearby pages render.
+const BAND_COLORS: Record<string,string> = {low:"#8ebd95", medium:"#ddbc52", high:"#d97669", unknown:"#cfdacc"};
+/** One vertical strip per page: each passage gets an equal slice, in reading order, colored by score band. */
+function pageStrip(local: {score:number}[]) {
+  if (!local.length) return "transparent";
+  const step = 100 / local.length;
+  return `linear-gradient(to bottom, ${local.map((p, k) => `${BAND_COLORS[scoreBand(p.score)]} ${(k*step).toFixed(2)}% ${((k+1)*step).toFixed(2)}%`).join(", ")})`;
+}
+
 function ScrollingPage({ratios,...props}: React.ComponentProps<typeof PageCanvas> & {ratios:Map<number,number>}) {
   const slot = useRef<HTMLDivElement>(null);
   const [nearby, setNearby] = useState(false);
@@ -466,11 +474,30 @@ export default function PDFReader({
         : report && index ? alignPassages(report.text, report.result.segments, index) : [],
     [report, index, detail],
   );
+  // First passage located on each new PDF page, for soft page boundaries in text mode.
+  const pageStarts=useMemo(()=>{const starts=new Map<number,number>();let last=0;
+    for(const p of passages)if(p.page!==undefined&&p.page>last){starts.set(p.id,p.page);last=p.page;}
+    return starts;},[passages]);
   const section=Math.min(textSection,Math.max(0,Math.ceil(passages.length/100)-1));
   const textStart=section*100, textEnd=Math.min(passages.length,textStart+100);
   useEffect(()=>{
     if(mode==="text" && selected!==null)viewport.current?.querySelector(`[data-passage="${selected}"]`)?.scrollIntoView({block:"center",behavior:"instant"});
   },[mode,selected,section]);
+  // Page-map jumps in text mode: scroll the target passage to the top once its section has rendered.
+  const [textTarget,setTextTarget]=useState<number|null>(null);
+  useEffect(()=>{
+    if(mode!=="text"||textTarget===null)return;
+    const el=viewport.current?.querySelector<HTMLElement>(`[data-passage="${textTarget}"]`);
+    // Land on the page boundary line when the passage starts a page.
+    const target=el?.previousElementSibling?.classList.contains("pr-page-break")?el.previousElementSibling as HTMLElement:el;
+    const scroller=viewport.current;
+    if(target&&scroller){
+      // Scroll only the viewer when it scrolls; otherwise let the page scroll.
+      if(scroller.scrollHeight>scroller.clientHeight+1)scroller.scrollTo({top:scroller.scrollTop+target.getBoundingClientRect().top-scroller.getBoundingClientRect().top-16,behavior:"instant"});
+      else target.scrollIntoView({block:"start",behavior:"instant"});
+      setTextTarget(null);
+    }
+  },[mode,textTarget,section]);
   const current = selected === null ? undefined : passages[selected];
   const sourceChars = useMemo(()=>Array.from(report?.text || ""),[report?.text]);
   const reportSummary = useMemo(()=>summarizePassages(report?.result.segments || [],report?.text),[report]);
@@ -488,8 +515,56 @@ export default function PDFReader({
     (p) =>
       filter === "artifacts" ? !hasTextContent(p.text) : hasTextContent(p.text) && (filter === "all" || (filter === "elevated" ? p.score > threshold : !p.mapped)),
   ).sort((a,b)=>passageSort==="high"?b.score-a.score||a.id-b.id:passageSort==="low"?a.score-b.score||a.id-b.id:a.id-b.id),[passages,filter,threshold,passageSort]);
-  const sidebarSection=Math.min(sidebarPage,Math.max(0,Math.ceil(visible.length/100)-1));
+  // Passage list follows the reading position unless the reader scrolls the list themselves.
+  const inspector=useRef<HTMLElement>(null);
+  const [follow,setFollow]=useState(true);
+  const [readingId,setReadingId]=useState<number|null>(null);
+  const followActive=follow&&passageSort==="order"&&selected===null;
+  const followIndex=followActive&&readingId!==null?visible.findIndex(p=>p.id>=readingId):-1;
+  const sidebarSection=followIndex>=0?Math.floor(followIndex/100):Math.min(sidebarPage,Math.max(0,Math.ceil(visible.length/100)-1));
   const sidebarStart=sidebarSection*100, sidebarEnd=Math.min(visible.length,sidebarStart+100);
+  // First rectangle of each passage per page, in document order, for locating the reading line in PDF mode.
+  const pageAnchors=useMemo(()=>{const anchors=new Map<number,{y:number;id:number}[]>();
+    for(const p of passages){const seen=new Set<number>();for(const r of p.rectangles||[]){if(seen.has(r.page))continue;seen.add(r.page);
+      if(!anchors.has(r.page))anchors.set(r.page,[]);anchors.get(r.page)!.push({y:r.y,id:p.id});}}
+    return anchors;},[passages]);
+  const readingFrame=useRef(0);
+  // The panel only starts following once the reader has moved through the paper, so its summary stays visible on open.
+  const moved=useRef(false);
+  function trackReading(){
+    cancelAnimationFrame(readingFrame.current);
+    readingFrame.current=requestAnimationFrame(()=>{
+      const scroller=viewport.current;if(!scroller)return;
+      // Reading line: 30% down whichever box is actually scrolling (the viewer, or the window below the site nav).
+      const own=scroller.scrollHeight>scroller.clientHeight+1, rect=scroller.getBoundingClientRect();
+      const nav=parseFloat(getComputedStyle(scroller).getPropertyValue("--nav"))||0;
+      const top=own?rect.top:Math.max(rect.top,nav), bottom=own?rect.bottom:Math.min(rect.bottom,window.innerHeight);
+      const line=top+(bottom-top)*.3;
+      let id:number|undefined;
+      if(mode==="text"){
+        const el=Array.from(scroller.querySelectorAll<HTMLElement>("[data-passage]")).find(e=>e.getBoundingClientRect().bottom>line);
+        if(el)id=Number(el.dataset.passage);
+      }else{
+        const slot=Array.from(scroller.querySelectorAll<HTMLElement>("[data-page]")).find(e=>e.getBoundingClientRect().bottom>line);
+        if(slot){const n=Number(slot.dataset.page),r=slot.getBoundingClientRect(),rel=Math.min(1,Math.max(0,(line-r.top)/Math.max(1,r.height)));
+          for(let pg=n;pg>=1&&id===undefined;pg--){const list=pageAnchors.get(pg);if(!list?.length)continue;
+            if(pg<n){id=list[list.length-1].id;break;}
+            const before=list.filter(a=>a.y<=rel);id=(before.length?before[before.length-1]:list[0]).id;}}
+      }
+      if(id!==undefined)setReadingId(id);
+    });
+  }
+  useEffect(()=>{const onScroll=()=>{moved.current=true;trackReading();};window.addEventListener("scroll",onScroll,{passive:true});return()=>window.removeEventListener("scroll",onScroll);});
+  // Locate the reading position on open and after switching views, before any scroll happens.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(()=>{const t=setTimeout(trackReading,400);return()=>clearTimeout(t);},[mode,passages,pdf,section]);
+  useEffect(()=>{
+    if(followIndex<0||!moved.current)return;
+    const box=inspector.current,el=box?.querySelector<HTMLElement>(`[data-list-passage="${visible[followIndex].id}"]`);
+    if(!box||!el||box.scrollHeight<=box.clientHeight+1)return;
+    box.scrollTo({top:box.scrollTop+el.getBoundingClientRect().top-box.getBoundingClientRect().top-56,behavior:"smooth"});
+  },[followIndex,visible,sidebarSection]);
+  const readingListId=followIndex>=0?visible[followIndex].id:undefined;
   function select(id: number) {
     const p = passages[id];
     if(!p)return;
@@ -503,7 +578,9 @@ export default function PDFReader({
     if(!pdf || !Number.isInteger(n) || n<1 || n>pdf.numPages)return;
     const scroller = viewport.current;
     const target = scroller?.querySelector<HTMLElement>(`[data-page="${n}"]`);
-    if (scroller && target) scroller.scrollTo({
+    // Narrow layouts let the page itself scroll; then scroll whichever ancestor can.
+    if (scroller && target && scroller.scrollHeight <= scroller.clientHeight + 1) target.scrollIntoView({block: "start", behavior: "instant"});
+    else if (scroller && target) scroller.scrollTo({
       top: scroller.scrollTop + target.getBoundingClientRect().top - scroller.getBoundingClientRect().top - 24,
       behavior: "instant",
     });
@@ -512,6 +589,13 @@ export default function PDFReader({
   function changePage(n: number) {
     setSelected(null);
     setFocusId(null);
+    if (mode === "text") {
+      // Text mode has no page elements: jump to the first passage located on that page.
+      const first = passages.find(p => p.page === n && hasTextContent(p.text)) ?? passages.find(p => (p.page ?? 0) >= n);
+      setPage(n);
+      if (first) { setTextSection(Math.floor(first.id/100)); setTextTarget(first.id); }
+      return;
+    }
     jumpToPage(n);
   }
   function trackPage() {
@@ -609,12 +693,8 @@ export default function PDFReader({
                   className={page === i + 1 ? "active" : ""}
                   onClick={() => changePage(i + 1)}
                 >
-                  <b>{i + 1}</b>
-                  <i>
-                    {local.slice(0, 24).map((p) => (
-                      <em key={p.id} className={scoreBand(p.score)} />
-                    ))}
-                  </i>
+                  <b>{pdf.numPages <= 30 || i === 0 || (i + 1) % 5 === 0 ? i + 1 : ""}</b>
+                  <i style={{background: pageStrip(local)}} />
                 </button>
               );
             })}
@@ -660,7 +740,7 @@ export default function PDFReader({
               </button>
             </div>
           </div>
-          <div className="pr-viewport" ref={viewport} onScroll={trackPage}>
+          <div className="pr-viewport" ref={viewport} onScroll={()=>{moved.current=true;trackPage();trackReading();}}>
             {progress && (
               <div className="pr-progress">
                 <Loader2 size={14} className="pr-spin" />
@@ -690,6 +770,8 @@ export default function PDFReader({
                       {sourceChars
                         .slice(i+textStart ? passages[i+textStart - 1].end : 0, p.start)
                         .join("")}
+                      {pageStarts.has(p.id) &&
+                        <span className="pr-page-break" data-page-break={pageStarts.get(p.id)} aria-label={`Page ${pageStarts.get(p.id)}`}><span>Page {pageStarts.get(p.id)}</span></span>}
                       <button
                         data-passage={p.id}
                         title={`Passage ${p.id+1} · score ${p.score.toFixed(3)}`}
@@ -728,7 +810,9 @@ export default function PDFReader({
             </button>
           </footer>}
         </div>
-        {!readingOnly&&<aside className="pr-inspector">
+        {!readingOnly&&<aside className="pr-inspector" ref={inspector}
+          onWheel={()=>setFollow(false)} onTouchMove={()=>setFollow(false)}
+          onKeyDown={e=>{if(["ArrowUp","ArrowDown","PageUp","PageDown","Home","End"," "].includes(e.key))setFollow(false);}}>
           <div className="pr-inspector-top">
             <div className="pr-eyebrow">MODEL OBSERVATIONS</div>
             <h3>Passage evidence</h3>
@@ -844,12 +928,19 @@ export default function PDFReader({
                   <option value="unmapped">Not located</option>
                 </select>
               </div>
+              <div className="pr-follow-row">
+                <label className="pr-follow"><input type="checkbox" checked={follow} onChange={e=>setFollow(e.target.checked)}/> Follow reading position</label>
+                {follow&&!followActive&&<span>{passageSort!=="order"?"Paused: sorted by score":"Paused while a passage is selected"}</span>}
+              </div>
+              {!follow&&<button className="pr-follow-resume" onClick={()=>setFollow(true)}>Follow reading</button>}
               <label className="pr-sort">Sort passages <select aria-label="Sort passages" value={passageSort} onChange={e=>{setPassageSort(e.target.value);setSidebarPage(0);}}><option value="order">Document order</option><option value="high">Highest AI score first</option><option value="low">Lowest AI score first</option></select></label>
               <div className="pr-passages">
                 {visible.slice(sidebarStart,sidebarEnd).map((p) => (
                   <button
                     key={p.id}
-                    className={`${hasTextContent(p.text)?scoreBand(p.score):"unknown"} ${selected === p.id ? "active" : ""}`}
+                    data-list-passage={p.id}
+                    aria-current={readingListId===p.id?"location":undefined}
+                    className={`${hasTextContent(p.text)?scoreBand(p.score):"unknown"} ${selected === p.id ? "active" : ""} ${readingListId===p.id ? "reading" : ""}`}
                     onClick={() => select(p.id)}
                   >
                     <div>
@@ -863,7 +954,7 @@ export default function PDFReader({
                     <p>{p.text}</p>
                   </button>
                 ))}
-                {visible.length>100 && <nav className="pr-sidebar-pages" aria-label="Passage list pages"><button aria-label="Previous passage list page" disabled={sidebarSection===0} onClick={()=>setSidebarPage(sidebarSection-1)}>Previous</button><span>{sidebarStart+1}–{sidebarEnd} of {visible.length}</span><button aria-label="Next passage list page" disabled={sidebarEnd===visible.length} onClick={()=>setSidebarPage(sidebarSection+1)}>Next</button></nav>}
+                {visible.length>100 && <nav className="pr-sidebar-pages" aria-label="Passage list pages"><button aria-label="Previous passage list page" disabled={sidebarSection===0} onClick={()=>{setFollow(false);setSidebarPage(sidebarSection-1);}}>Previous</button><span>{sidebarStart+1}–{sidebarEnd} of {visible.length}</span><button aria-label="Next passage list page" disabled={sidebarEnd===visible.length} onClick={()=>{setFollow(false);setSidebarPage(sidebarSection+1);}}>Next</button></nav>}
                 {!visible.length && !progress && (
                   <p className="pr-hint">No passages match this filter.</p>
                 )}

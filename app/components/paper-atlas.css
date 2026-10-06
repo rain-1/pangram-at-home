@@ -128,6 +128,9 @@
 
 /* Reader: fills the screen below the header; the inspector keeps its own column. */
 .atlas-reader{display:flex;flex-direction:column;height:calc(100vh - var(--nav));height:calc(100dvh - var(--nav))}
+/* Must beat `.site>main{flex:1}`: as a growing flex item the reader stretched to the full PDF height,
+   so its inner viewport never scrolled and page-map jumps did nothing. */
+.site>main.atlas-reader{flex:none;min-height:0}
 .atlas-reader-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px max(12px,2vw);border-bottom:1px solid var(--rule)}
 .atlas-reader>div:last-child{flex:1;min-height:0;display:flex;flex-direction:column}
 .atlas-wait{margin:auto;font:13px var(--mono);color:var(--graphite);text-align:center}
