@@ -127,3 +127,22 @@ Four additional dependent GPU scoring jobs (`<arm>-selection`) are registered. E
 The boundary replication preserves its data/order, changing RNG seed to73; compare against matched control-seed73, whose target sentence F1 already increased to86.19 from81.75 at seed42. This makes seed uncertainty material. The objective arm retains the original combined validation criterion and changes only stage2 training to token plus0.2sentence. The10% donor arms deterministically retain approximately half the audited20% donor slots and restore original control rows elsewhere: external processed-token share9.9–10.1% per epoch, total tokens within0.5% of control, same42kdraws. No additional data generation.
 
 Earlier hard-human, token-only, seed73 control, and batch evaluations are complete. Token-only harmed paper detection; harder-human reweighting did not clearly lower false positives. The batch64/lr2.8e-4 validation winner underperformed batch32 on frozen paper evaluation. Neither is automatically promoted. Public mixed-authorship and Arena audits remain preparation work, not executable training jobs. Continue preparing these while current GPUs run; retain split/label checks before registration.
+
+## Proposal (not ranked, not implemented): stage-2 span-length curriculum — October 6, 2026
+
+Added from rain1's session; unranked so woog can place it. In the current trainer, stage 1 → stage 2 is a two-stage curriculum: segment/document warm-up on single-copy input, then the token objective on Repeat2. The three stage-2 files (`stage2-epoch{0,1,2}`) are not a curriculum, though. They are freshly drawn shards with the same per-source mix, shuffled, under one cosine schedule.
+
+**Idea:** order stage-2 data by AI-span length instead of shuffling uniformly. Shard 1 would hold paragraph-scale replacements (the current paper and heterogeneous data); later shards would mix in progressively more sentence- and sub-sentence-scale spans. The target is the small-edit plateau: 0.21–0.27 recall at 1% FPR for the 4B, and 0.14–0.21 dev in `hparam-sweep-20261006`, unchanged by any hyperparameter.
+
+**Relation to existing work:**
+- The RAID/MAGE "broad first → paper" trials (rank 4 above; `diversity-sweep/queue_curriculum.py`) order by **domain**, not span length.
+- Interpret those results first. They show whether ordering matters at all under this trainer.
+
+**Blocked by data, not code:**
+- Neither woog's `prepared-v2` nor heterogeneous-ai-spans has in-context AI spans under 200 characters (`research/data-mix-20261006/README.md` §2).
+- The only sentence-scale supply is v14 GRADTEX spans (about 85 windows per shard) and LLMTrace, which is excluded while benchmark-v3 evaluates it.
+- A useful curriculum first needs short-span data. One candidate: 1–3-sentence replacements written into the heterogeneous-ai-spans control passages by the same six writers.
+
+**Test design when unblocked:**
+- Exact same example multiset in both arms, ordered vs shuffled, with matched seeds (at least 2).
+- Compare small-edit recall, paragraph recall and human FPR on edit-adjacent sentences. A curriculum that only shifts the operating point does not count.
