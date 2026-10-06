@@ -48,19 +48,42 @@ w("")
 w(PRIORITY_NOTE)
 w("")
 w("### Suggested order for today")
-for i, (a, b) in enumerate(TODAY, 1):
-    w(f"{i}. **{a}.** {b}")
+w("")
+for i, (a, tl, you, comp, dep, steps, risks, done) in enumerate(TODAY, 1):
+    w(f"{i}. **{a}.** {tl}")
+    w("")
+    w("   <details><summary>What it takes</summary>")
+    w("")
+    w(f"   - **Your time:** {you}")
+    w(f"   - **Compute and wall time:** {comp}")
+    w(f"   - **Depends on:** {dep}")
+    w("   - **Steps:**")
+    for st in steps:
+        w(f"     1. {st}")
+    w("   - **Risks:**")
+    for rk in risks:
+        w(f"     - {rk}")
+    w(f"   - **Done when:** {done}")
+    w("")
+    w("   </details>")
+    w("")
+w("### Where your active time went")
+w("")
+w("| Topic | Your active time | Chat rounds | Payoff |")
+w("|---|---|---|---|")
+for t, h, n, p in ENGAGEMENT:
+    w(f"| {t} | {h:.1f} h | {n} | {p} |")
 w("")
 w("### Still in progress and probably not worth continuing")
 for a, b in STOP:
     w(f"- **{a}.** {b}")
 w("")
-w("### Most time spent, least payoff")
+w("### Most of your time, least payoff")
 w("")
-w("| Work | Time | Outcome | Assessment |")
-w("|---|---|---|---|")
-for a, b, c, d in LOW_PAYOFF:
-    w(f"| {a} | {b} | {c} | {d} |")
+w("| Work | Your active time and chat rounds | Compute | Outcome | Assessment |")
+w("|---|---|---|---|---|")
+for a, b, c, d, e in LOW_PAYOFF:
+    w(f"| {a} | {b} | {c} | {d} | {e} |")
 w("")
 needs = [t for t in THREADS if t[3] == "waiting on you"]
 high_ignored = [f for f in IGNORED if f[4] == "high"]
@@ -152,8 +175,11 @@ data = {
     "rules": [{"cat": a, "rule": b} for a, b in RULES],
     "sessions": [{**s, "from": pdt(s["start"], True), "to": pdt(s["end"], True)} for s in sorted(SESSIONS, key=lambda x: x["start"])],
     "links": [{"k": k, "v": v} for k, v in LINKS],
-    "priority": {"note": PRIORITY_NOTE, "low": [{"work": a, "time": b, "outcome": c, "assessment": d} for a, b, c, d in LOW_PAYOFF],
-                 "stop": [{"k": a, "v": b} for a, b in STOP], "today": [{"k": a, "v": b} for a, b in TODAY]},
+    "priority": {"note": PRIORITY_NOTE,
+                 "engagement": [{"topic": a, "h": b, "n": c, "pay": d} for a, b, c, d in ENGAGEMENT],
+                 "low": [{"work": a, "you": b, "compute": c, "outcome": d, "assessment": e} for a, b, c, d, e in LOW_PAYOFF],
+                 "stop": [{"k": a, "v": b} for a, b in STOP],
+                 "today": [{"k": a, "tldr": b, "you": c, "compute": d, "dep": e, "steps": f, "risks": g, "done": h} for a, b, c, d, e, f, g, h in TODAY]},
 }
 html = (HERE / "template.html").read_text().replace("__DATA__", json.dumps(data, ensure_ascii=False))
 (HERE / "project-ledger.html").write_text(html)

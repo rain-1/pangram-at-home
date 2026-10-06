@@ -1,6 +1,6 @@
 # Pangram project ledger
 
-As of Tue Oct 6, 00:05 PDT. Synthesized from all 8 Claude Code sessions on this project (Oct 3–6, 2026). Times are PDT. "Age" is time since a thread was last touched. This file contains no credentials, infrastructure addresses, paper text or per-paper scores.
+As of Tue Oct 6, 15:56 PDT. Synthesized from all 8 Claude Code sessions on this project (Oct 3–6, 2026). Times are PDT. "Age" is time since a thread was last touched. This file contains no credentials, infrastructure addresses, paper text or per-paper scores.
 
 ## Contents
 - [What you are trying to solve](#what-you-are-trying-to-solve)
@@ -27,47 +27,182 @@ As of Tue Oct 6, 00:05 PDT. Synthesized from all 8 Claude Code sessions on this 
 - **Openness.** Keep the repo public-ready (no credentials, addresses, paper text or per-paper scores) and share work with a collaborator.
 
 ## What we have learned
-1. **Training data was the main limit on small-edit detection.** Splicing single AI sentences into human passages lifted small-edit recall at 1% FPR from 0.25 to 0.58–0.63 (Qwen3.5-4B, 3 seeds). Recipe changes had stayed at 0.21–0.25. _(Oct 5 22:52)_
-2. **The learning-rate schedule caused the collapses, not the recipe.** The 5e-4 constant schedule without warmup collapsed around step 1,000 (4B and 9B); the same peak with warmup and cosine was fine. Recipe A (2e-4 cosine, 6% warmup) became the default. _(Oct 5 06:22)_
-3. **Longer training helps paper rewrites, not small edits.** Full-length 4B reached 0.89 on paper_v3 vs 0.77 at 20% length; small-edit recall stayed at 0.21–0.24. _(Oct 5 12:47)_
-4. **MoE: short run best, long run unstable.** The 20%-length Qwen3.6-35B-A3B scored all-edit 0.84 and small-edit 0.30; the full-length run at 2e-4 diverged, and the stable 1e-4 rerun was worse than the 20% run. _(Oct 5 22:31)_
-5. **No evidence of an extraction-artifact shortcut.** A shortcut here means a feature that predicts the label but is unrelated to authorship. Cleaning human text did not change FPR; adding extraction artifacts to AI text lowered recall only slightly (−0.05 with 10× the artifacts). 0 of 1,074 math sentences were flagged. _(Oct 5 21:45)_
-6. **Thresholds set on ordinary human papers do not hold on harder human text.** Cutoffs set on ordinary human papers flag 4.5–7% of human sentences next to edits and 16–29% of human paper_v3 sentences. _(Oct 5 11:13)_
-7. **Fast10 4B calibrated at 1% FPR.** Sentence threshold 0.0283 (held-out FPR 0.83%); catches 84% of one-sentence, 86% of two-sentence and 97% of paragraph edits. Rests on 215 pre-2023 papers; document-level threshold rests on 2. _(Oct 5 17:10)_
-8. **ICLR flag rates rise sharply by year.** Median share of sentences flagged: ≤2022 0.5%, 2023–2024 ≈0.7%, ICLR 2025 1.5–1.8%, ICLR 2026 14.5%, ICLR 2027 68%. Whether 2027 reflects AI use or a difference in submission format, or in topic and writing style over time, is unresolved. _(Oct 5 18:55)_
-9. **Baseline omissions now remove most noise.** On 100 random pages, noise left fell from 175 to 22 per 1k words (references now removed) with prose loss ~3 per 1k; clean pages rose from 16% to 45%. _(Oct 5 21:29)_
-10. **Bulk transfers must be bundled.** Per-file uploads stayed at ~8 MB/s regardless of parallelism; one stream reached 47 MB/s and four reached 88 MB/s. Bundles moved 27k files in 126 s. _(Oct 5 20:15)_
+1. **Splice-trained models catch other writers' edits, less well.** At the deployment threshold the splice-trained 4B catches 63% of Haiku edits, 53% of Luna and 37–41% of Sonnet and Opus; the MoE without splices catches 22–33%. _(Oct 5 23:54)_
+2. **Current labels mark some human text as AI.** Clause-level soft labels found that 25% of the AI-labeled text in paragraph rewrites is near-verbatim human; clause labels beat sentence labels by +0.10 macro-F1 on synthetic edits. _(Oct 6 05:37)_
+3. **Training data was the main limit on small-edit detection.** Splicing single AI sentences into human passages lifted small-edit recall at 1% FPR from 0.25 to 0.58–0.63 (Qwen3.5-4B, 3 seeds). Recipe changes had stayed at 0.21–0.25. _(Oct 5 22:52)_
+4. **The learning-rate schedule caused the collapses, not the recipe.** The 5e-4 constant schedule without warmup collapsed around step 1,000 (4B and 9B); the same peak with warmup and cosine was fine. Recipe A (2e-4 cosine, 6% warmup) became the default. _(Oct 5 06:22)_
+5. **Longer training helps paper rewrites, not small edits.** Full-length 4B reached 0.89 on paper_v3 vs 0.77 at 20% length; small-edit recall stayed at 0.21–0.24. _(Oct 5 12:47)_
+6. **MoE: short run best, long run unstable.** The 20%-length Qwen3.6-35B-A3B scored all-edit 0.84 and small-edit 0.30; the full-length run at 2e-4 diverged, and the stable 1e-4 rerun was worse than the 20% run. _(Oct 5 22:31)_
+7. **No evidence of an extraction-artifact shortcut.** A shortcut here means a feature that predicts the label but is unrelated to authorship. Cleaning human text did not change FPR; adding extraction artifacts to AI text lowered recall only slightly (−0.05 with 10× the artifacts). 0 of 1,074 math sentences were flagged. _(Oct 5 21:45)_
+8. **Thresholds set on ordinary human papers do not hold on harder human text.** Cutoffs set on ordinary human papers flag 4.5–7% of human sentences next to edits and 16–29% of human paper_v3 sentences. _(Oct 5 11:13)_
+9. **Fast10 4B calibrated at 1% FPR.** Sentence threshold 0.0283 (held-out FPR 0.83%); catches 84% of one-sentence, 86% of two-sentence and 97% of paragraph edits. Rests on 215 pre-2023 papers; document-level threshold rests on 2. _(Oct 5 17:10)_
+10. **ICLR flag rates rise sharply by year.** Median share of sentences flagged: ≤2022 0.5%, 2023–2024 ≈0.7%, ICLR 2025 1.5–1.8%, ICLR 2026 14.5%, ICLR 2027 68%. Whether 2027 reflects AI use or a difference in submission format, or in topic and writing style over time, is unresolved. _(Oct 5 18:55)_
+11. **Baseline omissions now remove most noise.** On 100 random pages, noise left fell from 175 to 22 per 1k words (references now removed) with prose loss ~3 per 1k; clean pages rose from 16% to 45%. _(Oct 5 21:29)_
+12. **Bulk transfers must be bundled.** Per-file uploads stayed at ~8 MB/s regardless of parallelism; one stream reached 47 MB/s and four reached 88 MB/s. Bundles moved 27k files in 126 s. _(Oct 5 20:15)_
 
 ## Priorities
 
-"Useful" means it improved small-edit detection at 1% FPR or produced a tool or decision that is still in use. Time estimates are approximate.
+"Your time" is active time in conversation: for each message you sent, the gap to your next message in that session, capped at 10 minutes (longer gaps count as away). Messages were assigned to topics by session, time window and keywords, and spot-checked, so hours are approximate (about ±20%). Total: ~27.6 h of active time over 336 chat rounds (a round is one message from you and Claude's reply to it), Oct 3–6.
 
 ### Suggested order for today
-1. **Read the wave-2 and multi-writer held-out results and choose the training data mix.** Splice and LLM sentence edits are the only change that improved small-edit recall.
+
+1. **Train and test the new small-edit data mix.** Wave 2 was lost in the 07:19 UTC restart before it was scored. Build the planned mix from the new data pool, train 4B × 3 seeds against SPG, and run the soft-label A/B at the same time.
+
+   <details><summary>What it takes</summary>
+
+   - **Your time:** ~20 min: approve the mix and GPU use; agree GPUs with River
+   - **Compute and wall time:** ~3–4 h wall: 4B at 20% length takes ~75–90 min per run on an A100 (seeds in parallel) plus ~20 min scoring; the soft-label A/B (6 runs) runs on other GPUs at the same time
+   - **Depends on:** Free A100s (River's runs); persistence to /data running
+   - **Steps:**
+     1. Agree with River which A100s are free.
+     1. Build the 'table 2' mix (small edits 35%, human paper 25%, paragraph 12%, fully AI 10%, generic human 7%, sections 6%, GRADTEX 5%) from the pool: ~16,000 small edits fit a 510-token window (splices ~7,760, Luna ~4,400, Claude ~4,100 after the strict check). About 1 h of work. Drop the 22 never-train rows.
+     1. Train 4B, 20% length, recipe A, 3 seeds; compare with SPG (rerun SPG if its checkpoints are not in the bucket).
+     1. Run the soft-label A/B (original vs clause soft labels, 3 seeds each), which the clause-labeling session has prepared.
+     1. Score dev/test and the strict multi-writer held-out set (871 Claude rows + 300 Luna); report recall per writer at a held-out 1% FPR with the spread across seeds.
+     1. Choose the mix; then one confirmation run at full length or on 9B (~4–5 h).
+   - **Risks:**
+     - Another restart: write outputs to /data (persist daemon).
+     - Splices and some evaluation edits both come from Luna: decide on the Sonnet, Opus and Haiku columns.
+     - Single-seed noise is ±0.03–0.06; the held-out test sets are small (±0.07 on 150 sentences).
+   - **Done when:** A chosen mix with ≥3 seeds per finalist, per-writer recall at 1% FPR, and the regressions (standalone rewrites, public AUROC) listed.
+
+   </details>
+
 2. **Check whether ICLR 2027's 68% is real.** Read the top-flagged sentences in ~20 papers and score ICLR 2026 submission versions before more site work.
+
+   <details><summary>What it takes</summary>
+
+   - **Your time:** ~45 min: read flagged sentences in ~20 papers (only you can judge these)
+   - **Compute and wall time:** ~3–4 h wall, mostly automated
+   - **Depends on:** OpenReview quota (140 requests/hour, run on the Space); ~30 GPU-minutes
+   - **Steps:**
+     1. Break flags down by section from the existing sentence scores (~30 min CPU). References are still in the classification input, so check whether references or template text drive the flags.
+     1. Build a reading page: top-flagged sentences in context for 20 papers with high, middle and low flag shares (~1 h).
+     1. Version control: download ~1,000 ICLR 2026 rejected submissions (their PDFs are submission versions, the same format as ICLR 2027): ~20 batch requests, extraction and cleanup ~15 min, scoring ~15 min.
+     1. Second model: score a 1,000-paper ICLR 2027 subset with the best splice-trained model.
+     1. Write the verdict with the evidence on the Calibration page.
+   - **Risks:**
+     - There is no human ground truth for 2027 papers: this can rule out format and section causes but cannot prove AI use.
+   - **Done when:** A written verdict with the section breakdown, the ICLR 2026 submission control and second-model agreement.
+
+   </details>
+
 3. **Add human calibration data.** Extract part of the ~20k 2019–2022 PDFs already in R2; the document-level threshold rests on 2 papers.
+
+   <details><summary>What it takes</summary>
+
+   - **Your time:** ~10 min: approve exporting PDFs from R2
+   - **Compute and wall time:** ~half a day wall: ~1 h engineering, ~1 h compute, ~1 h analysis
+   - **Depends on:** Read access to the Atlas R2 bucket from the Space (a temporary token-gated export endpoint, like /bundle in reverse)
+   - **Steps:**
+     1. Select ~2,000 papers stratified by venue and year.
+     1. Export them to the Space as tar bundles (~10 GB).
+     1. Baseline extraction and positioned-clean-v2 (~10 min on 88 CPU workers); remove papers that overlap training windows.
+     1. Score with each model to calibrate (current 4B and the new mix winner): ~15 min per model on 8 GPUs.
+     1. Recompute thresholds with paper-level bootstrap intervals (flags cluster within papers; the current intervals treat sentences as independent and are too narrow).
+     1. Update the Calibration page and the catalogue metadata.
+   - **Risks:**
+     - 2019–2022 topics differ from 2027; thresholds may still understate FPR on recent human writing.
+   - **Done when:** Thresholds from ≥1,500 papers with paper-clustered intervals; the document-level threshold no longer rests on 2 papers.
+
+   </details>
+
 4. **Decide whether AI-side text goes through the omission step.** This blocks using the cleaned human paper text in training.
-5. **Rotate the exposed HF and Jupyter tokens.** About 5 minutes.
-6. **Then rescore ICLR 2027 with the chosen model and update the Atlas.** Uses the existing publish pipeline (bundled uploads).
+
+   <details><summary>What it takes</summary>
+
+   - **Your time:** ~15 min: choose the policy
+   - **Compute and wall time:** ~3–4 h: 1–2 h implementation, ~1 h shortcut test on 2 GPUs, ~2 h CPU to regenerate the clean corpus
+   - **Depends on:** Omissions v2 (math policy, references removal) is ready but not applied to the corpus
+   - **Steps:**
+     1. The problem: human paper text from PDFs contains ⟦… omitted⟧ markers; fully AI training documents (30% of windows) never do, so the model can learn 'marker means human'.
+     1. Option A: remove markers from the input at training and inference. Simplest, no leak.
+     1. Option B: keep markers, give their tokens an ignore label, and insert synthetic markers into fully AI documents at the human rate.
+     1. Option C: render AI documents to PDF and extract them like human papers. Most faithful, most work.
+     1. Recommendation: A now; consider C later for full AI manuscripts.
+     1. Implement it in data.py and the inference preprocessing so the Atlas uses the same text; validate with the artifact-shortcut harness (marker present vs absent); regenerate the clean text with references removed.
+   - **Risks:**
+     - Removing markers joins text across omitted regions; check that sentence boundaries stay correct.
+   - **Done when:** Policy recorded in AGENTS.md; the same preprocessing in training and inference; markers have no effect in the shortcut test.
+
+   </details>
+
+5. **Rotate the exposed HF and Jupyter tokens.** About 20 minutes, at a time when no running job depends on the old tokens.
+
+   <details><summary>What it takes</summary>
+
+   - **Your time:** ~20 min
+   - **Compute and wall time:** None
+   - **Depends on:** Changing the Space's Jupyter token restarts the Space and clears /tmp, so do it when no runs are active
+   - **Steps:**
+     1. HF: huggingface.co → Settings → Access Tokens: create a token with the same scopes, run `hf auth login` on the Mac, then revoke the old token.
+     1. Relaunch detached Space jobs that were started with the old HF token in their environment (persist daemon, uploads).
+     1. Jupyter: change the Space secret, wait for the restart, update ~/.config/pangram/jupyter_token (mode 600).
+   - **Risks:**
+     - Revoking the HF token stops any job still using it.
+   - **Done when:** Old tokens revoked, new ones in place, dependent jobs relaunched.
+
+   </details>
+
+6. **Rescore ICLR 2027 with the chosen model and update the Atlas.** Uses the existing publish pipeline (bundled uploads).
+
+   <details><summary>What it takes</summary>
+
+   - **Your time:** ~15 min: approve the publish
+   - **Compute and wall time:** ~1 day wall, mostly compute: scoring ~3.5 h on 8 A100s (4B), detail files ~1 h, upload ~5 min
+   - **Depends on:** Item 1 (model), item 3 (calibration), item 4 (preprocessing); item 2 decides how results are described
+   - **Steps:**
+     1. Package the chosen checkpoint (merged LoRA, compiled) and benchmark it once.
+     1. Score 42,419 papers with the 8-GPU claim queue, writing to /data.
+     1. Compute sentence scores, flag rates and thresholds from the new human set.
+     1. Build detail files from local copies (the bucket mount is slow) and upload with /bundle.
+     1. Add the model to the catalogue next to Qwen3.5-4B · Experimental; extend the Calibration page to several models (~1–2 h).
+     1. Rerun the year diagnostic with the new model.
+   - **Risks:**
+     - A restart during the ~3.5 h scoring run: the claim queue resumes from /data.
+   - **Done when:** The new model is live on the Atlas with its own calibration section, and the year diagnostic has been rerun.
+
+   </details>
+
+### Where your active time went
+
+| Topic | Your active time | Chat rounds | Payoff |
+|---|---|---|---|
+| Space restarts, storage and monitoring | 3.4 h | 50 | overhead |
+| Data generation (splices, LLM edits) | 3.2 h | 47 | high |
+| MinerU | 3.1 h | 32 | low |
+| ICLR scoring, calibration and year diagnostic | 2.5 h | 22 | mixed |
+| MoE runs | 2.2 h | 32 | low |
+| Omissions (extraction tuning) | 1.9 h | 19 | mixed |
+| Training sweeps (recipe, LR) | 1.9 h | 27 | low |
+| Evals, metrics and results pages | 1.6 h | 18 | high |
+| Atlas publishing and reader UX | 1.5 h | 18 | mixed |
+| Clause labeling (soft labels) | 1.5 h | 13 | promising |
+| Project ledger, repo and sharing | 1.2 h | 20 | overhead |
+| Atlas site redesign (Oct 3) | 0.9 h | 7 | mixed |
+| N-gram dashboard | 0.8 h | 9 | low |
+| Repo setup and docs | 0.7 h | 9 | overhead |
+| Text extraction and cleanup | 0.7 h | 5 | high |
+| Claude Code setup | 0.3 h | 6 | overhead |
 
 ### Still in progress and probably not worth continuing
-- **New hyperparameter sweep on all 8 A100s.** If it tunes the recipe on the old data mix, it repeats the overnight sweep's result. Check what it tests before it holds all 8 GPUs.
-- **FSDP A100 MoE path and more full-length MoE runs.** Longer MoE training did not help. A 20%-length MoE on splice data is the one MoE run still worth doing.
-- **Further omission tuning (table leaks, pseudocode, captions).** First decide whether AI-side text goes through the same omission step; until then more tuning may not affect training.
-- **Clause-labeling v3 and 4B embedding runs.** Unlikely to change training decisions.
-- **More site work on the current 4B scores.** Rescore ICLR 2027 with the best splice-trained model first.
+- **More hyperparameter or recipe sweeps.** Two independent sweeps (ours and River's) found nothing that beats the reference recipe beyond noise. Data changes moved small-edit recall from 0.25 to ~0.6.
+- **Full-length MoE runs and the FSDP A100 path.** Full-length MoE overfit (best epoch 0) and scored below the 20%-length run. The one MoE run worth doing is a short run on the chosen data mix, after item 1.
+- **Further omission tuning (table leaks, pseudocode, captions).** Decide item 4 first; until then more tuning may not affect training.
+- **More site work on the current 4B scores.** Rescore ICLR 2027 with the chosen model first (item 6).
+- **N-gram dashboard follow-ups.** No decision depends on it.
 
-### Most time spent, least payoff
+### Most of your time, least payoff
 
-| Work | Time | Outcome | Assessment |
-|---|---|---|---|
-| Recipe and hyperparameter sweeps for small edits | ~12 h on 4 A100s + 3 H200s, plus most of a session | Small-edit recall stayed at 0.21–0.25 for every recipe; splice data reached ~0.6 in one run. | Useful negative result, but larger than needed: the data audit (2 of 24,000 windows with short AI spans) pointed to data before the sweep started. |
-| Full-length MoE runs and scaling work | ~6 H200 hours + ~3 h of session | Full-length runs scored below the 20%-length run. | Low payoff; the divergence guard built during this work is still in use. |
-| MinerU PDF extraction | ~1 h setup, ~10 GPU hours lost to out-of-memory errors, ~3 h of comparisons | Judged too slow and dropped; a 300-paper subset kept. | Mostly not useful. |
-| Omission-step tuning (v1–v8, LLM-judge loop) | ~8 h of session, ~5M subagent tokens | Noise left fell from 175 to 22 per 1k words; references removed. | Partly useful. No extraction shortcut was found and extracted paper text is ~25% of training tokens, so later iterations changed little. |
-| Clause-labeling (soft n-gram label) test | ~4.5 h | Gold set stopped after 15 sentences; sentences and clauses scored about the same (0.971 vs 0.953). | Low payoff so far. |
-| N-gram dashboard | ~1 h | Exploratory statistics; how they would be used was never decided. | Low payoff. |
-| Publishing the fast10 4B scores to the Atlas | ~8 h of session | ICLR 2027 classified on the site; reader fixes and the Calibration page. | The reader and calibration work carries over. The scores come from a model the splice models outperform (small-edit recall 0.25 vs ~0.6), and the 68% figure is unvalidated. |
+| Work | Your active time and chat rounds | Compute | Outcome | Assessment |
+|---|---|---|---|---|
+| Space restarts, storage and monitoring | 3.4 h active, 50 chat rounds | 4 restarts in 3 days; checkpoints and wave 2 lost | Persistence to /data, a restart watcher, the storage index and monitoring rules now exist. | Reactive work and the largest share of your time. The new tools should reduce it; the restarts themselves are unexplained. |
+| MinerU PDF extraction | 3.1 h active, 32 chat rounds | ~10 GPU hours lost to out-of-memory errors, ~1 h setup | Judged too slow and dropped; a 300-paper subset kept. | Your largest block of time with the least to show for it. |
+| ICLR scoring and Atlas publishing of the fast10 4B | 4.0 h active, 40 chat rounds (2.5 + 1.5) | ~8 GPU hours, 15 GB of uploads | ICLR 2027 classified on the site; reader fixes; Calibration page. | The reader and calibration work carries over. The scores come from a model the splice models outperform, and the 68% figure is unvalidated. |
+| MoE runs and scaling | 2.2 h active, 32 chat rounds | ~10 H200 hours (two full runs, benchmarks) | Full-length runs overfit (best epoch 0) and scored below the 20%-length run. | Low payoff; the divergence guard built during this work is still in use. |
+| Recipe and hyperparameter sweeps | 1.9 h active, 27 chat rounds | ~12 h on 4 A100s + 3 H200s, plus River's sweep | Small-edit recall stayed at 0.21–0.26 for every setting, in both sweeps. | Useful negative result, larger than needed: the data audit had already pointed to data. |
+| Omission-step tuning | 1.9 h active, 19 chat rounds | ~8 h of Claude session, ~5M subagent tokens | Noise left fell from 175 to 22 per 1k words; references removal. | Partly useful; later iterations changed little, and the AI-side policy is still undecided. |
+| N-gram dashboard | 0.8 h active, 9 chat rounds | minutes of CPU | Exploratory statistics; their use was never decided. | Low payoff. |
 
 ## Waiting on you (project owner)
 
@@ -78,6 +213,9 @@ Items that need a decision, approval or action from you as the project owner. Cl
 - [decision] **Is the AI-side text run through the same omission step?** If only human text gets markers, the model can learn a formatting shortcut. _(raised Oct 5 20:22)_
 - [action] **Credential rotation: the Jupyter token (Oct 5, 00:44 PDT) and HF token (Oct 5, 17:50 PDT) were printed in session output.** Rotation never confirmed. _(raised Oct 5 17:50)_
 - [approval] **ICLR 2027 drift checks: read top-flagged sentences; compare ICLR 2026 submission versions.** Needed before treating 68% as AI use. _(raised Oct 5 18:55)_
+- [approval] **Soft-label A/B (clause labels).** Approve 2 A100s for 4B original vs soft labels, 3 seeds each.
+- [action] **OpenAI-writer data via Codex.** Start a Codex conversation with research/openai-writer-handoff-20261006 (D 1,000 items, E 420).
+- [approval] **Commit and push the overnight code.** Branch overnight-20261006 (f479f32) is not pushed; later changes are uncommitted.
 - [action] **Manual 'good enough' review of omissions.** Save verdicts on ~10 random pages in the review dashboard.
 - [approval] **FSDP MoE training on A100s.** Approve building --fsdp (8-bit optimizer wrapper, sharded save and validation).
 - [approval] **Storage cleanup: remaining items.** Bucket cleaned on Oct 6 (1,074 → 652 GB, index at workspace/README.md). Still open: pruning checkpoints of current runs (not approved), 9.3 GB on the H200, 68 GB MoE copy in Space /tmp.
@@ -86,30 +224,30 @@ Items that need a decision, approval or action from you as the project owner. Cl
 
 | Thread | Area | State | Last touched | Age | Priority | Next step |
 |---|---|---|---|---|---|---|
-| Credential rotation | Infra | waiting on you | Oct 5 17:50 | 6 h | high | Rotate the HF token and the Jupyter token. |
-| Is ICLR 2027's 68% real AI use? | Evaluation | open | Oct 5 18:55 | 5 h | high | Read top-flagged sentences in 20 papers; score ICLR 2026 submission versions (~20 batch requests). |
-| Same omission treatment for AI-side text | Extraction | open | Oct 5 20:22 | 4 h | high | Decide whether AI text goes through the omission step before using omitted human text in training. |
-| Wave 2 results (LLE, MIX, Arep) | Data | running | Oct 5 23:10 | 54 min | high | Compare against splice wave 1 at 1% FPR; decide the next data mix. |
-| Republish the comparison artifact | Evaluation | open | Oct 5 23:15 | 48 min | high | Add corrected cross-model numbers, wave 2 and per-writer held-out results. |
-| Multi-writer held-out scoring | Evaluation | running | Oct 5 23:26 | 42 min | high | Score SPG, SPH, wave 2 and both MoE runs; report per writer. |
-| Atlas search latency | Site | stale | Oct 3 17:17 | 55 h | medium | Stream the 80 MB index or move search out of the Worker; live search is 2.5–5 s. |
-| Add human calibration data | Evaluation | open | Oct 5 19:40 | 4 h | medium | Extract ~2,000 of the 2019–2022 Atlas PDFs; recalibrate document and 0.1% thresholds. |
-| Revisit overnight A vs B conclusions | Models | open | Oct 5 19:55 | 4 h | medium | Re-read arm comparisons excluding diverged 5e-4 seeds. |
-| Calibrated colour bands in the reader | Site | open | Oct 5 20:35 | 4 h | medium | Per-model bands and an FPR-labelled threshold slider. |
-| Apply references removal and omissions to the corpus | Extraction | open | Oct 5 21:29 | 3 h | medium | Regenerate clean datasets; run the full-corpus omission pass (~2 h CPU). |
-| Omission regressions and leaks | Extraction | open | Oct 5 21:29 | 3 h | medium | Fix the small-caps heading regression, pseudocode-as-math losses, table cell leaks, caption cut. |
-| Manual 'good enough' review of omissions | Extraction | waiting on you | Oct 5 22:06 | 2 h | medium | Save verdicts on ~10 random pages in the review dashboard. |
-| False positives next to AI spans | Evaluation | open | Oct 5 23:05 | 1 h | medium | Measure how often human sentences are flagged at each distance from an AI span. |
-| Commit and consolidate code | Infra | open | Oct 5 23:20 | 48 min | medium | Land today's work on woog97/paingram main; one pipeline tool, shared helpers, tests. |
-| Calibration-window overlap with the eval suite | Evaluation | stale | Oct 3 18:31 | 54 h | low | Probably handled by calibration-exclude-papers.json (Oct 5); verify and close. |
-| Ettin sentence curves and MoE vs 9B bootstrap | Evaluation | stale | Oct 4 21:17 | 27 h | low | Low value now; close unless needed for a write-up. |
-| 9B scoring of ICLR 2027 | Classification | deferred | Oct 5 03:20 | 21 h | low | You skipped it; revisit with the splice-trained model instead of fast10. |
-| Small-caps stray space and NeurIPS checklist spot-check | Extraction | stale | Oct 5 12:24 | 12 h | low | Fix 'LOW -RANK' joins; spot-check ~18.7k removed checklist words. |
-| Exact 10%-length runs | Models | stale | Oct 5 13:01 | 11 h | low | Run if length vs recipe still matters; otherwise close. |
-| Code-block and algorithm policy | Extraction | open | Oct 5 19:31 | 5 h | low | Decide whether code listings get a ⟦code omitted⟧ marker. |
-| FSDP MoE training on A100s | Infra | waiting on you | Oct 5 22:32 | 2 h | low | Approve building --fsdp (8-bit optimizer wrapper, sharded save and validation). |
-| Clause-labeling v3 | Data | running | Oct 5 23:24 | 42 min | low | Score v3 with 0.6B embeddings; rerun spaCy units; 4B embeddings when a GPU frees. |
-| Storage cleanup: remaining items | Infra | waiting on you | Oct 6 00:00 | 6 min | low | Bucket cleaned on Oct 6 (1,074 → 652 GB, index at workspace/README.md). Still open: pruning checkpoints of current runs (not approved), 9.3 GB on the H200, 68 GB MoE copy in Space /tmp. |
+| Credential rotation | Infra | waiting on you | Oct 5 17:50 | 22 h | high | Rotate the HF token and the Jupyter token. |
+| Is ICLR 2027's 68% real AI use? | Evaluation | open | Oct 5 18:55 | 21 h | high | Read top-flagged sentences in 20 papers; score ICLR 2026 submission versions (~20 batch requests). |
+| Same omission treatment for AI-side text | Extraction | open | Oct 5 20:22 | 20 h | high | Decide whether AI text goes through the omission step before using omitted human text in training. |
+| Soft-label A/B (clause labels) | Data | waiting on you | Oct 6 05:37 | 10 h | high | Approve 2 A100s for 4B original vs soft labels, 3 seeds each. |
+| Train and test the new data mix (wave 2 was lost) | Data | open | Oct 6 12:29 | 4 h | high | Build the table-2 mix, train 4B × 3 seeds vs SPG, score per writer. |
+| Atlas search latency | Site | stale | Oct 3 17:17 | 71 h | medium | Stream the 80 MB index or move search out of the Worker; live search is 2.5–5 s. |
+| Add human calibration data | Evaluation | open | Oct 5 19:40 | 20 h | medium | Extract ~2,000 of the 2019–2022 Atlas PDFs; recalibrate document and 0.1% thresholds. |
+| Revisit overnight A vs B conclusions | Models | open | Oct 5 19:55 | 20 h | medium | Re-read arm comparisons excluding diverged 5e-4 seeds. |
+| Calibrated colour bands in the reader | Site | open | Oct 5 20:35 | 19 h | medium | Per-model bands and an FPR-labelled threshold slider. |
+| Apply references removal and omissions to the corpus | Extraction | open | Oct 5 21:29 | 18 h | medium | Regenerate clean datasets; run the full-corpus omission pass (~2 h CPU). |
+| Omission regressions and leaks | Extraction | open | Oct 5 21:29 | 18 h | medium | Fix the small-caps heading regression, pseudocode-as-math losses, table cell leaks, caption cut. |
+| Manual 'good enough' review of omissions | Extraction | waiting on you | Oct 5 22:06 | 18 h | medium | Save verdicts on ~10 random pages in the review dashboard. |
+| False positives next to AI spans | Evaluation | open | Oct 5 23:05 | 17 h | medium | Measure how often human sentences are flagged at each distance from an AI span. |
+| Commit and consolidate code | Infra | open | Oct 5 23:20 | 17 h | medium | Land today's work on woog97/paingram main; one pipeline tool, shared helpers, tests. |
+| OpenAI-writer data via Codex | Data | waiting on you | Oct 6 13:07 | 3 h | medium | Start a Codex conversation with research/openai-writer-handoff-20261006 (D 1,000 items, E 420). |
+| Commit and push the overnight code | Infra | waiting on you | Oct 6 15:31 | 24 min | medium | Branch overnight-20261006 (f479f32) is not pushed; later changes are uncommitted. |
+| Calibration-window overlap with the eval suite | Evaluation | stale | Oct 3 18:31 | 69 h | low | Probably handled by calibration-exclude-papers.json (Oct 5); verify and close. |
+| Ettin sentence curves and MoE vs 9B bootstrap | Evaluation | stale | Oct 4 21:17 | 43 h | low | Low value now; close unless needed for a write-up. |
+| 9B scoring of ICLR 2027 | Classification | deferred | Oct 5 03:20 | 37 h | low | You skipped it; revisit with the splice-trained model instead of fast10. |
+| Small-caps stray space and NeurIPS checklist spot-check | Extraction | stale | Oct 5 12:24 | 28 h | low | Fix 'LOW -RANK' joins; spot-check ~18.7k removed checklist words. |
+| Exact 10%-length runs | Models | stale | Oct 5 13:01 | 27 h | low | Run if length vs recipe still matters; otherwise close. |
+| Code-block and algorithm policy | Extraction | open | Oct 5 19:31 | 20 h | low | Decide whether code listings get a ⟦code omitted⟧ marker. |
+| FSDP MoE training on A100s | Infra | waiting on you | Oct 5 22:32 | 17 h | low | Approve building --fsdp (8-bit optimizer wrapper, sharded save and validation). |
+| Storage cleanup: remaining items | Infra | waiting on you | Oct 6 00:00 | 16 h | low | Bucket cleaned on Oct 6 (1,074 → 652 GB, index at workspace/README.md). Still open: pruning checkpoints of current runs (not approved), 9.3 GB on the H200, 68 GB MoE copy in Space /tmp. |
 
 ## Experiments
 
@@ -140,11 +278,13 @@ Items that need a decision, approval or action from you as the project owner. Cl
 | Oct 5 22:31 | Models | MoE full length at 1e-4 | 2 H200s, guard on | Stable, but small-edit 0.16 dev / 0.21–0.23 test, worse than the 20% run. | done |
 | Oct 5 22:31 | Infra | A100 MoE benchmark (FSDP2) | 2 A100s | 7.4 s/step at micro-batch 16; full run ≈5.1 h on 2 A100s vs 2.6 h on 2 H200s. | done |
 | Oct 5 22:52 | Data | Splice wave 1 (SPH, SPG) | 4B, 20% length, 3 seeds each | Small-edit recall 0.249 → 0.582 (SPH) / 0.629 (SPG); costs: standalone rewrites 0.51 → 0.36 / 0.26, public AUROC (SPG) 0.911. | done |
-| Oct 5 23:05 | Evaluation | Cross-model eval (heterogeneous-ai-spans) | both MoE runs | Sentence AUROC 0.87–0.97 across six writers; recall@1% understated because 8% of human sentences inside mixed documents are flagged, mostly next to AI spans. | rerunning |
-| Oct 5 23:10 | Data | Wave 2 (LLE, MIX, Arep) | 4B, 20% length, 1 seed each | Results pending. | running |
-| Oct 5 23:20 | Data | Clause-labeling test (soft n-gram labels) | Luna vs spaCy splitters, synthetic edits | Synthetic v2 macro-F1: Luna clauses 0.953, sentences 0.971 (v2 biased to sentences); v3 with clause edits running. | running |
-| Oct 5 23:26 | Evaluation | Multi-writer held-out edit set | Claude subagents + Luna | 1,185 Claude edits (Opus 349, Sonnet 335, Haiku 201) + 300 Luna; scoring of all models queued. | running |
+| Oct 5 23:38 | Evaluation | Cross-model eval (heterogeneous-ai-spans) | both MoE runs | Sentence AUROC 0.87–0.97 across six writers; corrected numbers on the comparison page. | done |
+| Oct 5 23:54 | Evaluation | Multi-writer held-out eval | 1,185 Claude + 300 Luna edits on never-train papers | Recall at the deployment threshold: 4B with splices Haiku 63%, Luna 53%, Sonnet/Opus 37–41%; MoE without splices 22–33%. | done |
 | Oct 6 00:00 | Infra | Training-storage cleanup and index | owner-approved Tier 1 + Tier 3 | Bucket 1,074 → 652 GB: removed orphaned partial uploads (72 GB), duplicated ICLR round-2/3 PDFs (77 GB) and Oct 1–3 experiment weights (273 GB); every folder indexed in workspace/README.md. | done |
+| Oct 6 00:19 | Data | Wave 2 (LLE, MIX, Arep) | 4B, 20% length, 1 seed each | Lost in the 07:19 UTC Space restart before it was scored. | failed |
+| Oct 6 05:37 | Data | Clause-labeling test (soft labels) | spaCy vs Luna splitters; synthetic v3 edits; relabel of 25,283 pairs | Clauses beat sentences by +0.10 macro-F1 (CI +0.05 to +0.16); 25% of AI-labeled text in paragraph rewrites is near-verbatim human. 4B A/B pending approval. | done |
+| Oct 6 13:17 | Data | Overnight data generation | Claude subagents, ~120M tokens | 4,905 Claude sentence edits (strict check), 2,078 sections, 254 full papers, 1,228 paragraph edits; OpenAI-writer batch prepared for Codex. | done |
+| Oct 6 15:31 | Models | River's one-factor sweep | 4B, 1 seed per setting | No setting beat the reference (small-edit 0.26) beyond noise; River's MoE runs 0.22–0.30. | done |
 
 ## Decisions
 
@@ -207,7 +347,7 @@ Items that need a decision, approval or action from you as the project owner. Cl
 
 | Category | Problem | Times | Cost | Fix |
 |---|---|---|---|---|
-| Storage | Space restarts wiped /tmp | 3 | All A100 sweep checkpoints and Space tools lost; ~75 min of baseline reruns; classification runtime rebuilt | Persistent helpers in ~/.config, vendored packages on /data, checkpoints to the bucket as each run finishes |
+| Storage | Space restarts wiped /tmp | 4 | Sweep checkpoints, Space tools and wave 2 lost; ~75 min of baseline reruns; classification runtime rebuilt | Persist daemon mirrors /tmp to /data every 5 min; restart watcher; vendored packages on /data |
 | Storage | Shared H200 quota exhausted | 2 | curve-9b-B killed at 36%; moe-A-full crashed mid-run (~45 min) | RAM disk for re-downloadable files; measure real free space before large writes |
 | Training | Loss divergence detected late | 5 | ~3 h of H200 time on a damaged MoE run; detection ~1.5 h late; pre-spike weights lost | Divergence guard, rolling snapshots, loss-aware health checks, auto-rollback |
 | Transfer | Per-file transfers and polling hit rate limits | 3 | ~30 min Space 429 lockout; ~25 min slow R2 uploads; 18 GB downloaded to the Mac and 19 GB uploaded again instead of transferring directly | 500 requests / 5 min budget; bundle everything; run downloads on the Space |
@@ -262,6 +402,19 @@ Recurring patterns: ephemeral `/tmp` on the Space (3 wipes), shared storage quot
 
 - OCR only as a fallback for garbled pages; omit figure text and keep captions; mark every omission; remove references from classification input.
 - LLM labelling on Luna (Flex tier) with spend caps and a pilot first; eval edits via Claude subagents.
+- No direct OpenAI API generation; OpenAI-model data goes through a written handoff to a new Codex conversation.
+
+**Collaboration**
+
+- River (collaborator) runs jobs on the same hardware: anything not started by you or your sessions is River's; don't stop, change or delete it without asking.
+
+**Operations**
+
+- Space outputs go to /data (persist daemon); don't change Space hardware or settings during live runs without asking.
+
+**Communication**
+
+- Answer the actual question plainly; don't be pedantic. Write literally.
 
 ## Sessions
 

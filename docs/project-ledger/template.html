@@ -83,6 +83,34 @@ td.nowrap{white-space:nowrap}
 .issue dt{color:var(--muted)} .issue dd{margin:0;color:var(--ink-2)}
 .rules h3{margin:0;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;padding:12px 16px 4px}
 a{color:var(--accent)}
+.pri{counter-reset:p}
+.pri details{border-top:1px solid var(--line-2);counter-increment:p}
+.pri details:first-child{border-top:0}
+.pri summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:28px 1fr auto;gap:2px 10px;padding:12px 16px}
+.pri summary::-webkit-details-marker{display:none}
+.pri summary::before{content:counter(p);font:500 12px/22px var(--mono);color:var(--muted);text-align:right}
+.pri summary .tl{grid-column:2;color:var(--ink-2);margin:0}
+.pri summary .you{grid-column:2;font:12px var(--mono);color:var(--accent)}
+.pri summary .tog{grid-column:3;grid-row:1;font:12px var(--mono);color:var(--muted);white-space:nowrap}
+.pri details[open] .tog::after{content:"hide"} .pri details:not([open]) .tog::after{content:"details"}
+.pri summary:hover .tog{color:var(--accent)}
+.pri summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
+.pri .body{padding:0 16px 14px 54px;display:grid;gap:10px}
+.pri dl{margin:0;display:grid;grid-template-columns:max-content 1fr;gap:4px 14px}
+.pri dt{font:500 11px/20px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.pri dd{margin:0;color:var(--ink-2);min-width:0}
+.pri ol,.pri ul{margin:0;padding-left:20px;color:var(--ink-2)} .pri li{margin:2px 0}
+.eng{padding:8px 16px 12px;display:grid;gap:6px}
+.eng .row{display:grid;grid-template-columns:minmax(0,15rem) 1fr 8.5rem;gap:10px;align-items:center}
+.eng .t{font-size:13px;min-width:0}
+.eng .bar{height:10px;background:var(--line-2);border-radius:3px;overflow:hidden}
+.eng .bar i{display:block;height:100%;border-radius:0 3px 3px 0}
+.eng .pay-high i,.eng .pay-promising i{background:var(--ok)} .eng .pay-mixed i{background:var(--mid)}
+.eng .pay-low i{background:var(--hi)} .eng .pay-overhead i{background:var(--lo)}
+.eng .v{font:12px var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.eng .key{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);padding-bottom:4px}
+.eng .key span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+@media (max-width:640px){.eng .row{grid-template-columns:1fr 7.5rem}.eng .bar{grid-column:1/-1;grid-row:2}.pri .body{padding-left:16px}.pri dl{grid-template-columns:1fr}.pri dt{margin-top:4px}}
 .empty{padding:16px;color:var(--muted)}
 @media (max-width:560px){header.top h1{font-size:21px}}
 /* Narrow screens: each table row becomes a stacked card with labelled fields. */
@@ -229,16 +257,27 @@ function sessions(){
 }
 
 function priorities(){
-  const P = D.priority;
+  const P = D.priority, max = Math.max(...P.engagement.map(e => e.h));
+  const total = P.engagement.reduce((a, e) => a + e.h, 0);
   return `<p class="lead">${esc(P.note)}</p>
-  <h2>Suggested order for today</h2>
-  <div class="card"><ol class="findings">${P.today.map(x => `<li><div><b>${esc(x.k)}</b><p>${esc(x.v)}</p></div></li>`).join("")}</ol></div>
+  <h2>Suggested order for today <small>open an item for what it takes</small></h2>
+  <div class="card pri">${P.today.map(x => `<details><summary><b>${esc(x.k)}</b><span class="tog"></span><p class="tl">${esc(x.tldr)}</p><span class="you">Your time: ${esc(x.you)}</span></summary>
+    <div class="body"><dl>
+      <dt>Compute / wall</dt><dd>${esc(x.compute)}</dd>
+      <dt>Depends on</dt><dd>${esc(x.dep)}</dd>
+      <dt>Steps</dt><dd><ol>${x.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol></dd>
+      <dt>Risks</dt><dd><ul>${x.risks.map(s => `<li>${esc(s)}</li>`).join("")}</ul></dd>
+      <dt>Done when</dt><dd>${esc(x.done)}</dd>
+    </dl></div></details>`).join("")}</div>
+  <h2>Where your active time went <small>rows sum to ${total.toFixed(1)} h · ${P.engagement.reduce((a, e) => a + e.n, 0)} rounds (rounded per topic)</small></h2>
+  <div class="card eng"><div class="key"><span style="--c:var(--ok)">high or promising payoff</span><span style="--c:var(--mid)">mixed</span><span style="--c:var(--hi)">low</span><span style="--c:var(--lo)">overhead</span></div>
+  ${P.engagement.map(e => `<div class="row pay-${esc(e.pay)}" title="${esc(e.topic)}: ${e.h.toFixed(1)} h over ${e.n} chat rounds, payoff ${esc(e.pay)}"><span class="t">${esc(e.topic)}</span><span class="bar"><i style="width:${(e.h / max * 100).toFixed(1)}%"></i></span><span class="v">${e.h.toFixed(1)} h · ${e.n} rounds</span></div>`).join("")}</div>
+  <h2>Most of your time, least payoff <small>${P.low.length}</small></h2>
+  <div class="tablewrap"><table><thead><tr><th>Work</th><th>Your time · chat rounds</th><th>Compute</th><th>Outcome</th><th>Assessment</th></tr></thead><tbody>
+  ${P.low.map(x => `<tr><td><b>${esc(x.work)}</b></td><td class="nowrap"><b>${esc(x.you)}</b></td><td class="sub">${esc(x.compute)}</td><td>${esc(x.outcome)}</td><td class="sub">${esc(x.assessment)}</td></tr>`).join("")}
+  </tbody></table></div>
   <h2>Still in progress and probably not worth continuing <small>${P.stop.length}</small></h2>
-  <div class="card"><ul class="plain">${P.stop.map(x => `<li><b>${esc(x.k)}</b><p class="sub">${esc(x.v)}</p></li>`).join("")}</ul></div>
-  <h2>Most time spent, least payoff <small>${P.low.length}</small></h2>
-  <div class="tablewrap"><table><thead><tr><th>Work</th><th>Time</th><th>Outcome</th><th>Assessment</th></tr></thead><tbody>
-  ${P.low.map(x => `<tr><td><b>${esc(x.work)}</b></td><td class="sub">${esc(x.time)}</td><td>${esc(x.outcome)}</td><td class="sub">${esc(x.assessment)}</td></tr>`).join("")}
-  </tbody></table></div>`;
+  <div class="card"><ul class="plain">${P.stop.map(x => `<li><b>${esc(x.k)}</b><p class="sub">${esc(x.v)}</p></li>`).join("")}</ul></div>`;
 }
 
 const VIEWS = {overview, priorities, threads, experiments, decisions, issues, rules, sessions};

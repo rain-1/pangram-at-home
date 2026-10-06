@@ -2,7 +2,7 @@
 
 Times are stored in UTC ("YYYY-MM-DD HH:MM") and rendered in PDT (UTC-7) per the project rule.
 """
-NOW = "2026-10-06 07:05"
+NOW = "2026-10-06 22:56"
 
 SESSIONS = [
     {"id": "f0fb", "start": "2026-10-03 22:42", "end": "2026-10-04 00:17", "focus": "Paper Atlas redesign, mobile layout, search performance, Remote Control setup"},
@@ -27,6 +27,8 @@ GOALS = [
 ]
 
 FINDINGS = [
+    ("Splice-trained models catch other writers' edits, less well", "At the deployment threshold the splice-trained 4B catches 63% of Haiku edits, 53% of Luna and 37–41% of Sonnet and Opus; the MoE without splices catches 22–33%.", "2026-10-06 06:54"),
+    ("Current labels mark some human text as AI", "Clause-level soft labels found that 25% of the AI-labeled text in paragraph rewrites is near-verbatim human; clause labels beat sentence labels by +0.10 macro-F1 on synthetic edits.", "2026-10-06 12:37"),
     ("Training data was the main limit on small-edit detection", "Splicing single AI sentences into human passages lifted small-edit recall at 1% FPR from 0.25 to 0.58–0.63 (Qwen3.5-4B, 3 seeds). Recipe changes had stayed at 0.21–0.25.", "2026-10-06 05:52"),
     ("The learning-rate schedule caused the collapses, not the recipe", "The 5e-4 constant schedule without warmup collapsed around step 1,000 (4B and 9B); the same peak with warmup and cosine was fine. Recipe A (2e-4 cosine, 6% warmup) became the default.", "2026-10-05 13:22"),
     ("Longer training helps paper rewrites, not small edits", "Full-length 4B reached 0.89 on paper_v3 vs 0.77 at 20% length; small-edit recall stayed at 0.21–0.24.", "2026-10-05 19:47"),
@@ -54,10 +56,12 @@ EXPERIMENTS = [
     ("Evaluation", "2026-10-06 04:45", "Artifact-shortcut test", "4B and 9B; human text cleaned, AI text given extraction artifacts", "No FPR change from cleaning human text; adding artifacts to AI text lowers small-edit recall by up to 0.05.", "done"),
     ("Data", "2026-10-06 05:52", "Splice wave 1 (SPH, SPG)", "4B, 20% length, 3 seeds each", "Small-edit recall 0.249 → 0.582 (SPH) / 0.629 (SPG); costs: standalone rewrites 0.51 → 0.36 / 0.26, public AUROC (SPG) 0.911.", "done"),
     ("Data", "2026-10-06 05:21", "Luna LLM sentence edits v1", "5,370 calls, Flex tier", "5,000 accepted for $0.46; median span 131 characters.", "done"),
-    ("Evaluation", "2026-10-06 06:05", "Cross-model eval (heterogeneous-ai-spans)", "both MoE runs", "Sentence AUROC 0.87–0.97 across six writers; recall@1% understated because 8% of human sentences inside mixed documents are flagged, mostly next to AI spans.", "rerunning"),
-    ("Data", "2026-10-06 06:10", "Wave 2 (LLE, MIX, Arep)", "4B, 20% length, 1 seed each", "Results pending.", "running"),
-    ("Evaluation", "2026-10-06 06:26", "Multi-writer held-out edit set", "Claude subagents + Luna", "1,185 Claude edits (Opus 349, Sonnet 335, Haiku 201) + 300 Luna; scoring of all models queued.", "running"),
-    ("Data", "2026-10-06 06:20", "Clause-labeling test (soft n-gram labels)", "Luna vs spaCy splitters, synthetic edits", "Synthetic v2 macro-F1: Luna clauses 0.953, sentences 0.971 (v2 biased to sentences); v3 with clause edits running.", "running"),
+    ("Evaluation", "2026-10-06 06:38", "Cross-model eval (heterogeneous-ai-spans)", "both MoE runs", "Sentence AUROC 0.87–0.97 across six writers; corrected numbers on the comparison page.", "done"),
+    ("Data", "2026-10-06 07:19", "Wave 2 (LLE, MIX, Arep)", "4B, 20% length, 1 seed each", "Lost in the 07:19 UTC Space restart before it was scored.", "failed"),
+    ("Evaluation", "2026-10-06 06:54", "Multi-writer held-out eval", "1,185 Claude + 300 Luna edits on never-train papers", "Recall at the deployment threshold: 4B with splices Haiku 63%, Luna 53%, Sonnet/Opus 37–41%; MoE without splices 22–33%.", "done"),
+    ("Data", "2026-10-06 12:37", "Clause-labeling test (soft labels)", "spaCy vs Luna splitters; synthetic v3 edits; relabel of 25,283 pairs", "Clauses beat sentences by +0.10 macro-F1 (CI +0.05 to +0.16); 25% of AI-labeled text in paragraph rewrites is near-verbatim human. 4B A/B pending approval.", "done"),
+    ("Data", "2026-10-06 20:17", "Overnight data generation", "Claude subagents, ~120M tokens", "4,905 Claude sentence edits (strict check), 2,078 sections, 254 full papers, 1,228 paragraph edits; OpenAI-writer batch prepared for Codex.", "done"),
+    ("Models", "2026-10-06 22:31", "River's one-factor sweep", "4B, 1 seed per setting", "No setting beat the reference (small-edit 0.26) beyond noise; River's MoE runs 0.22–0.30.", "done"),
     ("Data", "2026-10-05 23:40", "N-gram dashboard", "all human vs AI pools, hashing counter", "11 groups in under 2 min; soft-label explainer added.", "done"),
     ("Extraction", "2026-10-05 05:02", "Extraction artifact scan", "31,211 papers", "11 artifact classes (e.g. ICLR review line numbers in 100% of ICLR 2027).", "done"),
     ("Extraction", "2026-10-05 07:03", "positioned-clean-v2 + backfill", "41,004 + 1,414 ICLR 2027 papers", "Cleaned in ~28 min; 59.5M line-number words removed; 4 papers failed extraction.", "done"),
@@ -130,9 +134,10 @@ IGNORED = [
 # title, area, last touched (UTC), state, next step, priority
 THREADS = [
     ("Is ICLR 2027's 68% real AI use?", "Evaluation", "2026-10-06 01:55", "open", "Read top-flagged sentences in 20 papers; score ICLR 2026 submission versions (~20 batch requests).", "high"),
-    ("Multi-writer held-out scoring", "Evaluation", "2026-10-06 06:26", "running", "Score SPG, SPH, wave 2 and both MoE runs; report per writer.", "high"),
-    ("Wave 2 results (LLE, MIX, Arep)", "Data", "2026-10-06 06:10", "running", "Compare against splice wave 1 at 1% FPR; decide the next data mix.", "high"),
-    ("Republish the comparison artifact", "Evaluation", "2026-10-06 06:15", "open", "Add corrected cross-model numbers, wave 2 and per-writer held-out results.", "high"),
+    ("Train and test the new data mix (wave 2 was lost)", "Data", "2026-10-06 19:29", "open", "Build the table-2 mix, train 4B × 3 seeds vs SPG, score per writer.", "high"),
+    ("Soft-label A/B (clause labels)", "Data", "2026-10-06 12:37", "waiting on you", "Approve 2 A100s for 4B original vs soft labels, 3 seeds each.", "high"),
+    ("OpenAI-writer data via Codex", "Data", "2026-10-06 20:07", "waiting on you", "Start a Codex conversation with research/openai-writer-handoff-20261006 (D 1,000 items, E 420).", "medium"),
+    ("Commit and push the overnight code", "Infra", "2026-10-06 22:31", "waiting on you", "Branch overnight-20261006 (f479f32) is not pushed; later changes are uncommitted.", "medium"),
     ("Same omission treatment for AI-side text", "Extraction", "2026-10-06 03:22", "open", "Decide whether AI text goes through the omission step before using omitted human text in training.", "high"),
     ("Apply references removal and omissions to the corpus", "Extraction", "2026-10-06 04:29", "open", "Regenerate clean datasets; run the full-corpus omission pass (~2 h CPU).", "medium"),
     ("Omission regressions and leaks", "Extraction", "2026-10-06 04:29", "open", "Fix the small-caps heading regression, pseudocode-as-math losses, table cell leaks, caption cut.", "medium"),
@@ -141,7 +146,6 @@ THREADS = [
     ("Revisit overnight A vs B conclusions", "Models", "2026-10-06 02:55", "open", "Re-read arm comparisons excluding diverged 5e-4 seeds.", "medium"),
     ("Add human calibration data", "Evaluation", "2026-10-06 02:40", "open", "Extract ~2,000 of the 2019–2022 Atlas PDFs; recalibrate document and 0.1% thresholds.", "medium"),
     ("False positives next to AI spans", "Evaluation", "2026-10-06 06:05", "open", "Measure how often human sentences are flagged at each distance from an AI span.", "medium"),
-    ("Clause-labeling v3", "Data", "2026-10-06 06:24", "running", "Score v3 with 0.6B embeddings; rerun spaCy units; 4B embeddings when a GPU frees.", "low"),
     ("FSDP MoE training on A100s", "Infra", "2026-10-06 05:32", "waiting on you", "Approve building --fsdp (8-bit optimizer wrapper, sharded save and validation).", "low"),
     ("Exact 10%-length runs", "Models", "2026-10-05 20:01", "stale", "Run if length vs recipe still matters; otherwise close.", "low"),
     ("Ettin sentence curves and MoE vs 9B bootstrap", "Evaluation", "2026-10-05 04:17", "stale", "Low value now; close unless needed for a write-up.", "low"),
@@ -157,7 +161,7 @@ THREADS = [
 
 # category, title, when (UTC), cost, fix, recurrences
 ISSUES = [
-    ("Storage", "Space restarts wiped /tmp", "2026-10-05 20:48", "All A100 sweep checkpoints and Space tools lost; ~75 min of baseline reruns; classification runtime rebuilt", "Persistent helpers in ~/.config, vendored packages on /data, checkpoints to the bucket as each run finishes", 3),
+    ("Storage", "Space restarts wiped /tmp", "2026-10-06 21:36", "Sweep checkpoints, Space tools and wave 2 lost; ~75 min of baseline reruns; classification runtime rebuilt", "Persist daemon mirrors /tmp to /data every 5 min; restart watcher; vendored packages on /data", 4),
     ("Storage", "Shared H200 quota exhausted", "2026-10-05 23:39", "curve-9b-B killed at 36%; moe-A-full crashed mid-run (~45 min)", "RAM disk for re-downloadable files; measure real free space before large writes", 2),
     ("Training", "Loss divergence detected late", "2026-10-06 02:43", "~3 h of H200 time on a damaged MoE run; detection ~1.5 h late; pre-spike weights lost", "Divergence guard, rolling snapshots, loss-aware health checks, auto-rollback", 5),
     ("Transfer", "Per-file transfers and polling hit rate limits", "2026-10-05 07:15", "~30 min Space 429 lockout; ~25 min slow R2 uploads; 18 GB downloaded to the Mac and 19 GB uploaded again instead of transferring directly", "500 requests / 5 min budget; bundle everything; run downloads on the Space", 3),
@@ -190,6 +194,10 @@ RULES = [
     ("Openness", "Commits must be public-ready: no credentials, infrastructure addresses, third-party paper text, per-paper scores or brand assets."),
     ("Data", "OCR only as a fallback for garbled pages; omit figure text and keep captions; mark every omission; remove references from classification input."),
     ("Data", "LLM labelling on Luna (Flex tier) with spend caps and a pilot first; eval edits via Claude subagents."),
+    ("Data", "No direct OpenAI API generation; OpenAI-model data goes through a written handoff to a new Codex conversation."),
+    ("Collaboration", "River (collaborator) runs jobs on the same hardware: anything not started by you or your sessions is River's; don't stop, change or delete it without asking."),
+    ("Operations", "Space outputs go to /data (persist daemon); don't change Space hardware or settings during live runs without asking."),
+    ("Communication", "Answer the actual question plainly; don't be pedantic. Write literally."),
 ]
 
 LINKS = [
@@ -220,29 +228,128 @@ OWNER_TYPE = {
 def owner_type(text):
     return next((v for k, v in OWNER_TYPE.items() if text.startswith(k)), "decision")
 
-# Priorities (assessment as of Oct 6): work with high cost and low payoff, work to stop, and today's order.
-PRIORITY_NOTE = "\"Useful\" means it improved small-edit detection at 1% FPR or produced a tool or decision that is still in use. Time estimates are approximate."
+OWNER_TYPE.update({
+    "Soft-label A/B": "approval",
+    "OpenAI-writer data via Codex": "action",
+    "Commit and push the overnight code": "approval",
+})
+
+# Priorities (assessment as of Oct 6, 15:56 PDT).
+PRIORITY_NOTE = ("\"Your time\" is active time in conversation: for each message you sent, the gap to your next message in that session, capped at 10 minutes "
+                 "(longer gaps count as away). Messages were assigned to topics by session, time window and keywords, and spot-checked, so hours are approximate (about ±20%). "
+                 "Total: ~27.6 h of active time over 336 chat rounds (a round is one message from you and Claude's reply to it), Oct 3–6.")
+# topic, your hours, chat rounds, payoff
+ENGAGEMENT = [
+    ("Space restarts, storage and monitoring", 3.4, 50, "overhead"),
+    ("Data generation (splices, LLM edits)", 3.2, 47, "high"),
+    ("MinerU", 3.1, 32, "low"),
+    ("ICLR scoring, calibration and year diagnostic", 2.5, 22, "mixed"),
+    ("MoE runs", 2.2, 32, "low"),
+    ("Omissions (extraction tuning)", 1.9, 19, "mixed"),
+    ("Training sweeps (recipe, LR)", 1.9, 27, "low"),
+    ("Evals, metrics and results pages", 1.6, 18, "high"),
+    ("Atlas publishing and reader UX", 1.5, 18, "mixed"),
+    ("Clause labeling (soft labels)", 1.5, 13, "promising"),
+    ("Project ledger, repo and sharing", 1.2, 20, "overhead"),
+    ("Atlas site redesign (Oct 3)", 0.9, 7, "mixed"),
+    ("N-gram dashboard", 0.8, 9, "low"),
+    ("Repo setup and docs", 0.7, 9, "overhead"),
+    ("Text extraction and cleanup", 0.7, 5, "high"),
+    ("Claude Code setup", 0.3, 6, "overhead"),
+]
+# work, your time, compute, outcome, assessment
 LOW_PAYOFF = [
-    ("Recipe and hyperparameter sweeps for small edits", "~12 h on 4 A100s + 3 H200s, plus most of a session", "Small-edit recall stayed at 0.21–0.25 for every recipe; splice data reached ~0.6 in one run.", "Useful negative result, but larger than needed: the data audit (2 of 24,000 windows with short AI spans) pointed to data before the sweep started."),
-    ("Full-length MoE runs and scaling work", "~6 H200 hours + ~3 h of session", "Full-length runs scored below the 20%-length run.", "Low payoff; the divergence guard built during this work is still in use."),
-    ("MinerU PDF extraction", "~1 h setup, ~10 GPU hours lost to out-of-memory errors, ~3 h of comparisons", "Judged too slow and dropped; a 300-paper subset kept.", "Mostly not useful."),
-    ("Omission-step tuning (v1–v8, LLM-judge loop)", "~8 h of session, ~5M subagent tokens", "Noise left fell from 175 to 22 per 1k words; references removed.", "Partly useful. No extraction shortcut was found and extracted paper text is ~25% of training tokens, so later iterations changed little."),
-    ("Clause-labeling (soft n-gram label) test", "~4.5 h", "Gold set stopped after 15 sentences; sentences and clauses scored about the same (0.971 vs 0.953).", "Low payoff so far."),
-    ("N-gram dashboard", "~1 h", "Exploratory statistics; how they would be used was never decided.", "Low payoff."),
-    ("Publishing the fast10 4B scores to the Atlas", "~8 h of session", "ICLR 2027 classified on the site; reader fixes and the Calibration page.", "The reader and calibration work carries over. The scores come from a model the splice models outperform (small-edit recall 0.25 vs ~0.6), and the 68% figure is unvalidated."),
+    ("Space restarts, storage and monitoring", "3.4 h active, 50 chat rounds", "4 restarts in 3 days; checkpoints and wave 2 lost", "Persistence to /data, a restart watcher, the storage index and monitoring rules now exist.", "Reactive work and the largest share of your time. The new tools should reduce it; the restarts themselves are unexplained."),
+    ("MinerU PDF extraction", "3.1 h active, 32 chat rounds", "~10 GPU hours lost to out-of-memory errors, ~1 h setup", "Judged too slow and dropped; a 300-paper subset kept.", "Your largest block of time with the least to show for it."),
+    ("ICLR scoring and Atlas publishing of the fast10 4B", "4.0 h active, 40 chat rounds (2.5 + 1.5)", "~8 GPU hours, 15 GB of uploads", "ICLR 2027 classified on the site; reader fixes; Calibration page.", "The reader and calibration work carries over. The scores come from a model the splice models outperform, and the 68% figure is unvalidated."),
+    ("MoE runs and scaling", "2.2 h active, 32 chat rounds", "~10 H200 hours (two full runs, benchmarks)", "Full-length runs overfit (best epoch 0) and scored below the 20%-length run.", "Low payoff; the divergence guard built during this work is still in use."),
+    ("Recipe and hyperparameter sweeps", "1.9 h active, 27 chat rounds", "~12 h on 4 A100s + 3 H200s, plus River's sweep", "Small-edit recall stayed at 0.21–0.26 for every setting, in both sweeps.", "Useful negative result, larger than needed: the data audit had already pointed to data."),
+    ("Omission-step tuning", "1.9 h active, 19 chat rounds", "~8 h of Claude session, ~5M subagent tokens", "Noise left fell from 175 to 22 per 1k words; references removal.", "Partly useful; later iterations changed little, and the AI-side policy is still undecided."),
+    ("N-gram dashboard", "0.8 h active, 9 chat rounds", "minutes of CPU", "Exploratory statistics; their use was never decided.", "Low payoff."),
 ]
 STOP = [
-    ("New hyperparameter sweep on all 8 A100s", "If it tunes the recipe on the old data mix, it repeats the overnight sweep's result. Check what it tests before it holds all 8 GPUs."),
-    ("FSDP A100 MoE path and more full-length MoE runs", "Longer MoE training did not help. A 20%-length MoE on splice data is the one MoE run still worth doing."),
-    ("Further omission tuning (table leaks, pseudocode, captions)", "First decide whether AI-side text goes through the same omission step; until then more tuning may not affect training."),
-    ("Clause-labeling v3 and 4B embedding runs", "Unlikely to change training decisions."),
-    ("More site work on the current 4B scores", "Rescore ICLR 2027 with the best splice-trained model first."),
+    ("More hyperparameter or recipe sweeps", "Two independent sweeps (ours and River's) found nothing that beats the reference recipe beyond noise. Data changes moved small-edit recall from 0.25 to ~0.6."),
+    ("Full-length MoE runs and the FSDP A100 path", "Full-length MoE overfit (best epoch 0) and scored below the 20%-length run. The one MoE run worth doing is a short run on the chosen data mix, after item 1."),
+    ("Further omission tuning (table leaks, pseudocode, captions)", "Decide item 4 first; until then more tuning may not affect training."),
+    ("More site work on the current 4B scores", "Rescore ICLR 2027 with the chosen model first (item 6)."),
+    ("N-gram dashboard follow-ups", "No decision depends on it."),
 ]
+# title, tldr, your time, compute/wall, depends, steps, risks, done
 TODAY = [
-    ("Read the wave-2 and multi-writer held-out results and choose the training data mix", "Splice and LLM sentence edits are the only change that improved small-edit recall."),
-    ("Check whether ICLR 2027's 68% is real", "Read the top-flagged sentences in ~20 papers and score ICLR 2026 submission versions before more site work."),
-    ("Add human calibration data", "Extract part of the ~20k 2019–2022 PDFs already in R2; the document-level threshold rests on 2 papers."),
-    ("Decide whether AI-side text goes through the omission step", "This blocks using the cleaned human paper text in training."),
-    ("Rotate the exposed HF and Jupyter tokens", "About 5 minutes."),
-    ("Then rescore ICLR 2027 with the chosen model and update the Atlas", "Uses the existing publish pipeline (bundled uploads)."),
+    ("Train and test the new small-edit data mix",
+     "Wave 2 was lost in the 07:19 UTC restart before it was scored. Build the planned mix from the new data pool, train 4B × 3 seeds against SPG, and run the soft-label A/B at the same time.",
+     "~20 min: approve the mix and GPU use; agree GPUs with River",
+     "~3–4 h wall: 4B at 20% length takes ~75–90 min per run on an A100 (seeds in parallel) plus ~20 min scoring; the soft-label A/B (6 runs) runs on other GPUs at the same time",
+     "Free A100s (River's runs); persistence to /data running",
+     ["Agree with River which A100s are free.",
+      "Build the 'table 2' mix (small edits 35%, human paper 25%, paragraph 12%, fully AI 10%, generic human 7%, sections 6%, GRADTEX 5%) from the pool: ~16,000 small edits fit a 510-token window (splices ~7,760, Luna ~4,400, Claude ~4,100 after the strict check). About 1 h of work. Drop the 22 never-train rows.",
+      "Train 4B, 20% length, recipe A, 3 seeds; compare with SPG (rerun SPG if its checkpoints are not in the bucket).",
+      "Run the soft-label A/B (original vs clause soft labels, 3 seeds each), which the clause-labeling session has prepared.",
+      "Score dev/test and the strict multi-writer held-out set (871 Claude rows + 300 Luna); report recall per writer at a held-out 1% FPR with the spread across seeds.",
+      "Choose the mix; then one confirmation run at full length or on 9B (~4–5 h)."],
+     ["Another restart: write outputs to /data (persist daemon).",
+      "Splices and some evaluation edits both come from Luna: decide on the Sonnet, Opus and Haiku columns.",
+      "Single-seed noise is ±0.03–0.06; the held-out test sets are small (±0.07 on 150 sentences)."],
+     "A chosen mix with ≥3 seeds per finalist, per-writer recall at 1% FPR, and the regressions (standalone rewrites, public AUROC) listed."),
+    ("Check whether ICLR 2027's 68% is real",
+     "Read the top-flagged sentences in ~20 papers and score ICLR 2026 submission versions before more site work.",
+     "~45 min: read flagged sentences in ~20 papers (only you can judge these)",
+     "~3–4 h wall, mostly automated",
+     "OpenReview quota (140 requests/hour, run on the Space); ~30 GPU-minutes",
+     ["Break flags down by section from the existing sentence scores (~30 min CPU). References are still in the classification input, so check whether references or template text drive the flags.",
+      "Build a reading page: top-flagged sentences in context for 20 papers with high, middle and low flag shares (~1 h).",
+      "Version control: download ~1,000 ICLR 2026 rejected submissions (their PDFs are submission versions, the same format as ICLR 2027): ~20 batch requests, extraction and cleanup ~15 min, scoring ~15 min.",
+      "Second model: score a 1,000-paper ICLR 2027 subset with the best splice-trained model.",
+      "Write the verdict with the evidence on the Calibration page."],
+     ["There is no human ground truth for 2027 papers: this can rule out format and section causes but cannot prove AI use."],
+     "A written verdict with the section breakdown, the ICLR 2026 submission control and second-model agreement."),
+    ("Add human calibration data",
+     "Extract part of the ~20k 2019–2022 PDFs already in R2; the document-level threshold rests on 2 papers.",
+     "~10 min: approve exporting PDFs from R2",
+     "~half a day wall: ~1 h engineering, ~1 h compute, ~1 h analysis",
+     "Read access to the Atlas R2 bucket from the Space (a temporary token-gated export endpoint, like /bundle in reverse)",
+     ["Select ~2,000 papers stratified by venue and year.",
+      "Export them to the Space as tar bundles (~10 GB).",
+      "Baseline extraction and positioned-clean-v2 (~10 min on 88 CPU workers); remove papers that overlap training windows.",
+      "Score with each model to calibrate (current 4B and the new mix winner): ~15 min per model on 8 GPUs.",
+      "Recompute thresholds with paper-level bootstrap intervals (flags cluster within papers; the current intervals treat sentences as independent and are too narrow).",
+      "Update the Calibration page and the catalogue metadata."],
+     ["2019–2022 topics differ from 2027; thresholds may still understate FPR on recent human writing."],
+     "Thresholds from ≥1,500 papers with paper-clustered intervals; the document-level threshold no longer rests on 2 papers."),
+    ("Decide whether AI-side text goes through the omission step",
+     "This blocks using the cleaned human paper text in training.",
+     "~15 min: choose the policy",
+     "~3–4 h: 1–2 h implementation, ~1 h shortcut test on 2 GPUs, ~2 h CPU to regenerate the clean corpus",
+     "Omissions v2 (math policy, references removal) is ready but not applied to the corpus",
+     ["The problem: human paper text from PDFs contains ⟦… omitted⟧ markers; fully AI training documents (30% of windows) never do, so the model can learn 'marker means human'.",
+      "Option A: remove markers from the input at training and inference. Simplest, no leak.",
+      "Option B: keep markers, give their tokens an ignore label, and insert synthetic markers into fully AI documents at the human rate.",
+      "Option C: render AI documents to PDF and extract them like human papers. Most faithful, most work.",
+      "Recommendation: A now; consider C later for full AI manuscripts.",
+      "Implement it in data.py and the inference preprocessing so the Atlas uses the same text; validate with the artifact-shortcut harness (marker present vs absent); regenerate the clean text with references removed."],
+     ["Removing markers joins text across omitted regions; check that sentence boundaries stay correct."],
+     "Policy recorded in AGENTS.md; the same preprocessing in training and inference; markers have no effect in the shortcut test."),
+    ("Rotate the exposed HF and Jupyter tokens",
+     "About 20 minutes, at a time when no running job depends on the old tokens.",
+     "~20 min",
+     "None",
+     "Changing the Space's Jupyter token restarts the Space and clears /tmp, so do it when no runs are active",
+     ["HF: huggingface.co → Settings → Access Tokens: create a token with the same scopes, run `hf auth login` on the Mac, then revoke the old token.",
+      "Relaunch detached Space jobs that were started with the old HF token in their environment (persist daemon, uploads).",
+      "Jupyter: change the Space secret, wait for the restart, update ~/.config/pangram/jupyter_token (mode 600)."],
+     ["Revoking the HF token stops any job still using it."],
+     "Old tokens revoked, new ones in place, dependent jobs relaunched."),
+    ("Rescore ICLR 2027 with the chosen model and update the Atlas",
+     "Uses the existing publish pipeline (bundled uploads).",
+     "~15 min: approve the publish",
+     "~1 day wall, mostly compute: scoring ~3.5 h on 8 A100s (4B), detail files ~1 h, upload ~5 min",
+     "Item 1 (model), item 3 (calibration), item 4 (preprocessing); item 2 decides how results are described",
+     ["Package the chosen checkpoint (merged LoRA, compiled) and benchmark it once.",
+      "Score 42,419 papers with the 8-GPU claim queue, writing to /data.",
+      "Compute sentence scores, flag rates and thresholds from the new human set.",
+      "Build detail files from local copies (the bucket mount is slow) and upload with /bundle.",
+      "Add the model to the catalogue next to Qwen3.5-4B · Experimental; extend the Calibration page to several models (~1–2 h).",
+      "Rerun the year diagnostic with the new model."],
+     ["A restart during the ~3.5 h scoring run: the claim queue resumes from /data."],
+     "The new model is live on the Atlas with its own calibration section, and the year diagnostic has been rerun."),
 ]
