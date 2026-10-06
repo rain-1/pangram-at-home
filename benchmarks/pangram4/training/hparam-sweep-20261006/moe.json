@@ -1,15 +1,70 @@
 {
- "_note": "Qwen3.6-35B-A3B run on 4xA100-80GB. Same recipe as woog's moe-A-full-lr1e4 except warmup 0.06 -> 0.10, micro-batch 8 -> 4 (same effective batch 32), automatic rollback, and dev-half checkpoint selection. Rationale in README.md#moe-run. --fraction is decided by scoring moe-A-full-lr1e4-woog first: 1.0 if its epochs beat moe-A-s1 (20% length), else 0.2-0.5.",
- "model": "qwen36-35b-a3b",
- "gpus": ["4", "5", "6", "7"],
- "tag": "moe-lr1e4-w10-s1",
+ "_note": "Two matched Qwen3.6-35B-A3B runs on 4xA100-80GB each, identical except training data: base = woog prepared-v2; mix = prepared-v2 + curated rain1 data (setup_mix.py, mix-spec.json). Same recipe as woog's moe-A-full-lr1e4 except warmup 0.06 -> 0.10, micro-batch 8 -> 4 (same effective batch 32), automatic rollback, and dev-half checkpoint selection. Rationale in README.md#moe-run. Length is passed at launch (launch_moe.py --fraction) and is the same for both runs.",
  "args": [
-  "--fraction", "1.0",
-  "--micro-batch", "4", "--effective-batch", "32",
-  "--lr", "1e-4", "--head-lr", "2e-5", "--schedule", "cosine", "--warmup", "0.10",
-  "--lora-rank", "128", "--expert-rank", "16", "--lora-alpha", "32", "--lora-dropout", "0", "--weight-decay", "0.01",
-  "--on-diverge", "rollback", "--snapshot-every", "100", "--snapshot-keep", "3", "--max-rollbacks", "3", "--rollback-lr-factor", "0.5",
-  "--ckpt-every", "500", "--seed", "1", "--arm", "moe-lr1e4-w10"
+  "--micro-batch",
+  "4",
+  "--effective-batch",
+  "32",
+  "--lr",
+  "1e-4",
+  "--head-lr",
+  "2e-5",
+  "--schedule",
+  "cosine",
+  "--warmup",
+  "0.10",
+  "--lora-rank",
+  "128",
+  "--expert-rank",
+  "16",
+  "--lora-alpha",
+  "32",
+  "--lora-dropout",
+  "0",
+  "--weight-decay",
+  "0.01",
+  "--on-diverge",
+  "rollback",
+  "--snapshot-every",
+  "100",
+  "--snapshot-keep",
+  "3",
+  "--max-rollbacks",
+  "3",
+  "--rollback-lr-factor",
+  "0.5",
+  "--ckpt-every",
+  "500",
+  "--seed",
+  "1",
+  "--arm",
+  "moe-lr1e4-w10"
  ],
- "preflight_args": ["--max-steps", "30", "--no-validate"]
+ "preflight_args": [
+  "--max-steps",
+  "30",
+  "--no-validate"
+ ],
+ "runs": {
+  "base": {
+   "model": "qwen36-35b-a3b",
+   "gpus": [
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "tag": "moe-base-lr1e4-w10-s1"
+  },
+  "mix": {
+   "model": "qwen36-35b-a3b-mix",
+   "gpus": [
+    "4",
+    "5",
+    "6",
+    "7"
+   ],
+   "tag": "moe-mix-lr1e4-w10-s1"
+  }
+ }
 }
