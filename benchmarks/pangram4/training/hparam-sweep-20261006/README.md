@@ -37,7 +37,7 @@ It also rebuilds the overnight sweep's 3,511 evaluation rows with that sweep's `
 
 ## Tracking
 
-Runs log to Trackio project `pangram-hparam-sweep-20261006`, in a local SQLite database under `trackio/` on the Space. The Space has no Hub token, so `sync_trackio.sh` runs on a logged-in machine. It snapshots the database over `hf spaces ssh` and syncs it to the private Space `eac123/pangram-hparam-sweep-trackio` every five minutes.
+Runs log to Trackio project `pangram-hparam-sweep-20261006`, in a local SQLite database under `trackio/` on the Space. The Space has no Hub token, so `sync_trackio.sh` runs on a logged-in machine. It snapshots the database over `hf spaces ssh` and syncs it to the private Space `eac123/pangram-hparam-sweep-trackio` every ten minutes. The Gradio dashboard reads its bucket only at startup, so the script uploads the database to the Space's bucket and then restarts the Space. `trackio sync` itself would time out waiting for the live dashboard to catch up.
 
 ## Metrics
 
