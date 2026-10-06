@@ -18,6 +18,7 @@ from adapters_short import attach_lora, parameter_groups
 
 
 SHORT_SPAN_OVERSAMPLE = False  # set by --short-span-oversample
+REDUCE_BUCKET = 64 * 2**20  # FP32 elements per gradient all-reduce (256 MiB)
 SAVE_STAGE1 = not str(ROOT).startswith('/workspace/')  # H200 volume quota is tight; the single stage-1 checkpoint is never evaluated
 
 
@@ -189,7 +190,7 @@ def main(a):
            'learning_rate': a.lr, 'head_learning_rate': a.head_lr, 'schedule': a.schedule, 'warmup_fraction': a.warmup,
            'micro_batch': size, 'physical_microbatch': size, 'effective_batch': EB, 'data_parallel_gpus': world,
            'stages': {'1': {'epochs': 1}, '2': {'epochs': 3}}, 'loss_weights': dict(modeling_sweep.W),
-           'lora': {'rank': a.lora_rank, 'expert_rank': a.lora_rank, 'alpha': a.lora_alpha, 'dropout': a.lora_dropout}, 'weight_decay': a.weight_decay,
+           'lora': {'rank': a.lora_rank, 'expert_rank': a.expert_rank or spec.get('expert_rank', a.lora_rank), 'alpha': a.lora_alpha, 'dropout': a.lora_dropout}, 'weight_decay': a.weight_decay,
            'checkpoint_every_steps': a.ckpt_every, 'short_span_oversample': a.short_span_oversample, 'source_tokens_max': 510, 'precision': 'BF16',
            'trainable_dtype': 'bfloat16', 'checkpoint_dtype': 'bfloat16', 'optimizer': a.optimizer}
     random.seed(a.seed); np.random.seed(a.seed); torch.manual_seed(a.seed); torch.cuda.manual_seed_all(a.seed)
@@ -215,10 +216,17 @@ def main(a):
         """Sum micro-batch gradients across GPUs in FP32; parameters unused on a rank (idle experts) contribute zeros."""
         if world == 1:
             return
-        flat = torch.cat([(p_.grad if p_.grad is not None else torch.zeros_like(p_)).float().reshape(-1) for p_ in trainable])
-        dist.all_reduce(flat); o = 0
-        for p_ in trainable:
-            n_ = p_.numel(); p_.grad = flat[o:o + n_].view_as(p_).to(p_.dtype); o += n_
+        # Bucketed so the FP32 staging copy stays near REDUCE_BUCKET elements instead of every trainable gradient at once;
+        # one flat buffer pushed the 35B-A3B MoE to 78 GiB on two GPUs regardless of micro-batch.
+        bucket = []; size_ = 0
+        for i_, p_ in enumerate(trainable):
+            bucket.append(p_); size_ += p_.numel()
+            if size_ >= REDUCE_BUCKET or i_ == len(trainable) - 1:
+                flat = torch.cat([(q_.grad if q_.grad is not None else torch.zeros_like(q_)).float().reshape(-1) for q_ in bucket])
+                dist.all_reduce(flat); o = 0
+                for q_ in bucket:
+                    n_ = q_.numel(); q_.grad = flat[o:o + n_].view_as(q_).to(q_.dtype); o += n_
+                del flat; bucket = []; size_ = 0
 
     def total(*vals):
         t = torch.tensor(vals, dtype=torch.float64, device='cuda')
@@ -482,6 +490,7 @@ if __name__ == '__main__':
     p.add_argument('--ckpt-every', type=int, default=0)
     p.add_argument('--arm', default='')
     p.add_argument('--lora-rank', type=int, default=128); p.add_argument('--lora-alpha', type=float, default=32)
+    p.add_argument('--expert-rank', type=int, default=0, help='MoE expert LoRA rank; 0 = models.json value (16 for qwen36-35b-a3b)')
     p.add_argument('--lora-dropout', type=float, default=0.); p.add_argument('--weight-decay', type=float, default=.01)
     p.add_argument('--effective-batch', type=int, default=32)
     p.add_argument('--segment-weight', type=float, default=.2); p.add_argument('--mixed-weight', type=float, default=.1)
