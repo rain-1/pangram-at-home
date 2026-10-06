@@ -32,6 +32,12 @@ User direction October 3, 2026: Storage is a hard cap. Use BF16 for trainable ad
 
 User direction October 5, 2026: Intermediate checkpoints exist only to resume a stalled or failed run. During training, keep one resumable checkpoint (adapter weights, optimizer and scheduler state, data position), overwritten periodically, and resume from it on failure. When a run finishes and its checkpoints have been scored, delete everything except the final weights: the resume state, earlier epoch checkpoints, and scored learning-curve step checkpoints. Final weights go to the Space's training-storage bucket. This direction authorizes deleting those superseded intermediate checkpoints of new runs; other removals from the Space still need explicit approval.
 
+"Final weights" includes any checkpoint a run selected for use (named in its `stage2-selection.json`), not only the last epoch. Example: the fast10 Qwen3.5-4B behind the Paper Atlas uses `stage2-epoch0`.
+
+# Storage index and October 6 cleanup
+
+User approval October 6, 2026: the training-storage bucket was cleaned from 1,074 GB to 652 GB. Removed: orphaned partial uploads; the PDF and extraction bulk of the ICLR 2027 round-2 and round-3 datasets (every PDF is in `datasets/iclr2027-complete-20261004`; their root files, including `result_codec.py`, stay); and the model weights and pipeline checkpoint databases of the October 1–3 experiments (`paper-*`, `gpu-perf-*`, `human-source-mix-v2-recovered-*`), whose results, configs, logs and tokenizers are kept and which are marked `ARCHIVED.md`. The removed-file manifest is `workspace/_cleanup/20261006-deleted.json`. `workspace/README.md` in the bucket indexes every folder with its status; read it before adding, moving or deleting storage, and update it when adding a top-level folder.
+
 # Git repository and publication standard
 
 User direction October 3, 2026: This folder is a git repository pushed to the private GitHub repo `woog97/paingram`. It stays private until the user announces the project, then becomes public with its full history. Treat every commit as eventually public.

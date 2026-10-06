@@ -1,6 +1,6 @@
 # Pangram project ledger
 
-As of Mon Oct 5, 23:32 PDT. Synthesized from all 8 Claude Code sessions on this project (Oct 3–6, 2026). Times are PDT. "Age" is time since a thread was last touched. This file contains no credentials, infrastructure addresses, paper text or per-paper scores.
+As of Tue Oct 6, 00:05 PDT. Synthesized from all 8 Claude Code sessions on this project (Oct 3–6, 2026). Times are PDT. "Age" is time since a thread was last touched. This file contains no credentials, infrastructure addresses, paper text or per-paper scores.
 
 ## Contents
 - [What you are trying to solve](#what-you-are-trying-to-solve)
@@ -48,7 +48,7 @@ Items that need a decision, approval or action from you as the project owner. Cl
 - [approval] **ICLR 2027 drift checks: read top-flagged sentences; compare ICLR 2026 submission versions.** Needed before treating 68% as AI use. _(raised Oct 5 18:55)_
 - [action] **Manual 'good enough' review of omissions.** Save verdicts on ~10 random pages in the review dashboard.
 - [approval] **FSDP MoE training on A100s.** Approve building --fsdp (8-bit optimizer wrapper, sharded save and validation).
-- [approval] **Storage cleanup approvals.** Approve or decline the bucket, H200 and Space /tmp deletions.
+- [approval] **Storage cleanup: remaining items.** Bucket cleaned on Oct 6 (1,074 → 652 GB, index at workspace/README.md). Still open: pruning checkpoints of current runs (not approved), 9.3 GB on the H200, 68 GB MoE copy in Space /tmp.
 
 ## Unfinished threads
 
@@ -56,28 +56,28 @@ Items that need a decision, approval or action from you as the project owner. Cl
 |---|---|---|---|---|---|---|
 | Credential rotation | Infra | waiting on you | Oct 5 17:50 | 6 h | high | Rotate the HF token and the Jupyter token. |
 | Is ICLR 2027's 68% real AI use? | Evaluation | open | Oct 5 18:55 | 5 h | high | Read top-flagged sentences in 20 papers; score ICLR 2026 submission versions (~20 batch requests). |
-| Same omission treatment for AI-side text | Extraction | open | Oct 5 20:22 | 3 h | high | Decide whether AI text goes through the omission step before using omitted human text in training. |
-| Wave 2 results (LLE, MIX, Arep) | Data | running | Oct 5 23:10 | 24 min | high | Compare against splice wave 1 at 1% FPR; decide the next data mix. |
-| Republish the comparison artifact | Evaluation | open | Oct 5 23:15 | 18 min | high | Add corrected cross-model numbers, wave 2 and per-writer held-out results. |
-| Multi-writer held-out scoring | Evaluation | running | Oct 5 23:26 | 6 min | high | Score SPG, SPH, wave 2 and both MoE runs; report per writer. |
-| Atlas search latency | Site | stale | Oct 3 17:17 | 54 h | medium | Stream the 80 MB index or move search out of the Worker; live search is 2.5–5 s. |
+| Same omission treatment for AI-side text | Extraction | open | Oct 5 20:22 | 4 h | high | Decide whether AI text goes through the omission step before using omitted human text in training. |
+| Wave 2 results (LLE, MIX, Arep) | Data | running | Oct 5 23:10 | 54 min | high | Compare against splice wave 1 at 1% FPR; decide the next data mix. |
+| Republish the comparison artifact | Evaluation | open | Oct 5 23:15 | 48 min | high | Add corrected cross-model numbers, wave 2 and per-writer held-out results. |
+| Multi-writer held-out scoring | Evaluation | running | Oct 5 23:26 | 42 min | high | Score SPG, SPH, wave 2 and both MoE runs; report per writer. |
+| Atlas search latency | Site | stale | Oct 3 17:17 | 55 h | medium | Stream the 80 MB index or move search out of the Worker; live search is 2.5–5 s. |
 | Add human calibration data | Evaluation | open | Oct 5 19:40 | 4 h | medium | Extract ~2,000 of the 2019–2022 Atlas PDFs; recalibrate document and 0.1% thresholds. |
 | Revisit overnight A vs B conclusions | Models | open | Oct 5 19:55 | 4 h | medium | Re-read arm comparisons excluding diverged 5e-4 seeds. |
-| Calibrated colour bands in the reader | Site | open | Oct 5 20:35 | 3 h | medium | Per-model bands and an FPR-labelled threshold slider. |
-| Apply references removal and omissions to the corpus | Extraction | open | Oct 5 21:29 | 2 h | medium | Regenerate clean datasets; run the full-corpus omission pass (~2 h CPU). |
-| Omission regressions and leaks | Extraction | open | Oct 5 21:29 | 2 h | medium | Fix the small-caps heading regression, pseudocode-as-math losses, table cell leaks, caption cut. |
-| Manual 'good enough' review of omissions | Extraction | waiting on you | Oct 5 22:06 | 1 h | medium | Save verdicts on ~10 random pages in the review dashboard. |
-| False positives next to AI spans | Evaluation | open | Oct 5 23:05 | 30 min | medium | Measure how often human sentences are flagged at each distance from an AI span. |
-| Commit and consolidate code | Infra | open | Oct 5 23:20 | 12 min | medium | Land today's work on woog97/paingram main; one pipeline tool, shared helpers, tests. |
-| Calibration-window overlap with the eval suite | Evaluation | stale | Oct 3 18:31 | 53 h | low | Probably handled by calibration-exclude-papers.json (Oct 5); verify and close. |
-| Ettin sentence curves and MoE vs 9B bootstrap | Evaluation | stale | Oct 4 21:17 | 26 h | low | Low value now; close unless needed for a write-up. |
-| 9B scoring of ICLR 2027 | Classification | deferred | Oct 5 03:20 | 20 h | low | You skipped it; revisit with the splice-trained model instead of fast10. |
-| Small-caps stray space and NeurIPS checklist spot-check | Extraction | stale | Oct 5 12:24 | 11 h | low | Fix 'LOW -RANK' joins; spot-check ~18.7k removed checklist words. |
-| Exact 10%-length runs | Models | stale | Oct 5 13:01 | 10 h | low | Run if length vs recipe still matters; otherwise close. |
-| Code-block and algorithm policy | Extraction | open | Oct 5 19:31 | 4 h | low | Decide whether code listings get a ⟦code omitted⟧ marker. |
-| FSDP MoE training on A100s | Infra | waiting on you | Oct 5 22:32 | 1 h | low | Approve building --fsdp (8-bit optimizer wrapper, sharded save and validation). |
-| Storage cleanup approvals | Infra | waiting on you | Oct 5 22:31 | 1 h | low | Approve or decline the bucket, H200 and Space /tmp deletions. |
-| Clause-labeling v3 | Data | running | Oct 5 23:24 | 6 min | low | Score v3 with 0.6B embeddings; rerun spaCy units; 4B embeddings when a GPU frees. |
+| Calibrated colour bands in the reader | Site | open | Oct 5 20:35 | 4 h | medium | Per-model bands and an FPR-labelled threshold slider. |
+| Apply references removal and omissions to the corpus | Extraction | open | Oct 5 21:29 | 3 h | medium | Regenerate clean datasets; run the full-corpus omission pass (~2 h CPU). |
+| Omission regressions and leaks | Extraction | open | Oct 5 21:29 | 3 h | medium | Fix the small-caps heading regression, pseudocode-as-math losses, table cell leaks, caption cut. |
+| Manual 'good enough' review of omissions | Extraction | waiting on you | Oct 5 22:06 | 2 h | medium | Save verdicts on ~10 random pages in the review dashboard. |
+| False positives next to AI spans | Evaluation | open | Oct 5 23:05 | 1 h | medium | Measure how often human sentences are flagged at each distance from an AI span. |
+| Commit and consolidate code | Infra | open | Oct 5 23:20 | 48 min | medium | Land today's work on woog97/paingram main; one pipeline tool, shared helpers, tests. |
+| Calibration-window overlap with the eval suite | Evaluation | stale | Oct 3 18:31 | 54 h | low | Probably handled by calibration-exclude-papers.json (Oct 5); verify and close. |
+| Ettin sentence curves and MoE vs 9B bootstrap | Evaluation | stale | Oct 4 21:17 | 27 h | low | Low value now; close unless needed for a write-up. |
+| 9B scoring of ICLR 2027 | Classification | deferred | Oct 5 03:20 | 21 h | low | You skipped it; revisit with the splice-trained model instead of fast10. |
+| Small-caps stray space and NeurIPS checklist spot-check | Extraction | stale | Oct 5 12:24 | 12 h | low | Fix 'LOW -RANK' joins; spot-check ~18.7k removed checklist words. |
+| Exact 10%-length runs | Models | stale | Oct 5 13:01 | 11 h | low | Run if length vs recipe still matters; otherwise close. |
+| Code-block and algorithm policy | Extraction | open | Oct 5 19:31 | 5 h | low | Decide whether code listings get a ⟦code omitted⟧ marker. |
+| FSDP MoE training on A100s | Infra | waiting on you | Oct 5 22:32 | 2 h | low | Approve building --fsdp (8-bit optimizer wrapper, sharded save and validation). |
+| Clause-labeling v3 | Data | running | Oct 5 23:24 | 42 min | low | Score v3 with 0.6B embeddings; rerun spaCy units; 4B embeddings when a GPU frees. |
+| Storage cleanup: remaining items | Infra | waiting on you | Oct 6 00:00 | 6 min | low | Bucket cleaned on Oct 6 (1,074 → 652 GB, index at workspace/README.md). Still open: pruning checkpoints of current runs (not approved), 9.3 GB on the H200, 68 GB MoE copy in Space /tmp. |
 
 ## Experiments
 
@@ -112,6 +112,7 @@ Items that need a decision, approval or action from you as the project owner. Cl
 | Oct 5 23:10 | Data | Wave 2 (LLE, MIX, Arep) | 4B, 20% length, 1 seed each | Results pending. | running |
 | Oct 5 23:20 | Data | Clause-labeling test (soft n-gram labels) | Luna vs spaCy splitters, synthetic edits | Synthetic v2 macro-F1: Luna clauses 0.953, sentences 0.971 (v2 biased to sentences); v3 with clause edits running. | running |
 | Oct 5 23:26 | Evaluation | Multi-writer held-out edit set | Claude subagents + Luna | 1,185 Claude edits (Opus 349, Sonnet 335, Haiku 201) + 300 Luna; scoring of all models queued. | running |
+| Oct 6 00:00 | Infra | Training-storage cleanup and index | owner-approved Tier 1 + Tier 3 | Bucket 1,074 → 652 GB: removed orphaned partial uploads (72 GB), duplicated ICLR round-2/3 PDFs (77 GB) and Oct 1–3 experiment weights (273 GB); every folder indexed in workspace/README.md. | done |
 
 ## Decisions
 
@@ -168,7 +169,7 @@ Items that need a decision, approval or action from you as the project owner. Cl
 | low | fp32 master weights if instability persists | Trainable weights are BF16 without an fp32 copy. | Oct 5 00:24 |
 | low | What is the n-gram work for: exploration or detector features? | — | Oct 5 16:45 |
 | low | Calibrated colour bands per model in the reader and list | Raw-score bands colour most flagged sentences red and some green. | Oct 5 20:35 |
-| low | Storage cleanup approvals: ~79 GB old sweep checkpoints in the bucket, 9.3 GB on the H200, 67 GB MoE copy in Space /tmp | — | Oct 5 22:31 |
+| low | Storage cleanup of current runs: prune non-selected checkpoints (~70–80 GB), 9.3 GB on the H200, 68 GB MoE copy in Space /tmp | Oct 6 cleanup handled the archive; these were not approved. | Oct 6 00:00 |
 
 ## Errors, time lost and fixes
 
@@ -254,3 +255,4 @@ Recurring patterns: ephemeral `/tmp` on the Space (3 wipes), shared storage quot
 - [N-gram dashboard](https://claude.ai/artifact/WPLSuRnVBwgjoS9uHm5GcP)
 - [Clause annotation page](https://claude.ai/artifact/YVG8QfNMXZBKEU6rdZsQna)
 - [Shared branch](https://github.com/rain-1/pangram-at-home/tree/woog97/workbench)
+- [Project ledger page](https://claude.ai/artifact/VDHHWuQhGUPNcxFvwJRSRn)

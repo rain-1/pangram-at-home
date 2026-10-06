@@ -2,7 +2,7 @@
 
 Times are stored in UTC ("YYYY-MM-DD HH:MM") and rendered in PDT (UTC-7) per the project rule.
 """
-NOW = "2026-10-06 06:32"
+NOW = "2026-10-06 07:05"
 
 SESSIONS = [
     {"id": "f0fb", "start": "2026-10-03 22:42", "end": "2026-10-04 00:17", "focus": "Paper Atlas redesign, mobile layout, search performance, Remote Control setup"},
@@ -69,6 +69,7 @@ EXPERIMENTS = [
     ("Evaluation", "2026-10-06 01:55", "Year diagnostic", "7,102 papers, 2023–2026 + downloads", "Flag rates flat through 2024, rising from 2025; ICLR 2026 14.5%, ICLR 2027 68%.", "done"),
     ("Extraction", "2026-10-06 01:12", "OpenReview ICLR 2024/2025 sample", "71 batch requests, Space extraction", "3,477 new papers extracted and cleaned with positioned-clean-v2.", "done"),
     ("Site", "2026-10-06 03:30", "Atlas publication", "42,418 detail files, catalogue update", "ICLR 2027 classified as 'Qwen3.5-4B · Experimental'; Calibration page live.", "done"),
+    ("Infra", "2026-10-06 07:00", "Training-storage cleanup and index", "owner-approved Tier 1 + Tier 3", "Bucket 1,074 → 652 GB: removed orphaned partial uploads (72 GB), duplicated ICLR round-2/3 PDFs (77 GB) and Oct 1–3 experiment weights (273 GB); every folder indexed in workspace/README.md.", "done"),
     ("Site", "2026-10-04 00:17", "Atlas redesign and performance", "Cloudflare Workers", "Redesign and mobile fixes shipped; live search still 2.5–5 s.", "partial"),
 ]
 
@@ -120,7 +121,7 @@ IGNORED = [
     ("Manual review of omission pages in the review dashboard", "No verdicts saved yet; 'good enough' decision pending.", "2026-10-06 04:08", "25a9", "medium"),
     ("Do paired passages label the whole rewritten span as AI? Compare to soft labels", "data.py not checked.", "2026-10-06 02:03", "33a3", "medium"),
     ("What is the n-gram work for: exploration or detector features?", "", "2026-10-05 23:45", "9068", "low"),
-    ("Storage cleanup approvals: ~79 GB old sweep checkpoints in the bucket, 9.3 GB on the H200, 67 GB MoE copy in Space /tmp", "", "2026-10-06 05:31", "9068", "low"),
+    ("Storage cleanup of current runs: prune non-selected checkpoints (~70–80 GB), 9.3 GB on the H200, 68 GB MoE copy in Space /tmp", "Oct 6 cleanup handled the archive; these were not approved.", "2026-10-06 07:00", "3b26", "low"),
     ("Run one agent at a time on shared files and GPUs", "Parallel sessions interfered with each other several times (duplicate GPU runs, outdated CLAUDE.md, uncommitted files from several sessions in one working tree).", "2026-10-03 23:54", "f0fb", "medium"),
     ("Calibrated colour bands per model in the reader and list", "Raw-score bands colour most flagged sentences red and some green.", "2026-10-06 03:35", "3b26", "low"),
     ("Retry the ICLR round-3 loader (stale lock on the Space)", "Likely superseded by the complete ICLR 2027 dataset; confirm and close.", "2026-10-04 00:34", "9068", "low"),
@@ -149,7 +150,7 @@ THREADS = [
     ("Atlas search latency", "Site", "2026-10-04 00:17", "stale", "Stream the 80 MB index or move search out of the Worker; live search is 2.5–5 s.", "medium"),
     ("Commit and consolidate code", "Infra", "2026-10-06 06:20", "open", "Land today's work on woog97/paingram main; one pipeline tool, shared helpers, tests.", "medium"),
     ("Credential rotation", "Infra", "2026-10-06 00:50", "waiting on you", "Rotate the HF token and the Jupyter token.", "high"),
-    ("Storage cleanup approvals", "Infra", "2026-10-06 05:31", "waiting on you", "Approve or decline the bucket, H200 and Space /tmp deletions.", "low"),
+    ("Storage cleanup: remaining items", "Infra", "2026-10-06 07:00", "waiting on you", "Bucket cleaned on Oct 6 (1,074 → 652 GB, index at workspace/README.md). Still open: pruning checkpoints of current runs (not approved), 9.3 GB on the H200, 68 GB MoE copy in Space /tmp.", "low"),
     ("Calibration-window overlap with the eval suite", "Evaluation", "2026-10-04 01:31", "stale", "Probably handled by calibration-exclude-papers.json (Oct 5); verify and close.", "low"),
     ("Small-caps stray space and NeurIPS checklist spot-check", "Extraction", "2026-10-05 19:24", "stale", "Fix 'LOW -RANK' joins; spot-check ~18.7k removed checklist words.", "low"),
 ]
@@ -202,6 +203,7 @@ LINKS = [
     ("N-gram dashboard", "https://claude.ai/artifact/WPLSuRnVBwgjoS9uHm5GcP"),
     ("Clause annotation page", "https://claude.ai/artifact/YVG8QfNMXZBKEU6rdZsQna"),
     ("Shared branch", "https://github.com/rain-1/pangram-at-home/tree/woog97/workbench"),
+    ("Project ledger page", "https://claude.ai/artifact/VDHHWuQhGUPNcxFvwJRSRn"),
 ]
 
 # What each owner item needs: a decision (policy choice), an approval (Claude can do it once approved), or an action (only you can do it)
@@ -213,7 +215,7 @@ OWNER_TYPE = {
     "ICLR 2027 drift checks": "approval",
     "Manual 'good enough' review of omissions": "action",
     "FSDP MoE training on A100s": "approval",
-    "Storage cleanup approvals": "approval",
+    "Storage cleanup": "approval",
 }
 def owner_type(text):
     return next((v for k, v in OWNER_TYPE.items() if text.startswith(k)), "decision")
