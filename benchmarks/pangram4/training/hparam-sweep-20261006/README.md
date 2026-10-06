@@ -97,3 +97,7 @@ The benchmark inputs come from `benchmark/export_inputs.py`, run against `pangra
 Score files land in `benchmark/scores/`. Copy them to `pangram-at-home-eval/artifacts/external_scores/`, where that repo's `models/precomputed.py` adapter (model ids `moe_{base,mix}_s{1,2}_{mean,maxsent}`) serves them to the normal `predict`/`calibrate`/`evaluate` steps. The adapter checks each input's text hash against the scored text.
 
 Failures write `sweeps/ALERT-pipeline-<arm>`; progress goes to `pipeline-<arm>.log`.
+
+## Published checkpoint
+
+The base MoE (`moe-base-lr1e4-w10-s1`, stage-2 shard 3) is on the Hub as the private model repo `open-text-detector/moe-span-detector-base-20261006` (commit `61507a5`). The repo holds the adapter (sha256 `1612b75d…`), its `run.json`, the loading code, an `inference.py` and a model card with the evaluation and benchmark-v3 results. It needs `peft==0.18.1`, because the fused-expert LoRA layout is version-specific.
