@@ -296,3 +296,19 @@ def test_anonymous_author_placeholder_removed_only_as_top_pair():
     a=artifact([line('A RELIABLE METHOD',y=80,height=16),line('Anonymous authors',y=120),
                 line('Paper under double-blind review',y=132),line('Anonymous authors',y=600)])
     assert clean(a)['text']=='A RELIABLE METHOD\nAnonymous authors'
+
+
+def test_figure_regions_remove_figure_text_and_keep_caption_and_prose():
+    from pangram_backend.text_cleanup import mineru_figure_regions
+    a=artifact([line('Body prose describing the experiment in detail here',y=100,x=108),
+                line('0.2 0.4 0.6 Accuracy',y=300,x=250),            # inside the chart body
+                line('Figure 2: Accuracy over training steps',y=420,x=150)])
+    middle={'pages':[{'page_idx':0,'blocks':[{'type':'chart','bbox':[.3,.33,.8,.6],'content':[
+        {'type':'chart_body','bbox':[.35,.35,.75,.42]},{'type':'chart_caption','bbox':[.2,.52,.8,.56]}]}]}]}
+    regions=mineru_figure_regions(middle)
+    assert regions=={1:[[.35,.35,.75,.42]]}
+    r=clean(a,figure_regions=regions)
+    assert 'Accuracy over training steps' in r['text'] and 'Body prose' in r['text']
+    assert '0.4' not in r['text'] and r['stats']['rules']['figure_region']==4
+    assert r['format'].endswith('+mineru-figures') and validate(r,a)
+    assert clean(a)['text'].count('Accuracy')==2   # unchanged without regions

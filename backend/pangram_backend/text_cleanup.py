@@ -329,7 +329,42 @@ def _continuous(a,b):
             not re.match(r'^(?:Figure|Table|Algorithm)\s+\d',b.text))
 
 
-def clean(artifact):
+FIGURE_BODY_TYPES = {'chart_body', 'image_body'}
+
+
+def mineru_figure_regions(middle_json):
+    """Figure/image body boxes from a MinerU layout JSON, as {page (1-based): [[x0,y0,x1,y1], ...]}
+    in page fractions. Captions and footnotes are separate blocks and are not included."""
+    regions = defaultdict(list)
+    def walk(node, page):
+        if isinstance(node, dict):
+            if node.get('type') in FIGURE_BODY_TYPES and len(node.get('bbox') or []) == 4:
+                regions[page].append([float(v) for v in node['bbox']])
+            for value in node.values(): walk(value, page)
+        elif isinstance(node, list):
+            for value in node: walk(value, page)
+    for page in middle_json.get('pages', []):
+        walk(page.get('blocks', []), page['page_idx'] + 1)
+    return dict(regions)
+
+
+def _figure_words(lines, pages, regions, margin=.003):
+    """Words whose centre lies inside a figure body: axis ticks, legends, diagram labels."""
+    removed = {}
+    for line in lines:
+        boxes = regions.get(line.page)
+        if not boxes: continue
+        p = pages[line.page]
+        for w in line.words:
+            cx = (w['x0'] + w['x1']) / 2 / p['width']; cy = (w['y0'] + w['y1']) / 2 / p['height']
+            if any(x0 - margin <= cx <= x1 + margin and y0 - margin <= cy <= y1 + margin for x0, y0, x1, y1 in boxes):
+                removed[w['index']] = 'figure_region'
+    return removed
+
+
+def clean(artifact, figure_regions=None):
+    """figure_regions: optional output of mineru_figure_regions(); words inside those
+    figure bodies are removed (recorded as 'figure_region') so prose excludes figure text."""
     text=artifact['text'];source_hash=hashlib.sha256(text.encode()).hexdigest()
     if source_hash!=artifact['text_sha256']:raise ValueError('Canonical text hash mismatch')
     previous=0
@@ -342,6 +377,8 @@ def clean(artifact):
     pages={p['page']:p for p in artifact['pages']};lines=_lines(artifact)
     removed=_boilerplate(lines,pages)
     for i,reason in _checklist(lines).items():removed.setdefault(i,reason)
+    if figure_regions:
+        for i,reason in _figure_words(lines,pages,figure_regions).items():removed.setdefault(i,reason)
     values,ops=_token_repairs(artifact)
     for i,(box,value) in enumerate(zip(artifact['rectangles'],values)):
         if value or i in removed:continue
@@ -444,7 +481,7 @@ def clean(artifact):
               'source_end':artifact['rectangles'][i]['end'],'reason':reason} for i,reason in sorted(removed.items())]
     if len(seen)!=len(set(seen)) or set(seen)|set(removed)!=set(range(len(artifact['rectangles']))):
         raise AssertionError('Lost or duplicated source words')
-    result={'format':VERSION,'text':clean_text,'text_sha256':hashlib.sha256(clean_text.encode()).hexdigest(),
+    result={'format':VERSION+('+mineru-figures' if figure_regions else ''),'text':clean_text,'text_sha256':hashlib.sha256(clean_text.encode()).hexdigest(),
             'source_text_sha256':source_hash,'pdf_sha256':artifact['pdf_sha256'],
             'offset_unit':'unicode_code_points','mapping':mapping,'regions':regions,
             'removed':deleted,'events':events,'flags':flags,

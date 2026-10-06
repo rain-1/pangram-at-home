@@ -53,6 +53,12 @@ while True:
         rc = subprocess.run([sys.executable, '-u', str(R / 'train_sweep.py'), job['model'], job['tag'], *job['args']],
                             env=env, cwd=R, stdout=f, stderr=f).returncode
     say(event='train_end', tag=job['tag'], rc=rc)
+    if rc and (d / 'resume-state.pt').exists():
+        say(event='resume_attempt', tag=job['tag'])
+        with open(d / 'train.log', 'a') as f:
+            rc = subprocess.run([sys.executable, '-u', str(R / 'train_sweep.py'), job['model'], job['tag'], *job['args'], '--resume'],
+                                env=env, cwd=R, stdout=f, stderr=f).returncode
+        say(event='resume_end', tag=job['tag'], rc=rc)
     if rc:
         fast_failures = fast_failures + 1 if time.time() - t0 < 900 else 0
         if not job.get('retry_of') and fast_failures < 2:

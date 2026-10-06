@@ -99,3 +99,15 @@ research/iclr-hf-reconcile-*/
 
 # Local Claude Code orientation; not for other people.
 CLAUDE.md
+
+# Splice samples and n-gram example contexts quote third-party paper text.
+research/splice-edits-*/samples.md
+research/llm-sentence-edits-*/samples.md
+research/llm-sentence-edits-*/candidates.jsonl
+research/llm-sentence-edits-*/calls.jsonl
+research/ngram-dashboard-*/ngrams.json
+research/ngram-dashboard-*/dashboard.html
+research/ngram-dashboard-*/ngrams-all.json
+
+# Omission-step eval flow: page images, paper text and judge outputs (third-party text)
+.claude/hillclimb/

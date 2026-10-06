@@ -137,6 +137,7 @@ def main(tag, watch):
     require_space(); d = S / tag; run = json.loads((d / 'run.json').read_text()); ev = d / 'eval'; ev.mkdir(exist_ok=True)
     rows = [json.loads(l) for l in gzip.open(S / 'sweep-eval-rows.jsonl.gz', 'rt')]
     model, tok = load_model(run)
+    status = None
     while True:
         todo = sorted(p for p in d.glob('*-adapters.safetensors') if not (ev / (p.name.split('-adapters')[0] + '.json')).exists() and not p.name.startswith('stage1'))
         for p in todo:
@@ -153,6 +154,24 @@ def main(tag, watch):
             if not watch or not todo:
                 break
         time.sleep(60)
+    if status == 'trained':
+        prune(d, ev)
+
+
+def prune(d, ev):
+    """Finished and scored: keep only the final stage-2 checkpoint; drop the resume state and every other checkpoint."""
+    ck = sorted(d.glob('*-adapters.safetensors'))
+    final = sorted(p for p in ck if p.name.startswith('stage2-epoch'))[-1:] 
+    scored = {p.stem for p in ev.glob('*.json')}
+    removed = []
+    for p in ck:
+        name = p.name.split('-adapters')[0]
+        if p in final or (not name.startswith('stage1') and name not in scored):
+            continue
+        removed.append(p.name); p.unlink()
+    (d / 'resume-state.pt').unlink(missing_ok=True)
+    (d / 'pruned.json').write_text(json.dumps({'kept': [p.name for p in final], 'removed': removed, 'time': time.time()}, indent=1))
+    print(json.dumps({'pruned': d.name, 'kept': [p.name for p in final], 'removed': len(removed)}), flush=True)
 
 
 if __name__ == '__main__':

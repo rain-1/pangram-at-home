@@ -28,13 +28,19 @@ def atomic(path,raw):
 
 
 def one(job):
-    root,paper,output=job;root=Path(root);output=Path(output)
+    root,paper,output,regions_dir=job;root=Path(root);output=Path(output)
     source=root/paper.get('base','source')/paper['text_file'];raw=source.read_bytes()
     if digest(raw)!=paper['blob_sha256']:raise ValueError('Source blob checksum mismatch')
     original=decode(raw)
     if original['pdf_sha256']!=paper['pdf_sha256'] or original['text_sha256']!=paper['text_sha256']:
         raise ValueError('Source identity mismatch')
-    result=clean(original)
+    regions=None
+    if regions_dir:
+        import zstandard
+        from pangram_backend.text_cleanup import mineru_figure_regions
+        layout=Path(regions_dir)/f"{paper['pdf_sha256']}.middle.json.zst"
+        regions=mineru_figure_regions(json.loads(zstandard.ZstdDecompressor().decompress(layout.read_bytes(),max_output_size=2**30)))
+    result=clean(original,figure_regions=regions)
     packed=encode(result,level=9)
     if decode(packed)!=result:raise ValueError('Clean artifact roundtrip mismatch')
     sidecar=output/'objects'/paper['pdf_sha256']/(paper['text_sha256']+'.pgf')
@@ -46,7 +52,7 @@ def one(job):
             'source_text_sha256':result['source_text_sha256'],'source_blob_sha256':paper['blob_sha256'],
             'source_dataset':root.name,'source_positions_path':paper['text_file'],
             'clean_positions_path':str(sidecar.relative_to(output)),
-            'clean_blob_sha256':digest(packed),'cleanup_version':VERSION,
+            'clean_blob_sha256':digest(packed),'cleanup_version':result['format'],
             'stats_json':json.dumps(result['stats'],sort_keys=True),
             'flag_count':len(result['flags']),'pages':len(original['pages'])}
 
@@ -81,6 +87,7 @@ def main():
     p.add_argument('--output',required=True,type=Path)
     p.add_argument('--sample-ids',type=Path)
     p.add_argument('--workers',type=int,default=2)
+    p.add_argument('--figure-regions',type=Path,help='MinerU objects dir (<pdf_sha256>.middle.json.zst); only papers with layout data are processed')
     args=p.parse_args()
     if not 1<=args.workers<=(os.cpu_count() or 1):p.error('Too many workers for this machine')
     output=args.output.resolve();sources=[s.resolve() for s in args.source]
@@ -95,11 +102,12 @@ def main():
     jobs=[];inputs=[]
     for root in sources:
         for paper in source_papers(root,inputs):
-            if wanted is None or paper['forum_id'] in wanted:jobs.append((str(root),paper,str(output)))
+            if args.figure_regions and not (args.figure_regions/f"{paper['pdf_sha256']}.middle.json.zst").exists():continue
+            if wanted is None or paper['forum_id'] in wanted:jobs.append((str(root),paper,str(output),str(args.figure_regions) if args.figure_regions else None))
     if wanted is not None and wanted!={j[1]['forum_id'] for j in jobs}:raise ValueError('Missing sample IDs')
     identities=[(j[0],j[1]['forum_id']) for j in jobs]
     if len(identities)!=len(set(identities)):raise ValueError('Duplicate source record identities')
-    provenance={'format':VERSION,'code_sha256':code_hash,'inputs':inputs,'rows':len(jobs),
+    provenance={'format':VERSION+('+mineru-figures' if args.figure_regions else ''),'figure_regions':str(args.figure_regions) if args.figure_regions else None,'code_sha256':code_hash,'inputs':inputs,'rows':len(jobs),
                 'sample_ids':sorted(wanted) if wanted is not None else None}
     output.mkdir(parents=True,exist_ok=True)
     lockfile=(output/'build.lock').open('a')

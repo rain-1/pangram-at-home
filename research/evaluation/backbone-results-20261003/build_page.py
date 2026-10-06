@@ -179,8 +179,26 @@ sent_html = (rocbar
              + 'Each recall cell also shows that set\'s sentence AUROC.</p>')
 sections.insert(2, ('sentroc', 'Sentence ROC curves', 'Each sentence gets its own score and label, so passages with small AI edits count directly. This answers the main question for papers: how many AI-edited sentences a model catches while flagging a fixed share of human sentences.', sent_html))
 
+from sweep_section import section as sweep_section
+from compare_section import section as compare_section
+_, _, sw_lede, sw_html = sweep_section()
+cmp_lede, cmp_html = compare_section()
+
 nav = ''.join(f'<a href="#{sid}">{E(t)}</a>' for sid, t, _, _ in sections)
-body = ''.join(f'<section id="{sid}"><h2>{E(t)}</h2><p class="lede">{E(d)}</p>{tbl}</section>' for sid, t, d, tbl in sections)
+old_body = ''.join(f'<section id="{sid}"><h2>{E(t)}</h2><p class="lede">{E(d)}</p>{tbl}</section>' for sid, t, d, tbl in sections)
+OLD_INTRO = ('Six backbones trained on the same current-data mixture and scored on the full frozen evaluation suite in BF16. '
+             'Flags use an uncalibrated 0.5 cutoff. ModernBERT ran the full training schedule; the other five ran at 10% length, so differences partly reflect training budget.')
+import takeaways
+TABS = [('compare', 'Old vs new', takeaways.COMPARE + f'<p class="lede">{E(cmp_lede)}</p>{cmp_html}'),
+        ('sweep', 'Overnight sweep · Oct 4–5', takeaways.SWEEP + f'<p class="lede">{E(sw_lede)}</p>{sw_html}'),
+        ('oct3', 'Backbone comparison · Oct 3', takeaways.OCT3 + f'<p class="lede">{E(OLD_INTRO)}</p>'
+                 '<div class="legend"><span class="lb">Best in column</span><span class="lw">Human FPR ≥ 1%</span><span class="lr">Human FPR ≥ 2%</span></div>'
+                 f'<nav aria-label="Sections">{nav}</nav>{old_body}')]
+tabbar = ('<div class="tabs" role="tablist" aria-label="Result sets">' + ''.join(
+    f'<button type="button" role="tab" id="tab-{tid}" aria-controls="panel-{tid}" aria-selected="{str(i == 0).lower()}" data-tab="{tid}">{E(t)}</button>'
+    for i, (tid, t, _) in enumerate(TABS)) + '</div>')
+body = tabbar + ''.join(f'<div class="panel" role="tabpanel" id="panel-{tid}" aria-labelledby="tab-{tid}"{"" if i == 0 else " hidden"}>{h}</div>'
+                        for i, (tid, _, h) in enumerate(TABS))
 
 page = f'''<title>Backbone Eval Results</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -286,18 +304,44 @@ figcaption {{ display: flex; flex-wrap: wrap; justify-content: space-between; ga
 .tip i {{ width: 10px; height: 3px; border-radius: 2px; flex: none; }}
 .tip span {{ flex: 1; font-family: var(--body); }}
 @media (prefers-reduced-motion: reduce) {{ .plot .curve {{ transition: none; }} }}
+tr.unstable th, tr.unstable td {{ opacity: .55; }}
+ul.finds {{ margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 72ch; }}
+ul.finds strong {{ font-weight: 600; }}
+.legend2.static {{ display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; }}
+.lg2 {{ display: inline-flex; align-items: center; gap: 6px; }}
+.lg2 i {{ width: 14px; height: 3px; border-radius: 2px; display: inline-block; }}
+.tabs {{ display: flex; gap: 4px; border-bottom: 1px solid var(--rule); overflow-x: auto; scrollbar-width: none; }}
+.tabs button {{ flex: none; font: 600 14px var(--body); color: var(--muted); background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; cursor: pointer; margin-bottom: -1px; }}
+.tabs button[aria-selected="true"] {{ color: var(--accent); border-bottom-color: var(--accent); }}
+.tabs button:hover {{ color: var(--ink); }}
+.panel {{ display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }}
+.panel[hidden] {{ display: none; }}
+.panel > section {{ padding-top: 8px; }}
+tr.grp th {{ text-align: left; font: 600 11px var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--bg); position: static; }}
+tr.delta th, tr.delta td {{ border-top: 2px solid var(--rule); }}
+td.good {{ color: var(--good); background: var(--good-bg); }}
+td.worse {{ color: var(--bad); background: var(--bad-bg); }}
+details.takeaways {{ border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }}
+details.takeaways > summary {{ cursor: pointer; padding: 12px 16px; font: 600 15px var(--body); color: var(--accent); list-style-position: inside; }}
+details.takeaways[open] > summary {{ border-bottom: 1px solid var(--rule); }}
+.tk {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 0; }}
+.tkg {{ padding: 12px 16px; border-left: 3px solid var(--rule); margin: 10px 12px; }}
+.tkg h4 {{ margin: 0 0 6px; font: 600 12px var(--body); letter-spacing: .06em; text-transform: uppercase; }}
+.tkg ul, .tkg ol {{ margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; line-height: 1.45; max-width: 75ch; }}
+.tkg.clear {{ border-left-color: var(--good); }} .tkg.clear h4 {{ color: var(--good); }}
+.tkg.likely {{ border-left-color: var(--accent); }} .tkg.likely h4 {{ color: var(--accent); }}
+.tkg.unclear {{ border-left-color: var(--warn); }} .tkg.unclear h4 {{ color: var(--warn); }}
+.tkg.next {{ border-left-color: var(--ink); }} .tkg.next h4 {{ color: var(--ink); }}
 footer {{ font-size: 12px; color: var(--muted); display: grid; gap: 6px; max-width: 72ch; }}
 footer ul {{ margin: 0; padding-left: 18px; display: grid; gap: 4px; }}
 </style>
 <div class="wrap">
 <header>
-  <span class="eyebrow">Pangram · binary classifiers · Oct 3, 2026 suite</span>
+  <span class="eyebrow">Pangram · AI-text classifiers</span>
   <h1>Backbone Eval Results</h1>
-  <div class="chips">{status}<span class="chip">Updated {stamp}</span></div>
-  <p class="intro">Six backbones trained on the same current-data mixture, scored on the frozen evaluation suite in BF16. <strong>No calibration yet:</strong> every flag uses a 0.5 cutoff. ModernBERT ran the full training schedule; the other five ran at 10% length, so differences partly reflect training budget.</p>
-  <div class="legend"><span class="lb">Best in column</span><span class="lw">Human FPR ≥ 1%</span><span class="lr">Human FPR ≥ 2%</span></div>
+  <div class="chips"><span class="chip">Updated {stamp}</span></div>
+  <p class="intro">Two rounds of training. <strong>Oct 3:</strong> six backbones compared on the full evaluation suite. <strong>Oct 4–5:</strong> an overnight Qwen3.5 LoRA sweep of about 40 runs testing learning rate, schedule, loss and training length. Start with <strong>Old vs new</strong> for the head-to-head on a common test set.</p>
 </header>
-<nav aria-label="Sections">{nav}</nav>
 {body}
 <footer>
   <strong>Notes</strong>
@@ -305,7 +349,7 @@ footer ul {{ margin: 0; padding-left: 18px; display: grid; gap: 4px; }}
     <li>The four profiles overlap (workflow, comparison, assistance, manuscripts). Don't add their counts together.</li>
     <li>“Document flagged” means at least half the document's tokens scored ≥ 0.5. AUROC ranks documents by mean token probability.</li>
     <li>Human false positives pool clean human documents from the workflow and comparison profiles. Rows marked assisted or ambiguous are excluded.</li>
-    <li>Thresholds should next be fit on the separate calibration windows (2,019 windows, 195 papers, disjoint from checkpoint selection), after checking they don't overlap the evaluation suite.</li>
+    <li>Cutoffs fit on the separate calibration windows don't transfer to hard human text (see Calibrated operating points under the overnight sweep). A deployable cutoff needs a calibration set that includes human sentences next to edits and paired paper originals.</li>
     <li>Source: research/evaluation/backbone-results-20261003 (analyze.py → metrics.json → build_page.py).</li>
   </ul>
 </footer>
@@ -367,7 +411,7 @@ function draw(fig) {
   function hide() { tip.hidden = true; xh.setAttribute('visibility', 'hidden'); dots.forEach(d => d.setAttribute('visibility', 'hidden')); }
   svg.addEventListener('pointermove', move); svg.addEventListener('pointerdown', move); svg.addEventListener('pointerleave', hide);
 }
-const figs = [...document.querySelectorAll('figure.roc')];
+const figs = [...document.querySelectorAll('figure.roc[data-key]')];
 const redraw = () => figs.forEach(draw);
 document.querySelectorAll('.scale').forEach(b => b.addEventListener('click', () => { logX = b.dataset.log === '1'; document.querySelectorAll('.scale').forEach(x => x.setAttribute('aria-pressed', String((x.dataset.log === '1') === logX))); redraw(); }));
 document.querySelectorAll('.lg').forEach(b => b.addEventListener('click', () => {
@@ -376,6 +420,10 @@ document.querySelectorAll('.lg').forEach(b => b.addEventListener('click', () => 
   redraw();
 }));
 redraw();
+const tabs = [...document.querySelectorAll('.tabs button')];
+const show = id => { tabs.forEach(b => { const on = b.dataset.tab === id; b.setAttribute('aria-selected', String(on)); document.getElementById('panel-' + b.dataset.tab).hidden = !on; }); };
+tabs.forEach(b => b.addEventListener('click', () => { show(b.dataset.tab); try { history.replaceState(null, '', '#' + b.dataset.tab); } catch (e) {} }));
+const h = location.hash.slice(1); if (tabs.some(b => b.dataset.tab === h)) show(h);
 })();
 </script>'''
 page += SCRIPT.replace('__DATA__', json.dumps(roc_data, separators=(',', ':')))

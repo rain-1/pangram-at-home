@@ -76,7 +76,10 @@ if __name__ == '__main__':
     runs = {}
     for name, f in [('space', from_space), ('h200', from_h200)]:
         try:
-            got = f(); runs.update(got); print(name, len(got), 'runs')
+            got = f()
+            for v in got.values():
+                v['host'] = 'H200' if name == 'h200' else 'A100'
+            runs.update(got); print(name, len(got), 'runs')
         except Exception as e:
             print(name, 'FAILED', repr(e)[:200])
     (OUT / 'runs.json').write_text(json.dumps(runs, indent=1))

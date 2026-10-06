@@ -42,7 +42,10 @@ def papers(source):
 
 def worker(args):
     """One client process: parse its share of PDFs with bounded async concurrency."""
-    source,output,server,concurrency,jobs=args
+    source,output,server,concurrency,jobs,gpu=args
+    # MinerU's small layout/OCR models run in the client: keep them on the job's GPU,
+    # never on GPUs other jobs are using.
+    os.environ['CUDA_VISIBLE_DEVICES']=gpu
     os.environ['HF_HUB_OFFLINE']='1'
     import zstandard
     from mineru.config import VlmConfig
@@ -56,7 +59,8 @@ def worker(args):
                 raw=pdf.read_bytes()
                 if hashlib.sha256(raw).hexdigest()!=row['pdf_sha256']:raise ValueError('PDF checksum mismatch')
                 result=await parse_async(pdf,tier='standard',image_analysis=False,vlm_config=config)
-                markdown=result.markdown().encode()
+                # No embedded base64 figures (~2 MB/paper); the layout JSON keeps the regions.
+                markdown=result.markdown(image_renderer=lambda block:'').encode()
                 middle=zstandard.ZstdCompressor(level=10).compress(result.to_json().encode())
                 base=Path(output)/'objects'/row['pdf_sha256']
                 atomic(base.with_suffix('.md'),markdown);atomic(base.with_suffix('.middle.json.zst'),middle)
@@ -108,7 +112,16 @@ def main():
     todo=[r for r in papers(source) if r['pdf_sha256'] not in done]
     if args.limit:todo=todo[:args.limit]
     bindir=Path(sys.executable).parent
-    env=dict(os.environ,CUDA_VISIBLE_DEVICES=args.gpu,HF_HUB_OFFLINE='1')
+    os.environ['CUDA_VISIBLE_DEVICES']=args.gpu   # inherited by client workers too
+    # MinerU spawns its own subprocesses; with default math-library thread pools
+    # (~47 threads each) the container hits its shared thread limit. Keep them small.
+    for name in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS'):
+        os.environ[name]='1'
+    os.environ['TOKENIZERS_PARALLELISM']='false'
+    # The Space has no CUDA toolkit (nvcc): use vLLM's prebuilt FlashAttention
+    # kernels and sampler instead of FlashInfer's JIT-compiled ones.
+    env=dict(os.environ,CUDA_VISIBLE_DEVICES=args.gpu,HF_HUB_OFFLINE='1',
+             VLLM_ATTENTION_BACKEND='FLASH_ATTN',VLLM_USE_FLASHINFER_SAMPLER='0')
     server_cmd=[str(bindir/'mineru-openai-server'),'--engine','vllm','--host','127.0.0.1','--port',str(args.port),
                 '--dtype','bfloat16','--gpu-memory-utilization',args.gpu_memory_utilization]
     provenance={'source_dataset':source.name,'gpu':args.gpu,'server_command':server_cmd[1:],'tier':'standard',
@@ -129,9 +142,16 @@ def main():
         with ProcessPoolExecutor(max_workers=args.clients) as pool:
             for offset in range(0,len(todo),wave):
                 batch=todo[offset:offset+wave];shares=[batch[i::args.clients] for i in range(args.clients)]
-                for results in pool.map(worker,[(str(source),str(output),server,args.concurrency,s) for s in shares if s]):
+                wave_failed=0
+                for results in pool.map(worker,[(str(source),str(output),server,args.concurrency,s,args.gpu) for s in shares if s]):
                     for r in results:
-                        completed+=1;failed+=r['state']!='parsed';pages+=r.get('pages',0)
+                        completed+=1;failed+=r['state']!='parsed';wave_failed+=r['state']!='parsed';pages+=r.get('pages',0)
+                if wave_failed>.2*len(batch):
+                    # Systematic failure (e.g. GPU out of memory): stop instead of burning
+                    # through the queue; failed PDFs stay pending for the next run.
+                    atomic(output/'status.json',json.dumps({'state':'aborted_high_failure_rate','completed':completed,
+                           'failed':failed,'wave_failed':wave_failed,'wave_size':len(batch)}).encode())
+                    raise SystemExit(f'Aborting: {wave_failed}/{len(batch)} failures in one wave')
                 elapsed=time.time()-started
                 status={'state':'running','completed':completed,'failed':failed,'pending':len(todo),'pages':pages,
                         'pages_per_second':pages/max(1,elapsed),'elapsed_seconds':elapsed,

@@ -28,6 +28,10 @@ User preference October 3, 2026: Put every classifier training run in the same W
 
 User direction October 3, 2026: Storage is a hard cap. Use BF16 for trainable adapter/classifier weights and saved model checkpoints rather than defaulting to FP32 or keeping duplicate FP32 copies. Address any numerical issues through backend optimization instead of silently increasing weight/checkpoint precision. Full-precision metrics and standard mixed-precision accumulation remain allowed. Preserve existing trained Space checkpoints unless deletion is explicitly authorized; do not interrupt active runs merely to change this preference.
 
+# Checkpoint retention
+
+User direction October 5, 2026: Intermediate checkpoints exist only to resume a stalled or failed run. During training, keep one resumable checkpoint (adapter weights, optimizer and scheduler state, data position), overwritten periodically, and resume from it on failure. When a run finishes and its checkpoints have been scored, delete everything except the final weights: the resume state, earlier epoch checkpoints, and scored learning-curve step checkpoints. Final weights go to the Space's training-storage bucket. This direction authorizes deleting those superseded intermediate checkpoints of new runs; other removals from the Space still need explicit approval.
+
 # Git repository and publication standard
 
 User direction October 3, 2026: This folder is a git repository pushed to the private GitHub repo `woog97/paingram`. It stays private until the user announces the project, then becomes public with its full history. Treat every commit as eventually public.
@@ -36,3 +40,7 @@ User direction October 3, 2026: This folder is a git repository pushed to the pr
 - Never commit credentials, `docs/HANDOFF.md` or `docs/handoff/`, infrastructure addresses, LLM call records or datasets containing third-party paper text, per-paper detector scores (`app/public/catalogue/`), or Pangram brand assets.
 - Reach the H200 node with `ssh pangram-h200` (an alias in the local `~/.ssh/config`); never hardcode its address or port in repository files.
 - A local pre-commit hook rejects files over 10 MB, credential-like strings and the H200 address. Fix the cause instead of bypassing it with `--no-verify`.
+
+# Time zone for reporting
+
+User preference October 5, 2026: Report all times to the user in Pacific time (PDT, UTC−7; PST, UTC−8, after daylight saving ends), e.g. "7:20 PM PDT". Convert timestamps from remote hosts, which are usually UTC, before reporting them. Machine-readable logs and records may stay in UTC.
