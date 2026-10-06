@@ -178,9 +178,14 @@ def main(tag, watch):
 
 
 def prune(d, ev):
-    """Finished and scored: keep only the final stage-2 checkpoint; drop the resume state and every other checkpoint."""
+    """Finished and scored: keep the final stage-2 checkpoint and the stage-2 epoch with the best dev-half all-edit
+    recall (the selected checkpoint; selection loss chose a collapsed MoE run before); drop everything else."""
     ck = sorted(d.glob('*-adapters.safetensors'))
-    final = sorted(p for p in ck if p.name.startswith('stage2-epoch'))[-1:] 
+    epochs = sorted(p for p in ck if p.name.startswith('stage2-epoch'))
+    def dev_all(p):
+        f = ev / (p.name.split('-adapters')[0] + '.json')
+        return (json.loads(f.read_text())['dev']['edits_all']['recall_at_1pct'] or 0) if f.exists() else -1
+    final = list(dict.fromkeys(epochs[-1:] + sorted(epochs, key=dev_all)[-1:]))
     scored = {p.stem for p in ev.glob('*.json')}
     removed = []
     for p in ck:
@@ -189,7 +194,7 @@ def prune(d, ev):
             continue
         removed.append(p.name); p.unlink()
     (d / 'resume-state.pt').unlink(missing_ok=True)
-    (d / 'pruned.json').write_text(json.dumps({'kept': [p.name for p in final], 'removed': removed, 'time': time.time()}, indent=1))
+    (d / 'pruned.json').write_text(json.dumps({'kept': [p.name for p in final], 'rule': 'final + best dev edits_all recall_at_1pct', 'removed': removed, 'time': time.time()}, indent=1))
     print(json.dumps({'pruned': d.name, 'kept': [p.name for p in final], 'removed': len(removed)}), flush=True)
 
 

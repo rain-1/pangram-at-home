@@ -42,3 +42,33 @@ Runs log to Trackio project `pangram-hparam-sweep-20261006`, in a local SQLite d
 ## Metrics
 
 `sweep_eval.py` reports recall at 1% FPR with the cutoff fitted on the same half it reports. That is fine for ranking arms but optimistic. For held-out operating points, use `calib_score.py` and `../overnight-sweep-20261004/calibrated_report.py`, which also reports the document any-highlight rate.
+
+## MoE run
+
+`moe.json` and `launch_moe.py` (torchrun, 4×A100) train Qwen3.6-35B-A3B. The recipe is woog's `moe-A-full-lr1e4` with four changes, decided after reviewing her MoE runs in `/data/workspace/overnight-sweep-20261004/h200/` (an independent second review reached the same conclusions):
+
+| Setting | `moe-A-full` | `moe-A-full-lr1e4` | This run | Why |
+|---|---|---|---|---|
+| LR | 2e-4 | 1e-4 | 1e-4 | At 2e-4 the full-length run diverged near step 950: training loss jumped from about 0.05 to 1.05 and never recovered, and test all-edit recall finished at 0.31. At 1e-4 it trained cleanly (loss 0.108 → 0.041 → 0.023). The 4B tolerated even 5e-4, so its LR tolerance does not carry over. |
+| Warmup | 0.06 | 0.06 | 0.10 | The blow-up came just after peak LR, so a gentler ramp is the cheapest safety margin. |
+| Micro-batch (effective 32) | 8 | 8 | 4 | Fits 80 GB A100s; the averaged gradient is the same. |
+| Divergence handling | none | none | `--on-diverge rollback` (snapshots every 100 steps, at most 3 rollbacks, LR × 0.5 from the second) | `moe-A-full` ran on for about 2 hours after collapsing. |
+| Checkpoint selection | lowest selection loss | lowest selection loss | best dev-half all-edit recall (`sweep_eval.prune` keeps it plus the final epoch) | Selection loss was lowest for the collapsed run. |
+
+**Unchanged on purpose:**
+- **LoRA rank 128, expert rank 16, alpha 32 (shared).** With 1/r scaling, a fixed alpha keeps the effective step similar across ranks. Equalising the expert scale (alpha 4 on rank 16) would shrink expert updates about 8×. Raising alpha hurt the 4B at epoch 0: all-edit recall 0.545 at alpha 256 against 0.761 for the reference. The MoE is already at the edge of stability, so its alpha × LR product is not raised.
+- **Head LR, weight decay, dropout:** 2e-5, 0.01, 0.
+
+A lower separate LR for the expert adapters was considered and not used: it needs an extra parameter group, and the gains are uncertain.
+
+**Mechanics:** `reduce_grads` now all-reduces in 256 MiB buckets. The single flat FP32 buffer copied all ~1.1B trainable gradients and kept the 2-GPU runs at 78 GiB however small the micro-batch. `--expert-rank` defaults to the models.json value (16); the sweep copy had briefly overridden it with the general rank.
+
+**Before launch:**
+1. Score `sweeps/moe-A-full-lr1e4-woog` (staged by `setup_moe.py`), whose three epochs were never evaluated. If none beats the 20%-length `moe-A-s1` (test all-edit 0.815), set `--fraction` to 0.2–0.5 instead of a full-length run.
+2. `python launch_moe.py --preflight`: peak memory must be about 76 GB or less, with the expected rank counts and a sane gradient norm.
+
+**4B results that would change this.** Act only on a gain of at least 0.03 dev all-edit recall, or a gain on every subset:
+- effective batch 64 wins or ties → adopt it;
+- warmup 0.15 wins or ties → use 0.15;
+- head LR 2e-4 wins → adopt it;
+- higher alpha or LR wins → do not transfer to the MoE.
