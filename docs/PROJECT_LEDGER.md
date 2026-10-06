@@ -5,6 +5,7 @@ As of Tue Oct 6, 00:05 PDT. Synthesized from all 8 Claude Code sessions on this 
 ## Contents
 - [What you are trying to solve](#what-you-are-trying-to-solve)
 - [What we have learned](#what-we-have-learned)
+- [Priorities](#priorities)
 - [Waiting on you (project owner)](#waiting-on-you-(project-owner))
 - [Unfinished threads](#unfinished-threads)
 - [Experiments](#experiments)
@@ -36,6 +37,37 @@ As of Tue Oct 6, 00:05 PDT. Synthesized from all 8 Claude Code sessions on this 
 8. **ICLR flag rates rise sharply by year.** Median share of sentences flagged: ≤2022 0.5%, 2023–2024 ≈0.7%, ICLR 2025 1.5–1.8%, ICLR 2026 14.5%, ICLR 2027 68%. Whether 2027 reflects AI use or a difference in submission format, or in topic and writing style over time, is unresolved. _(Oct 5 18:55)_
 9. **Baseline omissions now remove most noise.** On 100 random pages, noise left fell from 175 to 22 per 1k words (references now removed) with prose loss ~3 per 1k; clean pages rose from 16% to 45%. _(Oct 5 21:29)_
 10. **Bulk transfers must be bundled.** Per-file uploads stayed at ~8 MB/s regardless of parallelism; one stream reached 47 MB/s and four reached 88 MB/s. Bundles moved 27k files in 126 s. _(Oct 5 20:15)_
+
+## Priorities
+
+"Useful" means it improved small-edit detection at 1% FPR or produced a tool or decision that is still in use. Time estimates are approximate.
+
+### Suggested order for today
+1. **Read the wave-2 and multi-writer held-out results and choose the training data mix.** Splice and LLM sentence edits are the only change that improved small-edit recall.
+2. **Check whether ICLR 2027's 68% is real.** Read the top-flagged sentences in ~20 papers and score ICLR 2026 submission versions before more site work.
+3. **Add human calibration data.** Extract part of the ~20k 2019–2022 PDFs already in R2; the document-level threshold rests on 2 papers.
+4. **Decide whether AI-side text goes through the omission step.** This blocks using the cleaned human paper text in training.
+5. **Rotate the exposed HF and Jupyter tokens.** About 5 minutes.
+6. **Then rescore ICLR 2027 with the chosen model and update the Atlas.** Uses the existing publish pipeline (bundled uploads).
+
+### Still in progress and probably not worth continuing
+- **New hyperparameter sweep on all 8 A100s.** If it tunes the recipe on the old data mix, it repeats the overnight sweep's result. Check what it tests before it holds all 8 GPUs.
+- **FSDP A100 MoE path and more full-length MoE runs.** Longer MoE training did not help. A 20%-length MoE on splice data is the one MoE run still worth doing.
+- **Further omission tuning (table leaks, pseudocode, captions).** First decide whether AI-side text goes through the same omission step; until then more tuning may not affect training.
+- **Clause-labeling v3 and 4B embedding runs.** Unlikely to change training decisions.
+- **More site work on the current 4B scores.** Rescore ICLR 2027 with the best splice-trained model first.
+
+### Most time spent, least payoff
+
+| Work | Time | Outcome | Assessment |
+|---|---|---|---|
+| Recipe and hyperparameter sweeps for small edits | ~12 h on 4 A100s + 3 H200s, plus most of a session | Small-edit recall stayed at 0.21–0.25 for every recipe; splice data reached ~0.6 in one run. | Useful negative result, but larger than needed: the data audit (2 of 24,000 windows with short AI spans) pointed to data before the sweep started. |
+| Full-length MoE runs and scaling work | ~6 H200 hours + ~3 h of session | Full-length runs scored below the 20%-length run. | Low payoff; the divergence guard built during this work is still in use. |
+| MinerU PDF extraction | ~1 h setup, ~10 GPU hours lost to out-of-memory errors, ~3 h of comparisons | Judged too slow and dropped; a 300-paper subset kept. | Mostly not useful. |
+| Omission-step tuning (v1–v8, LLM-judge loop) | ~8 h of session, ~5M subagent tokens | Noise left fell from 175 to 22 per 1k words; references removed. | Partly useful. No extraction shortcut was found and extracted paper text is ~25% of training tokens, so later iterations changed little. |
+| Clause-labeling (soft n-gram label) test | ~4.5 h | Gold set stopped after 15 sentences; sentences and clauses scored about the same (0.971 vs 0.953). | Low payoff so far. |
+| N-gram dashboard | ~1 h | Exploratory statistics; how they would be used was never decided. | Low payoff. |
+| Publishing the fast10 4B scores to the Atlas | ~8 h of session | ICLR 2027 classified on the site; reader fixes and the Calibration page. | The reader and calibration work carries over. The scores come from a model the splice models outperform (small-edit recall 0.25 vs ~0.6), and the 68% figure is unvalidated. |
 
 ## Waiting on you (project owner)
 

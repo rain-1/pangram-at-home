@@ -31,7 +31,7 @@ w(f"As of {pdt(NOW)}. Synthesized from all {len(SESSIONS)} Claude Code sessions 
   "Times are PDT. \"Age\" is time since a thread was last touched. This file contains no credentials, infrastructure addresses, paper text or per-paper scores.")
 w("")
 w("## Contents")
-for s in ["What you are trying to solve", "What we have learned", "Waiting on you (project owner)", "Unfinished threads", "Experiments", "Decisions",
+for s in ["What you are trying to solve", "What we have learned", "Priorities", "Waiting on you (project owner)", "Unfinished threads", "Experiments", "Decisions",
           "Flags raised but not answered", "Errors, time lost and fixes", "Standing rules", "Sessions", "Links"]:
     w(f"- [{s}](#{s.lower().replace(',', '').replace(' ', '-')})")
 w("")
@@ -42,6 +42,25 @@ w("")
 w("## What we have learned")
 for i, (k, v, t) in enumerate(FINDINGS, 1):
     w(f"{i}. **{k}.** {v} _({pdt(t, True)})_")
+w("")
+w("## Priorities")
+w("")
+w(PRIORITY_NOTE)
+w("")
+w("### Suggested order for today")
+for i, (a, b) in enumerate(TODAY, 1):
+    w(f"{i}. **{a}.** {b}")
+w("")
+w("### Still in progress and probably not worth continuing")
+for a, b in STOP:
+    w(f"- **{a}.** {b}")
+w("")
+w("### Most time spent, least payoff")
+w("")
+w("| Work | Time | Outcome | Assessment |")
+w("|---|---|---|---|")
+for a, b, c, d in LOW_PAYOFF:
+    w(f"| {a} | {b} | {c} | {d} |")
 w("")
 needs = [t for t in THREADS if t[3] == "waiting on you"]
 high_ignored = [f for f in IGNORED if f[4] == "high"]
@@ -133,6 +152,8 @@ data = {
     "rules": [{"cat": a, "rule": b} for a, b in RULES],
     "sessions": [{**s, "from": pdt(s["start"], True), "to": pdt(s["end"], True)} for s in sorted(SESSIONS, key=lambda x: x["start"])],
     "links": [{"k": k, "v": v} for k, v in LINKS],
+    "priority": {"note": PRIORITY_NOTE, "low": [{"work": a, "time": b, "outcome": c, "assessment": d} for a, b, c, d in LOW_PAYOFF],
+                 "stop": [{"k": a, "v": b} for a, b in STOP], "today": [{"k": a, "v": b} for a, b in TODAY]},
 }
 html = (HERE / "template.html").read_text().replace("__DATA__", json.dumps(data, ensure_ascii=False))
 (HERE / "project-ledger.html").write_text(html)

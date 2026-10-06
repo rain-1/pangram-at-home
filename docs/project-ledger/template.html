@@ -124,6 +124,7 @@ const highFlags = D.ignored.filter(f => f.sev === "high");
 
 const TABS = [
   {id:"overview", label:"Overview"},
+  {id:"priorities", label:"Priorities"},
   {id:"threads", label:"Threads", n:open.length},
   {id:"experiments", label:"Experiments", n:D.experiments.length},
   {id:"decisions", label:"Decisions", n:D.accepted.length + D.overridden.length + D.ignored.length},
@@ -227,7 +228,20 @@ function sessions(){
   <div class="card"><ul class="plain">${D.links.map(l => `<li><a href="${esc(l.v)}" target="_blank" rel="noopener">${esc(l.k)}</a><span class="when">${esc(l.v)}</span></li>`).join("")}</ul></div>`;
 }
 
-const VIEWS = {overview, threads, experiments, decisions, issues, rules, sessions};
+function priorities(){
+  const P = D.priority;
+  return `<p class="lead">${esc(P.note)}</p>
+  <h2>Suggested order for today</h2>
+  <div class="card"><ol class="findings">${P.today.map(x => `<li><div><b>${esc(x.k)}</b><p>${esc(x.v)}</p></div></li>`).join("")}</ol></div>
+  <h2>Still in progress and probably not worth continuing <small>${P.stop.length}</small></h2>
+  <div class="card"><ul class="plain">${P.stop.map(x => `<li><b>${esc(x.k)}</b><p class="sub">${esc(x.v)}</p></li>`).join("")}</ul></div>
+  <h2>Most time spent, least payoff <small>${P.low.length}</small></h2>
+  <div class="tablewrap"><table><thead><tr><th>Work</th><th>Time</th><th>Outcome</th><th>Assessment</th></tr></thead><tbody>
+  ${P.low.map(x => `<tr><td><b>${esc(x.work)}</b></td><td class="sub">${esc(x.time)}</td><td>${esc(x.outcome)}</td><td class="sub">${esc(x.assessment)}</td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+
+const VIEWS = {overview, priorities, threads, experiments, decisions, issues, rules, sessions};
 function render(){
   tabsBar();
   const m = document.getElementById("main");

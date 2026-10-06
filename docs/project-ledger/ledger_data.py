@@ -219,3 +219,30 @@ OWNER_TYPE = {
 }
 def owner_type(text):
     return next((v for k, v in OWNER_TYPE.items() if text.startswith(k)), "decision")
+
+# Priorities (assessment as of Oct 6): work with high cost and low payoff, work to stop, and today's order.
+PRIORITY_NOTE = "\"Useful\" means it improved small-edit detection at 1% FPR or produced a tool or decision that is still in use. Time estimates are approximate."
+LOW_PAYOFF = [
+    ("Recipe and hyperparameter sweeps for small edits", "~12 h on 4 A100s + 3 H200s, plus most of a session", "Small-edit recall stayed at 0.21–0.25 for every recipe; splice data reached ~0.6 in one run.", "Useful negative result, but larger than needed: the data audit (2 of 24,000 windows with short AI spans) pointed to data before the sweep started."),
+    ("Full-length MoE runs and scaling work", "~6 H200 hours + ~3 h of session", "Full-length runs scored below the 20%-length run.", "Low payoff; the divergence guard built during this work is still in use."),
+    ("MinerU PDF extraction", "~1 h setup, ~10 GPU hours lost to out-of-memory errors, ~3 h of comparisons", "Judged too slow and dropped; a 300-paper subset kept.", "Mostly not useful."),
+    ("Omission-step tuning (v1–v8, LLM-judge loop)", "~8 h of session, ~5M subagent tokens", "Noise left fell from 175 to 22 per 1k words; references removed.", "Partly useful. No extraction shortcut was found and extracted paper text is ~25% of training tokens, so later iterations changed little."),
+    ("Clause-labeling (soft n-gram label) test", "~4.5 h", "Gold set stopped after 15 sentences; sentences and clauses scored about the same (0.971 vs 0.953).", "Low payoff so far."),
+    ("N-gram dashboard", "~1 h", "Exploratory statistics; how they would be used was never decided.", "Low payoff."),
+    ("Publishing the fast10 4B scores to the Atlas", "~8 h of session", "ICLR 2027 classified on the site; reader fixes and the Calibration page.", "The reader and calibration work carries over. The scores come from a model the splice models outperform (small-edit recall 0.25 vs ~0.6), and the 68% figure is unvalidated."),
+]
+STOP = [
+    ("New hyperparameter sweep on all 8 A100s", "If it tunes the recipe on the old data mix, it repeats the overnight sweep's result. Check what it tests before it holds all 8 GPUs."),
+    ("FSDP A100 MoE path and more full-length MoE runs", "Longer MoE training did not help. A 20%-length MoE on splice data is the one MoE run still worth doing."),
+    ("Further omission tuning (table leaks, pseudocode, captions)", "First decide whether AI-side text goes through the same omission step; until then more tuning may not affect training."),
+    ("Clause-labeling v3 and 4B embedding runs", "Unlikely to change training decisions."),
+    ("More site work on the current 4B scores", "Rescore ICLR 2027 with the best splice-trained model first."),
+]
+TODAY = [
+    ("Read the wave-2 and multi-writer held-out results and choose the training data mix", "Splice and LLM sentence edits are the only change that improved small-edit recall."),
+    ("Check whether ICLR 2027's 68% is real", "Read the top-flagged sentences in ~20 papers and score ICLR 2026 submission versions before more site work."),
+    ("Add human calibration data", "Extract part of the ~20k 2019–2022 PDFs already in R2; the document-level threshold rests on 2 papers."),
+    ("Decide whether AI-side text goes through the omission step", "This blocks using the cleaned human paper text in training."),
+    ("Rotate the exposed HF and Jupyter tokens", "About 5 minutes."),
+    ("Then rescore ICLR 2027 with the chosen model and update the Atlas", "Uses the existing publish pipeline (bundled uploads)."),
+]
