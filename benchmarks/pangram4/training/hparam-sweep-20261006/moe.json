@@ -65,6 +65,29 @@
     "7"
    ],
    "tag": "moe-mix-lr1e4-w10-s1"
+  },
+  "mix2": {
+   "model": "qwen36-35b-a3b-mix2",
+   "gpus": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+   ],
+   "tag": "moe-mix2-lr1e4-w10-s2",
+   "extra_args": [
+    "--init-adapters",
+    "sweeps/stage1-init-moe-base-s2.safetensors",
+    "--start-stage",
+    "2",
+    "--ckpt-every",
+    "0"
+   ],
+   "_note": "Balanced mix v2 on heterogeneous-ai-spans v1.4.0 (formatting-corrected default view). Stage 2 only, from the seed-2 base stage-1 checkpoint; seed 2 so the stage-2 shuffle matches that origin."
   }
  }
 }

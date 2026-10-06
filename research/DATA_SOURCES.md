@@ -84,3 +84,8 @@ In woog's trainer, `stage2-epochN` files are **shards** (fresh draws), not repea
    - woog's H200 runs and the vendored PEFT 0.18.1 on the Space disagree on input versus output axes for fused MoE expert parameters. Same keys, transposed factors.
    - A checkpoint trained under one version does not load under the other. Worse, if the shapes ever matched it would load silently with the wrong update.
    - Record the PEFT version with every MoE checkpoint. To convert, use new A = old Bᵀ and new B = old Aᵀ, and verify numerically.
+
+8. **Formatting is a label leak unless both classes share one convention.**
+   - heterogeneous-ai-spans v1.3.0 had CRLF line endings, hard wraps and curly quotes on the human side only (Gutenberg/Standard Ebooks). The v1 mix MoE then flagged 110/120 straight-quoted, unwrapped HAP-E-2 human fiction on benchmark-v3, and 40% of PG-19 calibration humans. v1.4.0 normalises both sides.
+   - woog's `prepared-v2` has the reverse cue: Luna mirrors (AI) use curly quotes (31 per 10k chars, straight 0.3), while the human pool uses straight quotes (27) and line breaks (44). This is not yet normalised.
+   - Audit every new source with `research/data-mix-20261006/scripts/format_audit_base.py` before training.

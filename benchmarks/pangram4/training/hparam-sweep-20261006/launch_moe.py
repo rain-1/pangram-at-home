@@ -8,12 +8,12 @@ import argparse, json, os, subprocess, sys
 from pathlib import Path
 
 R = Path(__file__).resolve().parent
-p = argparse.ArgumentParser(); p.add_argument('run', choices=['base', 'mix']); p.add_argument('--fraction', type=float, required=True)
+p = argparse.ArgumentParser(); p.add_argument('run'); p.add_argument('--fraction', type=float, required=True)
 p.add_argument('--seed', type=int, default=1); p.add_argument('--preflight', action='store_true'); p.add_argument('--resume', action='store_true'); a = p.parse_args()
 all_ = json.loads((R / 'moe.json').read_text()); cfg = {**all_, **all_['runs'][a.run]}
 tag = cfg['tag'].rsplit('-s', 1)[0] + f'-s{a.seed}' + ('-preflight' if a.preflight else '')
 cfg['args'] = [x if cfg['args'][i - 1] != '--seed' else str(a.seed) for i, x in enumerate(cfg['args'])]
-args = [*cfg['args'], '--fraction', str(a.fraction), '--state-dir', str(R / 'state'), *(cfg['preflight_args'] if a.preflight else []), *(['--resume'] if a.resume else [])]
+args = [*cfg['args'], *cfg.get('extra_args', []), '--fraction', str(a.fraction), '--state-dir', str(R / 'state'), *(cfg['preflight_args'] if a.preflight else []), *(['--resume'] if a.resume else [])]
 env = {**os.environ, 'CUDA_VISIBLE_DEVICES': ','.join(cfg['gpus']), 'HF_HUB_OFFLINE': '1', 'TOKENIZERS_PARALLELISM': 'false'}
 out = R / 'sweeps' / tag; out.mkdir(parents=True, exist_ok=True)
 with open(out / 'train.log', 'a') as f:

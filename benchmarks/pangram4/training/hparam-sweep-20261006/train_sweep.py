@@ -192,7 +192,7 @@ def main(a):
     SHORT_SPAN_OVERSAMPLE = a.short_span_oversample
     modeling_sweep.W.update(sentence=a.sentence_weight, segment=a.segment_weight, mixed=a.mixed_weight, document=a.document_weight)
     manifest = json.loads((root / 'prepared-v2/manifest.json').read_text())
-    total_rows = sum(round(v * a.fraction) for k in ['stage1-epoch0', 'stage2-epoch0', 'stage2-epoch1', 'stage2-epoch2'] for v in manifest['counts'][k].values())
+    total_rows = sum(round(v * a.fraction) for k in (['stage1-epoch0'] if a.start_stage == 1 else []) + ['stage2-epoch0', 'stage2-epoch1', 'stage2-epoch2'] for v in manifest['counts'][k].values())
     EB = a.effective_batch; size = min(a.micro_batch, EB); A = EB // size
     assert EB % size == 0 and A % world == 0, f'effective batch {EB} must split evenly into micro-batches across GPUs'
     cfg = {'kind': spec['kind'], 'training_fraction': a.fraction, 'total_training_examples': total_rows, 'seed': a.seed,
@@ -283,6 +283,10 @@ def main(a):
         skip = {tuple(x) for x in st.get('skip', [])}; lr_scale = st.get('lr_scale', 1.); rollbacks = st.get('rollbacks', 0)
         random.setstate(st['rng']['python']); np.random.set_state(st['rng']['numpy']); torch.set_rng_state(st['rng']['torch'])
 
+    if a.init_adapters and not (a.resume and rp.exists()):
+        # Start from another run's adapters (e.g. a finished stage 1 when only stage-2 data differs between arms).
+        restore(model, Path(a.init_adapters)); sync_params()
+        put(out / 'init-adapters.json', {'path': a.init_adapters, 'sha256': hashlib.sha256(Path(a.init_adapters).read_bytes()).hexdigest(), 'start_stage': a.start_stage})
     if a.resume and rp.exists():
         state = torch.load(rp, map_location='cpu', weights_only=False); apply_state(state)
         if snaps.exists():
@@ -313,7 +317,7 @@ def main(a):
     try:
         while True:
             try:
-                for stage in [1, 2]:
+                for stage in ([2] if a.start_stage == 2 else [1, 2]):
                     if state is not None and stage < state['stage']:
                         continue
                     epochs = cfg['stages'][str(stage)]['epochs']; best = float('inf'); bestpath = None
@@ -500,6 +504,8 @@ if __name__ == '__main__':
     p.add_argument('--fraction', type=float, default=.2); p.add_argument('--seed', type=int, default=42)
     p.add_argument('--ckpt-every', type=int, default=0)
     p.add_argument('--arm', default='')
+    p.add_argument('--init-adapters', default='', help='adapter safetensors to start from (must match this LoRA config)')
+    p.add_argument('--start-stage', type=int, choices=[1, 2], default=1, help='2 = skip stage 1 (use with --init-adapters from a finished stage 1)')
     p.add_argument('--lora-rank', type=int, default=128); p.add_argument('--lora-alpha', type=float, default=32)
     p.add_argument('--expert-rank', type=int, default=0, help='MoE expert LoRA rank; 0 = models.json value (16 for qwen36-35b-a3b)')
     p.add_argument('--lora-dropout', type=float, default=0.); p.add_argument('--weight-decay', type=float, default=.01)

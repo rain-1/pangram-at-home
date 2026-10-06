@@ -72,7 +72,7 @@ def main(a):
     for name in ['selection-windows', 'calibration-windows']:
         for l in gzip.open(base / f'{name}.jsonl.gz', 'rt'):
             held |= sents(json.loads(l)['text'])
-    rows = [json.loads(l) for l in gzip.open(R / 'additions-v1.jsonl.gz', 'rt')]
+    rows = [json.loads(l) for l in gzip.open(R / a.additions, 'rt')]
     drops = {k: set(v) for k, v in drops.items()}
     stats = Counter(); docs = defaultdict(list)
     for r in rows:
@@ -119,7 +119,7 @@ def main(a):
     if out.exists():
         raise SystemExit(f'{out} exists; refusing to overwrite')
     shutil.copytree(base, out); m2 = json.loads(json.dumps(man)); m2['additions'] = {'spec_sha256': hashlib.sha256((R / a.spec).read_bytes()).hexdigest(),
-                                                                                      'additions_sha256': hashlib.sha256((R / 'additions-v1.jsonl.gz').read_bytes()).hexdigest(), 'per_epoch': {}}
+                                                                                      'additions_sha256': hashlib.sha256((R / a.additions).read_bytes()).hexdigest(), 'per_epoch': {}}
     for e in range(3):
         key = f'stage2-epoch{e}'; rows_e = [json.loads(l) for l in gzip.open(base / f'{key}.jsonl.gz', 'rt')]
         for i, (k, ds, w) in enumerate(chosen[e]):
@@ -139,4 +139,4 @@ def main(a):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser(); p.add_argument('--base', default='qwen36-35b-a3b'); p.add_argument('--name', default='qwen36-35b-a3b-mix')
-    p.add_argument('--spec', default='mix-spec.json'); p.add_argument('--drops', default='leakage-drop-ids.json'); main(p.parse_args())
+    p.add_argument('--spec', default='mix-spec.json'); p.add_argument('--drops', default='leakage-drop-ids.json'); p.add_argument('--additions', default='additions-v1.jsonl.gz'); main(p.parse_args())

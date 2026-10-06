@@ -9,7 +9,7 @@ import argparse, json, subprocess, sys, time
 from pathlib import Path
 
 R = Path(__file__).resolve().parent; S = R / 'sweeps'
-p = argparse.ArgumentParser(); p.add_argument('arm', choices=['base', 'mix']); p.add_argument('--seeds', type=int, nargs='+', default=[1, 2])
+p = argparse.ArgumentParser(); p.add_argument('arm'); p.add_argument('--seeds', type=int, nargs='+', default=[1, 2])
 p.add_argument('--fraction', default='0.5'); p.add_argument('--inputs', default=str(R / 'benchmark/v3-inputs.jsonl.gz'))
 a = p.parse_args(); cfg = json.loads((R / 'moe.json').read_text())['runs'][a.arm]; log = open(R / f'pipeline-{a.arm}.log', 'a')
 

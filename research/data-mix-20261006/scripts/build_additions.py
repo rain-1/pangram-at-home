@@ -19,9 +19,13 @@ def v14_row(r):
             'generator': r['generator'], 'noncommercial': '[NONCOMMERCIAL]' in (r['license'] or '')}
 
 
+QUOTES = str.maketrans({'\u201c': '"', '\u201d': '"', '\u2018': "'", '\u2019': "'"})  # 1:1, so offsets stay valid
 for r in pq.read_table(next((v14 / 'span_hardneg_v14').glob('train-*.parquet'))).to_pylist():
     if r['label_kind'] == 'span':
-        rows.append(v14_row(r))
+        x = v14_row(r)
+        if x['source_key'].startswith('v14:science_v9'):
+            x['text'] = x['text'].translate(QUOTES)  # same quote rule as heterogeneous-ai-spans v1.4.0
+        rows.append(x)
 for r in pq.read_table(next((v14 / 'span_hardneg_v14').glob('new_source_holdout-*.parquet'))).to_pylist():
     if r['label_kind'] == 'span' and 'GRADTEX' in r['source']:
         rows.append(v14_row(r))

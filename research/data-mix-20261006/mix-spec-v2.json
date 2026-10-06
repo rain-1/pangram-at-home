@@ -1,0 +1,243 @@
+{
+ "_notes": "v2 (2026-10-06, after the v1 mix raised human creative/expository/news scores on benchmark-v3): keep ALL windows of each heterogeneous mixed document (human-only, mixed and AI) so every domain carries its natural human:AI balance; drop the separate human controls, whose text duplicates the mixed documents' human windows. GRADTEX spans, NASA/NOAA human windows, the Beige Book/WikiText drops and the leakage list are unchanged. v1 kept only AI-containing windows of mixed documents (1,450/shard) against 1,020 control windows, which skewed fiction and old-paper windows toward AI. Revisions before launch: (1) v14 GRADTEX 'span' rows turned out to be human seed text only (all label 0), so they are dropped (redundant with base GRADTEX); no short-span AI supply remains. (2) JMLR mixed documents are AI-majority by construction (0.80:1 human:AI chars without controls), so 300 JMLR control windows per shard are added. (3) Curly quotes in the NASA/NOAA human rows are straightened (1:1, offsets unchanged), matching the heterogeneous-ai-spans v1.4.0 rule.",
+ "stage1": {
+  "include": false,
+  "notes": "Stage 1 unchanged (12,000 rows). Keeps the A/B difference to stage 2 and avoids doubling exposure of a small pool."
+ },
+ "pair_controls_with_mixed": false,
+ "hetero:mixed:jmlr_pre2015": {
+  "keep": true,
+  "max_windows_per_epoch": 730,
+  "dataset_name": "hetero_mixed",
+  "filters": {}
+ },
+ "hetero:mixed:gutenberg_selected": {
+  "keep": true,
+  "max_windows_per_epoch": 1000,
+  "dataset_name": "hetero_mixed",
+  "filters": {}
+ },
+ "hetero:mixed:standardebooks": {
+  "keep": true,
+  "max_windows_per_epoch": 400,
+  "dataset_name": "hetero_mixed",
+  "filters": {}
+ },
+ "hetero:mixed:wikitext2_raw": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "hetero_mixed",
+  "filters": {
+   "window_kinds": [
+    "mixed",
+    "ai"
+   ]
+  }
+ },
+ "hetero:mixed:hansard": {
+  "keep": true,
+  "max_windows_per_epoch": 5,
+  "dataset_name": "hetero_mixed",
+  "filters": {}
+ },
+ "hetero:mixed:beigebook": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "hetero_mixed",
+  "filters": {}
+ },
+ "hetero:human_control:jmlr_pre2015": {
+  "keep": true,
+  "max_windows_per_epoch": 300,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "hetero:human_control:gutenberg_selected": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "hetero:human_control:standardebooks": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "hetero:human_control:wikitext2_raw": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "hetero:human_control:hansard": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "hetero:human_control:beigebook": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "v14:LLMTrace_detection": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:elisabeth-pl-pl/GRADTEX": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:science_v9:noaa_fisheries": {
+  "keep": true,
+  "max_windows_per_epoch": 140,
+  "dataset_name": "v14_human",
+  "filters": {
+   "window_kinds": [
+    "human"
+   ]
+  }
+ },
+ "v14:science_v9:nasa_earth_observatory": {
+  "keep": true,
+  "max_windows_per_epoch": 55,
+  "dataset_name": "v14_human",
+  "filters": {
+   "window_kinds": [
+    "human"
+   ]
+  }
+ },
+ "v14:paper:acl_anthology": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:paper:pmc_oa": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:asap2_student_essay": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:persuade_2.0": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:writers.stackexchange.com": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:databricks/databricks-dolly-15k": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:craphound.com": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:commonpile:news-360info": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:commonpile:news-altnews": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:commonpile:news-factly": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:commonpile:news-milwaukeenns": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:commonpile:news-newcanadianmedia": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_human",
+  "filters": {}
+ },
+ "v14:mage:cmv": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:mage:eli5": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:mage:roct": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:mage:sci": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:mage:squad": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:mage:tldr": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:mage:wp": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:mage:xsum": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ },
+ "v14:mage:yelp": {
+  "keep": false,
+  "max_windows_per_epoch": 0,
+  "dataset_name": "v14_mixed",
+  "filters": {}
+ }
+}
