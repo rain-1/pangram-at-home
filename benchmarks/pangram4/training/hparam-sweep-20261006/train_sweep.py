@@ -18,6 +18,7 @@ from adapters_short import attach_lora, parameter_groups
 
 
 SHORT_SPAN_OVERSAMPLE = False  # set by --short-span-oversample
+TOK = None  # set in main; used to drop the few rows this tokenizer version puts over the 510-token budget
 REDUCE_BUCKET = 64 * 2**20  # FP32 elements per gradient all-reduce (256 MiB)
 SAVE_STAGE1 = not str(ROOT).startswith('/workspace/')  # H200 volume quota is tight; the single stage-1 checkpoint is never evaluated
 
@@ -39,6 +40,14 @@ def rows(root, key, manifest, fraction, seed):
     assert dict(seen) == target
     if SHORT_SPAN_OVERSAMPLE and key.startswith('stage2'):
         short = oversample_short_spans(short, random.Random(seed * 7919 + sum(map(ord, key))))
+    if TOK is not None:
+        # The prepared crops were tokenised by an older transformers; under 5.17 a handful (13 of 84,000 MoE rows, all base data)
+        # reach 511-542 tokens and encode_example rejects them. Document-only rows are chunked by the encoder and are kept.
+        n = [len(x) for x in TOK([r['text'] for r in short], add_special_tokens=False)['input_ids']]
+        kept = [r for r, k in zip(short, n) if r.get('supervision') == 'document_only' or 0 < k <= 510]
+        if len(kept) != len(short):
+            print(json.dumps({'event': 'dropped_overlong_rows', 'file': key, 'dropped': len(short) - len(kept)}), flush=True)
+        short = kept
     random.Random(seed * 1000 + sum(map(ord, key))).shuffle(short)
     return short
 
@@ -195,6 +204,8 @@ def main(a):
            'trainable_dtype': 'bfloat16', 'checkpoint_dtype': 'bfloat16', 'optimizer': a.optimizer}
     random.seed(a.seed); np.random.seed(a.seed); torch.manual_seed(a.seed); torch.cuda.manual_seed_all(a.seed)
     asset = ROOT / 'assets' / a.model; tok = AutoTokenizer.from_pretrained(asset, local_files_only=True)
+    global TOK
+    TOK = tok
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
     put(out / 'status.json', {'state': 'loading_model'})
