@@ -1,0 +1,36 @@
+{
+ "_base": ["--fraction", "0.2", "--micro-batch", "8", "--lr", "2e-4", "--head-lr", "2e-5", "--schedule", "cosine", "--warmup", "0.06"],
+ "_note": "Every arm is recipe A (overnight-sweep-20261004) plus the listed overrides. A: LoRA r128/alpha32 (scale 0.25), dropout 0, wd 0.01, effective batch 32, loss weights sentence .2 segment .2 mixed .1 document .1.",
+ "waves": {
+  "1-lora": {
+   "A-ref": [],
+   "a128": ["--lora-alpha", "128"],
+   "a256": ["--lora-alpha", "256"],
+   "r16a32": ["--lora-rank", "16", "--lora-alpha", "32"],
+   "r32a64": ["--lora-rank", "32", "--lora-alpha", "64"],
+   "r256a512": ["--lora-rank", "256", "--lora-alpha", "512"],
+   "a128-lr5e5": ["--lora-alpha", "128", "--lr", "5e-5"],
+   "drop05": ["--lora-dropout", "0.05"]
+  },
+  "2-optim": {
+   "wd0": ["--weight-decay", "0"],
+   "wd01": ["--weight-decay", "0.1"],
+   "eb16": ["--effective-batch", "16"],
+   "eb64": ["--effective-batch", "64"],
+   "hlr2e4": ["--head-lr", "2e-4"],
+   "hlr1e3": ["--head-lr", "1e-3"],
+   "warm15": ["--warmup", "0.15"],
+   "r64a128": ["--lora-rank", "64", "--lora-alpha", "128"]
+  },
+  "3-loss": {
+   "seg0": ["--segment-weight", "0"],
+   "seg1": ["--segment-weight", "1.0"],
+   "mix0": ["--mixed-weight", "0"],
+   "mix05": ["--mixed-weight", "0.5"],
+   "doc0": ["--document-weight", "0"],
+   "doc05": ["--document-weight", "0.5"],
+   "sent0": ["--sentence-weight", "0"],
+   "tokonly": ["--segment-weight", "0", "--mixed-weight", "0", "--document-weight", "0"]
+  }
+ }
+}
