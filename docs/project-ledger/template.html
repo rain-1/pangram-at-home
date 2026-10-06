@@ -1,0 +1,250 @@
+<title>Pangram Project Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column (max 1080px) under a sticky tab bar; each tab is a self-contained panel of lists and tables. */
+:root{
+  --bg:#f6f7f8; --panel:#ffffff; --ink:#15191e; --ink-2:#4b545f; --muted:#7b858f; --line:#e2e6ea; --line-2:#eef1f3;
+  --accent:#1f5f8b; --accent-soft:#e6f0f7;
+  --hi:#b3261e; --hi-soft:#fbeae8; --mid:#8a5a00; --mid-soft:#fbf1dc; --lo:#5f6b76; --lo-soft:#eef1f3;
+  --run:#1f5f8b; --run-soft:#e6f0f7; --ok:#2e6b3c; --ok-soft:#e7f3ea;
+  --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111417; --panel:#181c20; --ink:#e8ecef; --ink-2:#b4bcc4; --muted:#8a949d; --line:#2a3036; --line-2:#20252a;
+  --accent:#7db8e0; --accent-soft:#1b2b37;
+  --hi:#f19a92; --hi-soft:#3a1f1d; --mid:#e6bd6a; --mid-soft:#352b17; --lo:#a3adb6; --lo-soft:#23292e;
+  --run:#7db8e0; --run-soft:#1b2b37; --ok:#8fd19e; --ok-soft:#1c2e22; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111417; --panel:#181c20; --ink:#e8ecef; --ink-2:#b4bcc4; --muted:#8a949d; --line:#2a3036; --line-2:#20252a;
+  --accent:#7db8e0; --accent-soft:#1b2b37;
+  --hi:#f19a92; --hi-soft:#3a1f1d; --mid:#e6bd6a; --mid-soft:#352b17; --lo:#a3adb6; --lo-soft:#23292e;
+  --run:#7db8e0; --run-soft:#1b2b37; --ok:#8fd19e; --ok-soft:#1c2e22; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.55 var(--sans)}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+header.top{padding-block:28px 14px;display:grid;gap:6px}
+header.top h1{margin:0;font-size:24px;font-weight:700;letter-spacing:-.01em}
+header.top p{margin:0;color:var(--ink-2);max-width:72ch}
+.asof{font:12px var(--mono);color:var(--muted)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav.tabs button{font:500 13.5px var(--sans);color:var(--ink-2);background:none;border:0;padding:12px 12px 11px;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs button:focus-visible,.chip:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+nav.tabs .count{font:11px var(--mono);color:var(--muted);margin-left:5px}
+main{padding-block:22px 64px}
+section[role="tabpanel"]{display:grid;gap:22px}
+h2{margin:0;font-size:16px;font-weight:600}
+h2 small{font-weight:400;color:var(--muted);font-size:13px;margin-left:6px}
+.lead{margin:0;color:var(--ink-2);max-width:72ch}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:2px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.tile:hover{border-color:var(--accent)}
+.tile b{font:600 26px/1.1 var(--mono);font-variant-numeric:tabular-nums}
+.tile span{font-size:12.5px;color:var(--ink-2)}
+.tile.hi b{color:var(--hi)} .tile.mid b{color:var(--mid)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+ol.findings{margin:0;padding:0;list-style:none;counter-reset:f}
+ol.findings li{counter-increment:f;display:grid;grid-template-columns:28px 1fr;gap:4px 10px;padding:12px 16px;border-top:1px solid var(--line-2)}
+ol.findings li:first-child{border-top:0}
+ol.findings li::before{content:counter(f);font:500 12px/22px var(--mono);color:var(--muted);text-align:right}
+ol.findings b{display:block;font-weight:600}
+ol.findings p{margin:2px 0 0;color:var(--ink-2)}
+.when{font:11.5px var(--mono);color:var(--muted)}
+ul.plain{margin:0;padding:0;list-style:none}
+ul.plain li{padding:10px 16px;border-top:1px solid var(--line-2);display:grid;gap:3px}
+ul.plain li:first-child{border-top:0}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.row b{font-weight:600}
+.sub{color:var(--ink-2);font-size:13.5px;margin:0}
+.pill{display:inline-block;font:500 11px/1 var(--mono);padding:4px 7px;border-radius:999px;letter-spacing:.02em;white-space:nowrap}
+.pill.high{background:var(--hi-soft);color:var(--hi)} .pill.medium{background:var(--mid-soft);color:var(--mid)} .pill.low{background:var(--lo-soft);color:var(--lo)}
+.pill.running,.pill.rerunning{background:var(--run-soft);color:var(--run)} .pill.waiting{background:var(--mid-soft);color:var(--mid)}
+.pill.open{background:var(--lo-soft);color:var(--ink-2)} .pill.stale,.pill.deferred{background:var(--lo-soft);color:var(--muted)}
+.pill.done{background:var(--ok-soft);color:var(--ok)} .pill.failed{background:var(--hi-soft);color:var(--hi)} .pill.stopped,.pill.partial{background:var(--mid-soft);color:var(--mid)}
+.pill.area{background:transparent;border:1px solid var(--line);color:var(--ink-2)}
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.filters .lbl{font-size:12px;color:var(--muted);margin-right:2px}
+.chip{font:500 12.5px var(--sans);border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:999px;padding:5px 11px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-top:1px solid var(--line-2)}
+thead th{border-top:0;font-weight:600;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.nowrap{white-space:nowrap}
+.age.stale{color:var(--hi);font-weight:500}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.grid2>*{min-width:0}
+.issue{padding:14px 16px;display:grid;gap:6px}
+.issue .x{font:600 12px var(--mono);color:var(--hi)}
+.issue dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:13.5px}
+.issue dt{color:var(--muted)} .issue dd{margin:0;color:var(--ink-2)}
+.rules h3{margin:0;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;padding:12px 16px 4px}
+a{color:var(--accent)}
+.empty{padding:16px;color:var(--muted)}
+@media (max-width:560px){header.top h1{font-size:21px}}
+/* Narrow screens: each table row becomes a stacked card with labelled fields. */
+@media (max-width:640px){
+  .tablewrap{overflow:visible}
+  .tablewrap table,.tablewrap tbody,.tablewrap tr,.tablewrap td{display:block;width:100%}
+  .tablewrap thead{display:none}
+  .tablewrap tr{border-top:1px solid var(--line-2);padding:8px 2px}
+  .tablewrap tr:first-child{border-top:0}
+  .tablewrap td{border:0;padding:3px 12px;text-align:left}
+  .tablewrap td.num{text-align:left}
+  .tablewrap td[data-label]::before{content:attr(data-label);display:block;font:500 10.5px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+  .tablewrap td:first-child::before{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<header class="wrap top">
+  <h1>Pangram project ledger</h1>
+  <p>What you are solving, what has been learned, what is still open, and what went wrong, across every Claude Code session on this project.</p>
+  <span class="asof" id="asof"></span>
+</header>
+<nav class="tabs" aria-label="Sections"><div class="wrap" role="tablist" id="tabs"></div></nav>
+<main class="wrap" id="main"></main>
+
+<script>
+const D = __DATA__;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const PRI = {high:0, medium:1, low:2};
+const ageTxt = h => h >= 1 ? `${Math.round(h)} h` : `${Math.round(h*60)} min`;
+const stateCls = s => s === "waiting on you" ? "waiting" : s;
+const STALE = 12;
+document.getElementById("asof").textContent = `As of ${D.asof} · ${D.sessions.length} sessions · times in PDT`;
+
+const open = D.threads.filter(t => t.state !== "done");
+const waiting = D.threads.filter(t => t.state === "waiting on you");
+const stale = D.threads.filter(t => t.age >= STALE && !["running"].includes(t.state));
+const highFlags = D.ignored.filter(f => f.sev === "high");
+
+const TABS = [
+  {id:"overview", label:"Overview"},
+  {id:"threads", label:"Threads", n:open.length},
+  {id:"experiments", label:"Experiments", n:D.experiments.length},
+  {id:"decisions", label:"Decisions", n:D.accepted.length + D.overridden.length + D.ignored.length},
+  {id:"issues", label:"Issues", n:D.issues.length},
+  {id:"rules", label:"Rules", n:D.rules.length},
+  {id:"sessions", label:"Sessions", n:D.sessions.length},
+];
+const state = {tab:"overview", threadArea:"All", threadState:"All", expArea:"All"};
+try { const h = location.hash.slice(1); if (TABS.some(t => t.id === h)) state.tab = h; } catch(e) {}
+
+function tabsBar(){
+  document.getElementById("tabs").innerHTML = TABS.map(t =>
+    `<button role="tab" id="tab-${t.id}" aria-selected="${state.tab===t.id}" aria-controls="panel" data-tab="${t.id}">${t.label}${t.n!=null?`<span class="count">${t.n}</span>`:""}</button>`).join("");
+}
+function chips(name, values, current){
+  return `<div class="filters"><span class="lbl">${name}</span>${values.map(v => `<button class="chip" aria-pressed="${v===current}" data-chip="${name}" data-val="${esc(v)}">${esc(v)}</button>`).join("")}</div>`;
+}
+
+function overview(){
+  const needs = [
+    ...highFlags.map(f => ({t:f.flag, s:f.why, sev:"high", when:f.when, type:f.type})),
+    ...waiting.filter(t => !highFlags.some(f => f.flag.toLowerCase().includes(t.title.split(" ")[0].toLowerCase()))).map(t => ({t:t.title, s:t.next, sev:t.pri, when:t.last, type:t.type})),
+  ];
+  return `
+  <div class="tiles">
+    <button class="tile" data-go="threads"><b>${open.length}</b><span>open threads</span></button>
+    <button class="tile mid" data-go="threads" data-state="waiting on you"><b>${waiting.length}</b><span>waiting on you</span></button>
+    <button class="tile" data-go="threads" data-state="stale"><b>${D.threads.filter(t=>t.state==="stale").length}</b><span>stale threads</span></button>
+    <button class="tile hi" data-go="decisions"><b>${highFlags.length}</b><span>high-severity flags unanswered</span></button>
+  </div>
+  <div class="grid2">
+    <div style="display:grid;gap:10px;align-content:start">
+      <h2>What we have learned</h2>
+      <div class="card"><ol class="findings">${D.findings.map(f => `<li><div><b>${esc(f.k)}</b><p>${esc(f.v)}</p><span class="when">${esc(f.when)}</span></div></li>`).join("")}</ol></div>
+    </div>
+    <div style="display:grid;gap:10px;align-content:start">
+      <h2>Waiting on you <small>project owner</small></h2>
+      <p class="lead" style="font-size:13px">Each item needs a decision, an approval or an action from you. Claude or a collaborator can do the work for most of them once you decide.</p>
+      <div class="card"><ul class="plain">${needs.map(n => `<li><div class="row"><span class="pill ${n.sev}">${n.sev}</span><span class="pill area">${esc(n.type)}</span><b>${esc(n.t)}</b></div>${n.s?`<p class="sub">${esc(n.s)}</p>`:""}<span class="when">${esc(n.when)}</span></li>`).join("")}</ul></div>
+      <h2>What you are trying to solve</h2>
+      <div class="card"><ul class="plain">${D.goals.map(g => `<li><b>${esc(g.k)}</b><p class="sub">${esc(g.v)}</p></li>`).join("")}</ul></div>
+    </div>
+  </div>`;
+}
+
+function threads(){
+  const areas = ["All", ...new Set(D.threads.map(t => t.area))];
+  const states = ["All", "running", "waiting on you", "open", "stale", "deferred"];
+  const rows = D.threads.filter(t => (state.threadArea==="All"||t.area===state.threadArea) && (state.threadState==="All"||t.state===state.threadState))
+    .sort((a,b) => PRI[a.pri]-PRI[b.pri] || b.age-a.age);
+  return `<p class="lead">Every thread started but not finished, sorted by priority, then by time since the last update. Ages over ${STALE} h are marked.</p>
+  ${chips("Area", areas, state.threadArea)}${chips("State", states, state.threadState)}
+  <div class="tablewrap"><table><thead><tr><th>Thread</th><th>State</th><th>Priority</th><th class="num">Age</th><th>Last touched</th><th>Next step</th></tr></thead><tbody>
+  ${rows.map(t => `<tr><td><b>${esc(t.title)}</b><div><span class="pill area">${esc(t.area)}</span></div></td><td><span class="pill ${stateCls(t.state)}">${esc(t.state)}</span></td>
+    <td><span class="pill ${t.pri}">${t.pri}</span></td><td class="num age ${t.age>=STALE&&t.state!=="running"?"stale":""}">${ageTxt(t.age)}</td><td class="nowrap when">${esc(t.last)}</td><td>${esc(t.next)}</td></tr>`).join("") || `<tr><td colspan="6" class="empty">No threads match these filters.</td></tr>`}
+  </tbody></table></div>`;
+}
+
+function experiments(){
+  const areas = ["All", ...new Set(D.experiments.map(e => e.area))];
+  const rows = D.experiments.filter(e => state.expArea==="All"||e.area===state.expArea).sort((a,b) => b.ts.localeCompare(a.ts));
+  return `<p class="lead">Training, evaluation, data and extraction runs with their real results, newest first.</p>
+  ${chips("Area", areas, state.expArea)}
+  <div class="tablewrap"><table><thead><tr><th>When</th><th>Experiment</th><th>Result</th><th>Status</th></tr></thead><tbody>
+  ${rows.map(e => `<tr><td class="nowrap when">${esc(e.when)}</td><td><b>${esc(e.name)}</b><div class="sub">${esc(e.setup)}</div><span class="pill area">${esc(e.area)}</span></td><td>${esc(e.result)}</td><td><span class="pill ${e.status}">${esc(e.status)}</span></td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+
+function decisions(){
+  const ig = [...D.ignored].sort((a,b) => PRI[a.sev]-PRI[b.sev] || a.ts.localeCompare(b.ts));
+  return `
+  <h2>Flags raised but not answered <small>${ig.length}</small></h2>
+  <div class="tablewrap"><table><thead><tr><th>Severity</th><th>Flag</th><th>Why it matters</th><th>Raised</th></tr></thead><tbody>
+  ${ig.map(f => `<tr><td><span class="pill ${f.sev}">${f.sev}</span></td><td><b>${esc(f.flag)}</b></td><td class="sub">${esc(f.why)||"—"}</td><td class="nowrap when">${esc(f.when)}</td></tr>`).join("")}
+  </tbody></table></div>
+  <h2>Where you went a different way <small>${D.overridden.length}</small></h2>
+  <div class="tablewrap"><table><thead><tr><th>When</th><th>Claude's position</th><th>What you decided</th></tr></thead><tbody>
+  ${[...D.overridden].sort((a,b)=>a.ts.localeCompare(b.ts)).map(o => `<tr><td class="nowrap when">${esc(o.when)}</td><td class="sub">${esc(o.claude)}</td><td>${esc(o.you)}</td></tr>`).join("")}
+  </tbody></table></div>
+  <h2>Recommendations you accepted <small>${D.accepted.length}</small></h2>
+  <div class="card"><ul class="plain">${[...D.accepted].sort((a,b)=>a.ts.localeCompare(b.ts)).map(a => `<li><div class="row"><span>${esc(a.label)}</span></div><span class="when">${esc(a.when)} · session ${esc(a.s)}</span></li>`).join("")}</ul></div>`;
+}
+
+function issues(){
+  return `<p class="lead">Errors and lost time grouped by cause, with how often each recurred, what it cost and what fixed it.</p>
+  <div class="grid2">${[...D.issues].sort((a,b)=>b.n-a.n).map(i => `<div class="card issue"><div class="row"><span class="pill area">${esc(i.cat)}</span><span class="x">×${i.n}</span><span class="when">last ${esc(i.when)}</span></div>
+    <b>${esc(i.title)}</b><dl><dt>Cost</dt><dd>${esc(i.cost)}</dd><dt>Fix</dt><dd>${esc(i.fix)}</dd></dl></div>`).join("")}</div>`;
+}
+
+function rules(){
+  const cats = [...new Set(D.rules.map(r => r.cat))];
+  return `<p class="lead">Standing instructions collected across sessions. Most also live in AGENTS.md, CLAUDE.md or Claude's memory.</p>
+  <div class="card rules">${cats.map(c => `<h3>${esc(c)}</h3><ul class="plain">${D.rules.filter(r=>r.cat===c).map(r => `<li>${esc(r.rule)}</li>`).join("")}</ul>`).join("")}</div>`;
+}
+
+function sessions(){
+  return `<div class="tablewrap"><table><thead><tr><th>Session</th><th>From</th><th>To</th><th>Focus</th></tr></thead><tbody>
+  ${D.sessions.map(s => `<tr><td class="nowrap"><b style="font-family:var(--mono)">${esc(s.id)}</b></td><td class="nowrap when">${esc(s.from)}</td><td class="nowrap when">${esc(s.to)}</td><td>${esc(s.focus)}</td></tr>`).join("")}
+  </tbody></table></div>
+  <h2>Links</h2>
+  <div class="card"><ul class="plain">${D.links.map(l => `<li><a href="${esc(l.v)}" target="_blank" rel="noopener">${esc(l.k)}</a><span class="when">${esc(l.v)}</span></li>`).join("")}</ul></div>`;
+}
+
+const VIEWS = {overview, threads, experiments, decisions, issues, rules, sessions};
+function render(){
+  tabsBar();
+  const m = document.getElementById("main");
+  m.innerHTML = `<section role="tabpanel" id="panel" aria-labelledby="tab-${state.tab}">${VIEWS[state.tab]()}</section>`;
+  m.querySelectorAll("table").forEach(t => { const heads=[...t.querySelectorAll("thead th")].map(th=>th.textContent);
+    t.querySelectorAll("tbody tr").forEach(tr => [...tr.children].forEach((td,i) => { if(heads[i]) td.dataset.label = heads[i]; })); });
+}
+document.addEventListener("click", e => {
+  const tab = e.target.closest("[data-tab]");
+  if (tab){ state.tab = tab.dataset.tab; try{history.replaceState(null,"","#"+state.tab);}catch(_){} render(); scrollTo({top:0}); return; }
+  const go = e.target.closest("[data-go]");
+  if (go){ state.tab = go.dataset.go; if (go.dataset.state){ state.threadState = go.dataset.state; state.threadArea = "All"; } try{history.replaceState(null,"","#"+state.tab);}catch(_){} render(); scrollTo({top:0}); return; }
+  const chip = e.target.closest("[data-chip]");
+  if (chip){
+    const key = state.tab === "experiments" ? "expArea" : chip.dataset.chip === "Area" ? "threadArea" : "threadState";
+    state[key] = chip.dataset.val; render();
+  }
+});
+render();
+</script>
