@@ -32,3 +32,25 @@ Her cross-model sample draws from every split, and these arms train on the train
 - `score_worker_abl.py`, `build_queue_abl.py`, `specs/`.
 
 Outputs mirror to `/data/workspace/pangram-ablation-20261007` through her `persist_daemon.py`.
+
+## Results (test half, recall at 1% FPR; mean over seeds)
+
+| Arm | Seeds | All edits | Small | paper_v3 | Standalone | Strict held-out (FP) | Held-out writers (FP) | Hetero test (control FP) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| woog T2.1 | 3 | 0.784 | 0.449 | 0.760 | 0.793 | – | – | 0.847 (0.4%) |
+| C | 1 | 0.779 | 0.447 | 0.769 | 0.806 | 0.772 (2.3%) | 0.646 (3.0%) | 0.778 (0.3%) |
+| A1-mixv2 | 3 | 0.775 | 0.471 | 0.769 | 0.799 | 0.756 (2.1%) | 0.635 (2.9%) | 0.986 (1.0%) |
+| **A2-neutral** | 3 | **0.793** | **0.491** | 0.773 | 0.799 | 0.762 (2.3%) | 0.633 (2.9%) | 0.988 (1.4%) |
+| A3-controls | 3 | 0.788 | 0.491 | **0.728** | 0.799 | 0.745 (2.0%) | 0.601 (2.5%) | 0.618 (0.7%) |
+| A4-gutenberg | 3 | 0.775 | 0.462 | 0.753 | 0.786 | 0.736 (1.8%) | 0.592 (2.3%) | 0.974 (1.1%) |
+| A5-jmlr | 3 | 0.789 | 0.489 | 0.793 | 0.799 | 0.738 (1.8%) | 0.587 (2.2%) | 0.815 (0.6%) |
+| A6-stdebooks | 3 | 0.776 | 0.458 | 0.770 | 0.789 | 0.740 (1.9%) | 0.587 (2.3%) | 0.930 (0.6%) |
+| A7-half | 3 | 0.779 | 0.471 | 0.733 | 0.772 | 0.754 (2.1%) | 0.608 (2.6%) | 0.977 (1.2%) |
+| A8-double | 2 | 0.796 | 0.513 | 0.782 | 0.786 | 0.774 (2.5%) | 0.660 (3.4%) | 0.990 (1.4%) |
+
+- Every arm adds +0.01 to +0.06 on small edits over T2.1 alone; A2 and A8 are best overall.
+- Human controls alone (A3) cost paper_v3 recall and held-out writers; controls only help paired with their mixed documents.
+- Single-source arms (A4–A6) lose 0.04–0.06 on held-out writers; the full mixes do not.
+- The cost: false positives on untouched hetero test controls rise from 0.3–0.4% to 1.0–1.4%. Held-out FP rates do not move.
+- The hetero test column is in-distribution for every arm and is not evidence of generalisation.
+- A8 seed 3 and the typography arm (A2 + `--typo-aug`, `typo_aug.py`, `patch_typo.py`, `gate_typo.sh`) crashed out of memory at 19:44 BST on 10-07: woog's `score_moe.py` held six GPUs. Not yet rerun.
