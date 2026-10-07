@@ -150,13 +150,13 @@ def main(a):
     SHORT_SPAN_OVERSAMPLE = a.short_span_oversample
     modeling_sweep.W['sentence'] = a.sentence_weight
     manifest = json.loads((root / 'prepared-v2/manifest.json').read_text())
-    total_rows = sum(round(v * a.fraction) for k in ['stage1-epoch0', 'stage2-epoch0', 'stage2-epoch1', 'stage2-epoch2'] for v in manifest['counts'][k].values())
+    total_rows = sum(round(v * a.fraction) for k in ['stage1-epoch0'] + [f'stage2-epoch{e}' for e in range(a.stage2_epochs)] for v in manifest['counts'][k].values())
     size = a.micro_batch; A = 32 // size
     assert 32 % size == 0 and A % world == 0, 'effective batch 32 must split evenly into micro-batches across GPUs'
     cfg = {'kind': spec['kind'], 'training_fraction': a.fraction, 'total_training_examples': total_rows, 'seed': a.seed,
            'learning_rate': a.lr, 'head_learning_rate': a.head_lr, 'schedule': a.schedule, 'warmup_fraction': a.warmup,
            'micro_batch': size, 'physical_microbatch': size, 'effective_batch': 32, 'data_parallel_gpus': world,
-           'stages': {'1': {'epochs': 1}, '2': {'epochs': 3}}, 'loss_weights': dict(modeling_sweep.W),
+           'stages': {'1': {'epochs': 1}, '2': {'epochs': a.stage2_epochs}}, 'loss_weights': dict(modeling_sweep.W),
            'lora': {'rank': spec.get('lora_rank', 128), 'expert_rank': spec.get('expert_rank', 128), 'alpha': 32},
            'checkpoint_every_steps': a.ckpt_every, 'short_span_oversample': a.short_span_oversample, 'source_tokens_max': 510, 'precision': 'BF16',
            'trainable_dtype': 'bfloat16', 'checkpoint_dtype': 'bfloat16', 'optimizer': a.optimizer}
@@ -461,6 +461,7 @@ if __name__ == '__main__':
     p.add_argument('--max-steps', type=int, default=0); p.add_argument('--no-validate', action='store_true')
     p.add_argument('--balance', action=argparse.BooleanOptionalAction, default=True)
     p.add_argument('--state-dir', default='')
+    p.add_argument('--stage2-epochs', type=int, default=3, help='stage-2 passes (1 = single pass over epoch-0 data)')
     p.add_argument('--snapshot-every', type=int, default=100, help='rolling adapter snapshots (in the state dir) every N optimizer steps; 0 disables')
     p.add_argument('--snapshot-keep', type=int, default=3)
     p.add_argument('--on-diverge', choices=['stop', 'warn', 'rollback'], default='stop',

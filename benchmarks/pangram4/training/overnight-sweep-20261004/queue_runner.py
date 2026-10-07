@@ -65,6 +65,10 @@ while True:
             requeue(job)
         continue
     fast_failures = 0
+    if str(R).startswith('/tmp/') and (R / 'persist_daemon.py').exists():
+        # Copy the finished run to /data right away; a Space restart wipes /tmp (Oct 5 and Oct 6 runs were lost this way).
+        subprocess.run([sys.executable, str(R / 'persist_daemon.py'), str(R), '--once'], cwd=R)
+        say(event='persisted', tag=job['tag'])
     if (R / 'sweep_eval.py').exists():
         # Evaluate in the background on the same GPU so the next training run starts immediately.
         f = open(d / 'eval.log', 'a')

@@ -161,7 +161,10 @@ def main(tag, watch):
 def prune(d, ev):
     """Finished and scored: keep only the final stage-2 checkpoint; drop the resume state and every other checkpoint."""
     ck = sorted(d.glob('*-adapters.safetensors'))
-    final = sorted(p for p in ck if p.name.startswith('stage2-epoch'))[-1:] 
+    final = sorted(p for p in ck if p.name.startswith('stage2-epoch'))[-1:]
+    sel = d / 'stage2-selection.json'  # also keep the checkpoint chosen by validation loss, which is often not the last epoch
+    if sel.exists():
+        final += [p for p in ck if p.name == json.loads(sel.read_text()).get('checkpoint') and p not in final]
     scored = {p.stem for p in ev.glob('*.json')}
     removed = []
     for p in ck:
