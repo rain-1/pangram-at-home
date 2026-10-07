@@ -7,6 +7,7 @@ import "./model-calibration.css";
 type Curve={name:string;auc:number;n_ai:number;n_human:number;tpr_at_1pct:number;fpr:number[];tpr:number[]};
 const SERIES=["var(--cal-s1)","var(--cal-s2)","var(--cal-s3)"];
 const pct=(v:number,d=1)=>`${(v*100).toFixed(v>0&&v<0.001?3:v<0.01?2:d)}%`;
+const opt=(v:number|null,f:(x:number)=>string)=>v==null?"—":f(v);
 const at=(c:Curve,f:number)=>{let j=0;while(j+1<c.fpr.length&&c.fpr[j+1]<=f)j++;return c.tpr[j];};
 
 /** ROC curves on a log false-positive axis, with markers at the published thresholds. */
@@ -65,7 +66,7 @@ function YearChart(){
   </svg></div>
   <div className="cal-table-wrap"><table className="cal-table">
    <thead><tr><th>Group</th><th>Papers</th><th>Median flagged</th><th>Middle half</th><th>Above human 99th percentile</th><th>Median document score</th></tr></thead>
-   <tbody>{rows.map(r=><tr key={r.label}><td>{r.label}</td><td>{r.papers.toLocaleString()}</td><td>{pct(r.flagged_share_median)}</td><td>{pct(r.flagged_share_p25)}–{pct(r.flagged_share_p75)}</td><td>{pct(r.over_human_p99)}</td><td>{r.document_score_median.toFixed(3)}</td></tr>)}</tbody>
+   <tbody>{rows.map(r=><tr key={r.label}><td>{r.label}</td><td>{r.papers.toLocaleString()}</td><td>{pct(r.flagged_share_median)}</td><td>{pct(r.flagged_share_p25)}–{pct(r.flagged_share_p75)}</td><td>{opt(r.over_human_p99,pct)}</td><td>{opt(r.document_score_median,v=>v.toFixed(3))}</td></tr>)}</tbody>
   </table></div>
  </figure>;
 }
@@ -93,8 +94,8 @@ export default function ModelCalibration(){
     <h2>Thresholds</h2>
     <p>{c.calibration_set.description} {c.calibration_set.method}</p>
     <div className="cal-table-wrap"><table className="cal-table">
-     <thead><tr><th>Target false-positive rate</th><th>Sentence threshold</th><th>Held-out false-positive rate</th><th>95% interval</th><th>Status</th></tr></thead>
-     <tbody>{c.thresholds.map(t=><tr key={t.target_fpr}><td>{pct(t.target_fpr)}</td><td>{t.threshold.toFixed(4)}</td><td>{pct(t.heldout_fpr,2)}</td><td>{pct(t.heldout_ci95[0],2)}–{pct(t.heldout_ci95[1],2)}</td>
+     <thead><tr><th>Target false-positive rate</th><th>Sentence threshold</th><th>Threshold 95% interval</th><th>Held-out false-positive rate</th><th>95% interval (papers resampled)</th><th>Status</th></tr></thead>
+     <tbody>{c.thresholds.map(t=><tr key={t.target_fpr}><td>{pct(t.target_fpr)}</td><td>{t.threshold.toFixed(4)}</td><td>{t.threshold_ci95[0].toFixed(4)}–{t.threshold_ci95[1].toFixed(4)}</td><td>{pct(t.heldout_fpr,2)}</td><td>{pct(t.heldout_ci95[0],2)}–{pct(t.heldout_ci95[1],2)}</td>
       <td><span className={t.stable?"cal-pill ok":"cal-pill warn"}>{t.stable?"Confirmed":"Unstable"}</span></td></tr>)}</tbody>
     </table></div>
    </section>
@@ -107,7 +108,7 @@ export default function ModelCalibration(){
 
    <section className="cal-section">
     <h2>Document level: AI manuscripts against human papers</h2>
-    <p>120 AI-involved manuscripts against the {c.calibration_set.papers} human papers. {c.document_threshold.note} At this size the document-level false-positive rate is known only to lie between {pct(c.document_threshold.human_fpr_ci95[0])} and {pct(c.document_threshold.human_fpr_ci95[1])}.</p>
+    <p>120 AI-involved manuscripts against the {c.calibration_set.papers} human papers. {c.document_threshold.note} Set on half of the human papers, the threshold flags {pct(c.document_threshold.heldout_fpr,2)} of the other half (95% interval {pct(c.document_threshold.human_fpr_ci95[0],2)}–{pct(c.document_threshold.human_fpr_ci95[1],2)}).</p>
     <RocChart curves={c.document_curves as Curve[]} label="Document-level ROC curves" marks={[.01]}/>
    </section>
 
@@ -115,6 +116,16 @@ export default function ModelCalibration(){
     <h2>Flagged share by year</h2>
     <p>The same threshold applied to papers from each year. Papers that share text with the model’s training data are excluded. Scores stay at the human baseline through 2024 and rise from 2025.</p>
     <YearChart/>
+   </section>
+
+   <section className="cal-section">
+    <h2>Candidate models</h2>
+    <p>Two newer training mixes on the same Qwen3.5-4B base, scored with the same rules on the {c.candidates[0]?.papers.toLocaleString()} new human papers. Their thresholds are recorded here for when one replaces the Atlas model; the Atlas does not use them.</p>
+    <div className="cal-table-wrap"><table className="cal-table">
+     <thead><tr><th>Model</th><th>Training mix</th><th>Sentence threshold at 1%</th><th>95% interval</th><th>Held-out false-positive rate</th><th>Document threshold at 1%</th></tr></thead>
+     <tbody>{c.candidates.map(m=><tr key={m.id}><td>{m.name}</td><td>{m.detail}</td><td>{m.threshold_1pct.toFixed(4)}</td><td>{m.threshold_ci95[0].toFixed(4)}–{m.threshold_ci95[1].toFixed(4)}</td>
+      <td>{pct(m.heldout_fpr,2)} ({pct(m.heldout_ci95[0],2)}–{pct(m.heldout_ci95[1],2)})</td><td>{m.document_threshold.toFixed(3)}</td></tr>)}</tbody>
+    </table></div>
    </section>
 
    <section className="cal-section">
