@@ -16,9 +16,10 @@ Untouched text is Human. We assemble T ourselves from the returned sentences, so
 character of T has a known label. Edits are checked against their definition (word-level
 similarity bands below); a paragraph with any failed edit is dropped, never repaired.
 
-Usage: gen_synthetic.py DATASET OUT_DIR --n 300 [--budget-usd 1.0] [--workers 8]
+Usage: gen_synthetic.py DATASET OUT_DIR --n 300 [--budget-usd 1.0] [--workers 8] [--production]
+       gen_synthetic.py LLM_EDITS.jsonl.gz OUT_DIR --candidates candidates-v1.jsonl --n 100000   (production pool B)
 """
-import argparse, ast, difflib, hashlib, json, random, re, threading, time, urllib.error, urllib.request
+import argparse, ast, difflib, hashlib, json, random, re, sys, threading, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
@@ -51,6 +52,8 @@ SYSTEM = ('You edit sentences of an academic paragraph as instructed. Match the 
 BANDS = {'polish': (0.60, 0.985), 'paraphrase': (0.0, 0.60)}
 INSERT_MAX_SIM = 0.50
 BUDGETS = [('control', 0.15), ('one', 0.30), ('two', 0.30), ('half', 0.25)]
+# Training data: no controls (the human originals already exist), weighted toward small edits.
+PRODUCTION_BUDGETS = [('one', 0.45), ('two', 0.35), ('half', 0.20)]
 
 
 def words(t):
@@ -65,7 +68,7 @@ def regions(g):
     return g['regions'] if isinstance(g['regions'], list) else ast.literal_eval(g['regions'])
 
 
-def load_paragraphs(path, n, seed):
+def load_paragraphs(path, n, seed, production=False):
     by = {}
     for line in open(path):
         r = json.loads(line)
@@ -80,18 +83,28 @@ def load_paragraphs(path, n, seed):
         sents = [(s['start'] - lo, s['end'] - lo) for s in h['sentences'] if s['start'] >= lo and s['end'] <= hi]
         text = h['text'][lo:hi]
         if 4 <= len(sents) <= 12 and all(20 <= b - a <= 500 for a, b in sents):
-            paras.append({'passage_id': pid, 'paper_id': h['paper_id'], 'source': text, 'sentences': sents})
+            paras.append({'passage_id': pid, 'paper_id': h['paper_id'], 'source': text, 'sentences': sents,
+                          'source_split': h['split']})
     rng = random.Random(seed)
     rng.shuffle(paras)
     seen, out = set(), []
-    for p in paras:  # one paragraph per paper
+    if production:  # every eligible paragraph, minus never-train papers/paragraphs
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'llm-sentence-edits-20261005'))
+        from build_llm_edits import never_train_hit
+        out = [p for p in paras if not never_train_hit({'paper_id': p['paper_id'], 'text': p['source']})][:n]
+    for p in ([] if production else paras):  # one paragraph per paper
         if p['paper_id'] not in seen:
             seen.add(p['paper_id']); out.append(p)
         if len(out) == n:
             break
+    return assign_plans(out, seed, production)
+
+
+def assign_plans(out, seed, production):
     for k, p in enumerate(out):
         r = random.Random(f'{seed}/{p["passage_id"]}')
-        budget = r.choices([b for b, _ in BUDGETS], [w for _, w in BUDGETS])[0]
+        budgets = PRODUCTION_BUDGETS if production else BUDGETS
+        budget = r.choices([b for b, _ in budgets], [w for _, w in budgets])[0]
         m = len(p['sentences'])
         k_edit = {'control': 0, 'one': 1, 'two': 2, 'half': max(2, m // 2)}[budget]
         idx = sorted(r.sample(range(m), k_edit))
@@ -100,8 +113,34 @@ def load_paragraphs(path, n, seed):
         for i in idx:
             long_enough = p['sentences'][i][1] - p['sentences'][i][0] >= CLAUSE_MIN_CHARS
             p['plan'].append({'i': i, 'op': r.choice(list(OPS) if long_enough else [o for o in OPS if o not in CLAUSE_OPS])})
-        p['split'] = 'dev' if int(hashlib.sha256(p['paper_id'].encode()).hexdigest(), 16) % 2 == 0 else 'test'
+        p['split'] = p['source_split'] if production else ('dev' if int(hashlib.sha256(p['paper_id'].encode()).hexdigest(), 16) % 2 == 0 else 'test')
     return out
+
+
+SENT = re.compile(r'\S.*?(?:[.!?](?=\s|$)|$)', re.S)  # same sentence rule as build_llm_edits.py
+
+
+def load_candidates(path, used_path, n, seed):
+    """Unused screened paragraphs from the sentence-edit builder's pool (paired-train papers only).
+
+    The archive_pre2023 rows are skipped: that pool waits for the extraction upgrade."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'llm-sentence-edits-20261005'))
+    from build_llm_edits import never_train_hit
+    import gzip
+    used = {json.loads(l)['id'].rsplit('/', 1)[0] for l in gzip.open(used_path, 'rt')}
+    out = []
+    for x in map(json.loads, open(path)):
+        if x['cand_id'] in used or x['source'] != 'paired_train_nontarget':
+            continue
+        sents = [(m.start(), m.end()) for m in SENT.finditer(x['target']) if m.group().strip()]
+        if not (4 <= len(sents) <= 12 and all(20 <= b - a <= 500 for a, b in sents)):
+            continue
+        if never_train_hit({'paper_id': x['paper_id'], 'text': '\n\n'.join([x['before'], x['target'], x['after']])}):
+            continue
+        out.append({'passage_id': x['cand_id'], 'paper_id': x['paper_id'], 'source': x['target'], 'sentences': sents,
+                    'source_split': 'train', 'context_before': x['before'], 'context_after': x['after']})
+    random.Random(seed).shuffle(out)
+    return assign_plans(out[:n], seed, True)
 
 
 def prompt(p):
@@ -201,6 +240,9 @@ def main():
     ap.add_argument('dataset', type=Path); ap.add_argument('out', type=Path)
     ap.add_argument('--n', type=int, default=300); ap.add_argument('--seed', type=int, default=20261006)
     ap.add_argument('--budget-usd', type=float, default=1.0); ap.add_argument('--workers', type=int, default=8)
+    ap.add_argument('--candidates', type=Path, help='use unused paragraphs from this candidates-v1.jsonl instead of DATASET')
+    ap.add_argument('--production', action='store_true', help='all eligible paragraphs (not one per paper), source splits kept, '
+                    'never-train rows dropped, no controls')
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
     out_path = a.out / 'pairs.jsonl'
@@ -215,7 +257,7 @@ def main():
                 if r['state'] != 'api_error':
                     f.write(json.dumps(r, ensure_ascii=False) + '\n')
     done = {json.loads(l)['passage_id'] for l in open(out_path)} if out_path.exists() else set()
-    paras = [p for p in load_paragraphs(a.dataset, a.n, a.seed) if p['passage_id'] not in done]
+    paras = [p for p in (load_candidates(a.candidates, a.dataset, a.n, a.seed) if a.candidates else load_paragraphs(a.dataset, a.n, a.seed, a.production)) if p['passage_id'] not in done]
     auth = Path('~/.config/pangram/openrouter_key').expanduser().read_text().strip()
     lock, spent, stop = threading.Lock(), [0.0], threading.Event()
     log = open(a.out / 'progress.log', 'a')

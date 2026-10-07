@@ -1,4 +1,4 @@
-"""Score soft n-gram labeling against known per-character provenance.
+r"""Score soft n-gram labeling against known per-character provenance.
 
 For each T unit y (from a given splitter):
   L(y) = mean of character 5-gram and word-bigram containment of y in S (lowercased,
