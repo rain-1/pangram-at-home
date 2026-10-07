@@ -7,6 +7,14 @@ Snapshot at 2026-10-07 21:45 BST. Covers 10-06 and 10-07 in detail and earlier w
 
 Only this repo's session was active on 10-07. `pretraining-datawork` has no transcript; it is summarised from git only. All times are BST.
 
+**New on 10-07** (rows and entries dated 10-07 below are new; earlier entries are carried over from the 10-06 snapshot):
+- Data ablation of your hetero sets on top of woog's T2.1 (25 runs): your data helps small edits; A2 layout-neutral and A8 double dose best.
+- Qwen3.6 MoE and Nemotron 3.5 Lightning on T2.1 + A2: Qwen best on woog's eval; both lose AI recall on benchmark-v3 vs the base MoE, with far fewer false alarms.
+- EmbeddingGemma 2 tried (6 recipes) and ruled out.
+- Typography audit of T2.1: two cues found; `--typo-aug` fix written, its test crashed out of memory (woog's jobs on 6 GPUs).
+- Mix v2 weights lost in a Space restart.
+- New decisions pending: union mix at 50% length, full-length final run, sentence-scale edit pilot, typography rerun.
+
 Status words used below:
 - **accepted**: the user agreed or acted on it.
 - **rejected**: the user declined.
