@@ -27,7 +27,7 @@ md = []
 w = md.append
 w("# Pangram project ledger")
 w("")
-w(f"As of {pdt(NOW)}. Synthesized from all {len(SESSIONS)} Claude Code sessions on this project (Oct 3–6, 2026). "
+w(f"As of {pdt(NOW)}. Synthesized from all {len(SESSIONS)} Claude Code sessions on this project (Oct 3–7, 2026). "
   "Times are PDT. \"Age\" is time since a thread was last touched. This file contains no credentials, infrastructure addresses, paper text or per-paper scores.")
 w("")
 w("## Contents")
