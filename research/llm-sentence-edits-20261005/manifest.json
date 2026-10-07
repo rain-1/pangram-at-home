@@ -271,6 +271,164 @@
     "archive_pre2023_unused": 10
    },
    "edit_mix_requested": "rewrite_one/rewrite_two/insert_one 30% each, split_one 10%, merge dropped"
+  },
+  "claude-haiku-4-5": {
+   "writer": "claude-haiku-4-5",
+   "assigned": 350,
+   "returned": 350,
+   "accepted": 192,
+   "acceptance_of_returned": 0.549,
+   "acceptance_of_assigned": 0.549,
+   "rejects": {
+    "text before the named sentence changed": 72,
+    "text after the named sentence changed": 19,
+    "too close to original": 37,
+    "rewrite_two: edit has 3 sentences, expected 2": 6,
+    "rewrite_two: edit has 6 sentences, expected 2": 1,
+    "nothing inserted": 9,
+    "split_one: edit has 1 sentences, expected 2": 6,
+    "rewrite_one: edit has 2 sentences, expected 1": 2,
+    "rewrite_two: edit has 1 sentences, expected 2": 6
+   },
+   "by_edit_type": {
+    "rewrite_one": 61,
+    "rewrite_two": 50,
+    "insert_one": 61,
+    "split_one": 20
+   },
+   "ai_span_median": 130.0
+  },
+  "claude-sonnet-5-5": {
+   "writer": "claude-sonnet-5-5",
+   "assigned": 350,
+   "returned": 350,
+   "accepted": 339,
+   "acceptance_of_returned": 0.969,
+   "acceptance_of_assigned": 0.969,
+   "rejects": {
+    "rewrite_two: edit has 3 sentences, expected 2": 2,
+    "rewrite_one: edit has 2 sentences, expected 1": 1,
+    "too close to original": 2,
+    "text after the named sentence changed": 6
+   },
+   "by_edit_type": {
+    "rewrite_one": 103,
+    "rewrite_two": 103,
+    "insert_one": 101,
+    "split_one": 32
+   },
+   "ai_span_median": 136
+  },
+  "claude-opus-5-5": {
+   "writer": "claude-opus-5-5",
+   "assigned": 350,
+   "returned": 350,
+   "accepted": 340,
+   "acceptance_of_returned": 0.971,
+   "acceptance_of_assigned": 0.971,
+   "rejects": {
+    "text after the named sentence changed": 9,
+    "too close to original": 1
+   },
+   "by_edit_type": {
+    "rewrite_one": 105,
+    "rewrite_two": 105,
+    "insert_one": 96,
+    "split_one": 34
+   },
+   "ai_span_median": 149.5
+  },
+  "claude-fable-5-1": {
+   "writer": "claude-fable-5-1",
+   "assigned": 210,
+   "returned": 210,
+   "accepted": 210,
+   "acceptance_of_returned": 1.0,
+   "acceptance_of_assigned": 1.0,
+   "rejects": {},
+   "by_edit_type": {
+    "rewrite_one": 63,
+    "rewrite_two": 63,
+    "insert_one": 63,
+    "split_one": 21
+   },
+   "ai_span_median": 146.5
+  }
+ },
+ "claude_train_v1": {
+  "claude-sonnet-5-5": {
+   "writer": "claude-sonnet-5-5",
+   "assigned": 2230,
+   "returned": 2230,
+   "accepted": 2174,
+   "acceptance_of_returned": 0.975,
+   "acceptance_of_assigned": 0.975,
+   "rejects": {
+    "text after the named sentence changed": 39,
+    "too close to original": 11,
+    "split_one: edit has 4 sentences, expected 2": 1,
+    "rewrite_two: edit has 3 sentences, expected 2": 4,
+    "text before the named sentence changed": 1
+   },
+   "by_edit_type": {
+    "rewrite_one": 661,
+    "rewrite_two": 665,
+    "insert_one": 637,
+    "split_one": 211
+   },
+   "ai_span_median": 135.0
+  },
+  "claude-opus-5-5": {
+   "writer": "claude-opus-5-5",
+   "assigned": 2229,
+   "returned": 2229,
+   "accepted": 2206,
+   "acceptance_of_returned": 0.99,
+   "acceptance_of_assigned": 0.99,
+   "rejects": {
+    "rewrite_two: edit has 3 sentences, expected 2": 4,
+    "text after the named sentence changed": 9,
+    "too close to original": 3,
+    "split_one: edit has 1 sentences, expected 2": 1,
+    "rewrite_one: edit has 2 sentences, expected 1": 2,
+    "split_one: edit has 4 sentences, expected 2": 1,
+    "insert_one: edit has 2 sentences, expected 1": 1,
+    "never_train_hit": 1,
+    "text before the named sentence changed": 1
+   },
+   "by_edit_type": {
+    "rewrite_one": 665,
+    "rewrite_two": 665,
+    "insert_one": 658,
+    "split_one": 218
+   },
+   "ai_span_median": 144.0
+  },
+  "claude-haiku-4-5": {
+   "writer": "claude-haiku-4-5",
+   "assigned": 892,
+   "returned": 892,
+   "accepted": 525,
+   "acceptance_of_returned": 0.589,
+   "acceptance_of_assigned": 0.589,
+   "rejects": {
+    "rewrite_two: edit has 1 sentences, expected 2": 18,
+    "text before the named sentence changed": 172,
+    "text after the named sentence changed": 99,
+    "split_one: edit has 1 sentences, expected 2": 15,
+    "too close to original": 50,
+    "rewrite_two: edit has 4 sentences, expected 2": 2,
+    "rewrite_two: edit has 3 sentences, expected 2": 4,
+    "nothing inserted": 5,
+    "rewrite_one: edit has 2 sentences, expected 1": 2
+   },
+   "by_edit_type": {
+    "rewrite_one": 181,
+    "rewrite_two": 137,
+    "insert_one": 162,
+    "split_one": 45
+   },
+   "ai_span_median": 137
   }
  }
 }

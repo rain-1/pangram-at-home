@@ -18,7 +18,7 @@ Calls go to OpenRouter's OpenAI Flex endpoint only (no fallback); the key is rea
 benchmarks/pangram4/.env.secrets into process memory and never written or printed.
 """
 import argparse, asyncio, difflib, gzip, json, os, random, re, statistics, time
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import requests
@@ -246,6 +246,11 @@ WORKFLOW = ROOT / 'research/data/paper-eval-workflows-luna-20260930'
 EVAL_PAPER_DATASETS = {'paper_v3_target', 'paper_workflow_reconstruction', 'human_paper_workflow_matched', 'human_paper_workflow_remaining'}
 HELDOUT_QUOTA = {'luna': 400, 'haiku': 350, 'sonnet': 350, 'opus': 350}
 NEVER_TRAIN = Path(__file__).resolve().parent / 'heldout-eval-never-train.json'
+# Every held-out list; never_train_hit() checks all that exist (same format: paper_ids, paragraph_sha256, hashed shingles).
+NEVER_TRAIN_FILES = [NEVER_TRAIN, ROOT / 'research/claude-fullpapers-20261006/heldout-never-train.json',
+                     ROOT / 'research/claude-sections-20261006/heldout-never-train.json',
+                     ROOT / 'research/claude-hosted-edits-20261006/heldout-never-train.json',
+                     ROOT / 'research/claude-fable-evals-20261006/heldout-never-train.json']
 
 
 def norm_hash(t):
@@ -255,6 +260,7 @@ def norm_hash(t):
 
 def never_train_hit(row, _cache={}):
     """For training builders: True if a row must not be used for training (held-out eval paper or paragraph).
+    Loads every file in NEVER_TRAIN_FILES (sentence-edit, full-paper and section held-out lists). Also checks row['id'] parts.
 
     Checks the row's paper_id/group (with or without a 'paper:' prefix) against the never-train paper list, and every
     blank-line-separated paragraph of row['text'] (normalized: lowercase, non-word characters removed) against the
@@ -262,13 +268,19 @@ def never_train_hit(row, _cache={}):
     hashed 60-character normalized shingles ('paragraph_shingle_sha256_12', stored at every 10th offset; the row is queried
     at every offset, so any copied held-out stretch of 70+ normalized characters is found)."""
     if not _cache:
-        d = json.loads(NEVER_TRAIN.read_text())
-        _cache.update(papers=set(d['paper_ids']), hashes=set(d['paragraph_sha256']), shingles=set(d['paragraph_shingle_sha256_12']))
-    ids = {str(row.get(k, '')).replace('paper:', '').split('/')[0] for k in ('paper_id', 'group', 'group_id')}
+        _cache.update(papers=set(), hashes=set(), shingles=set())
+        for f in NEVER_TRAIN_FILES:
+            if f.exists():
+                d = json.loads(f.read_text())
+                _cache['papers'] |= set(d['paper_ids']); _cache['hashes'] |= set(d['paragraph_sha256'])
+                _cache['shingles'] |= set(d['paragraph_shingle_sha256_12'])
+    ids = {str(row.get(k, '')).replace('paper:', '').split('/')[0] for k in ('paper_id', 'group', 'group_id', 'seed_id', 'item_id')}
+    ids |= {x for x in re.split(r'[/]', str(row.get('id', ''))) if x.startswith(('claude-fp-', 'claude-sec-'))} | {str(row.get('id', '')).replace('fullpaper-', '')}
     if ids & _cache['papers']:
         return True
     text = row.get('text', '')
-    if any(norm_hash(p) in _cache['hashes'] for p in text.split('\n\n')):
+    # Skip short blocks (headings like '## 1 Introduction', boilerplate lines): they recur across unrelated documents.
+    if any(norm_hash(p) in _cache['hashes'] for p in text.split('\n\n') if len(re.sub(r'\W+', '', p)) >= 100):
         return True
     import hashlib
     n = re.sub(r'\W+', '', text.lower())
@@ -413,12 +425,79 @@ def claude_instruction(c):
     return INSTRUCTIONS[c['edit_type']].format(a=a + 1, b=b + 1)
 
 
-CLAUDE_GEN = {'haiku': 'claude-haiku-4-5', 'sonnet': 'claude-sonnet-5-5', 'opus': 'claude-opus-5-5'}
+CLAUDE_TRAIN_QUOTA = {'sonnet': 2500, 'opus': 2500, 'haiku': 1000}
 
 
-def ingest_claude(out, writer, indir):
-    """Align Claude writer outputs ({"id", "edited_paragraph"} JSONL files) with the originals; append accepted rows."""
-    cands = {c['cand_id']: c for c in map(json.loads, open(out / 'candidates-heldout.jsonl')) if c['writer'] == writer}
+def mathy(t):
+    """Mostly-math paragraphs: many math symbols/Greek letters or many single-character tokens (variables)."""
+    import unicodedata
+    sym = sum(unicodedata.category(ch) in {'Sm', 'So'} or 'GREEK' in unicodedata.name(ch, '') for ch in t)
+    toks = t.split(); singles = sum(len(w.strip('.,;:()')) == 1 and w.strip('.,;:()') not in ('a', 'A', 'I') for w in toks)
+    return sym / max(1, len(t)) > .015 or singles / max(1, len(toks)) > .08
+
+
+def reference_like(t):
+    return bool(re.search(r'Proceedings of the|In Advances in|arXiv preprint|In International Conference|pp\. \d|Journal of [A-Z]', t)) or \
+        len(re.findall(r'\b(19|20)\d\d[a-z]?\b', t)) >= 6
+
+
+def prepare_claude_train(out, dest, per_file=50):
+    """Unused v1 candidates (never accepted in pilot/v1) -> Claude writer batches for training edits."""
+    rng = random.Random(20261006)
+    accepted = set()
+    for f in ('llm-edits-pilot.jsonl.gz', 'llm-edits-v1.jsonl.gz'):
+        accepted |= {json.loads(l)['id'].rsplit('/', 1)[0] for l in gzip.open(out / f, 'rt')}
+    stats = Counter(); keep = []  # counts; converted to dict before adding details
+    for c in map(json.loads, open(out / 'candidates-v1.jsonl')):
+        if c['cand_id'] in accepted:
+            stats['already_accepted_pilot_or_v1'] += 1; continue
+        stats['unused'] += 1
+        if never_train_hit({'paper_id': c['paper_id'], 'text': c['target']}) or never_train_hit({'text': c['before'] + '\n\n' + c['after']}):
+            stats['excluded_never_train'] += 1; continue
+        if c['year'] > 2022:
+            stats['excluded_after_2022'] += 1; continue
+        if reference_like(c['target']):
+            stats['excluded_reference_like'] += 1; continue
+        if mathy(c['target']):
+            stats['excluded_mostly_math'] += 1; continue
+        keep.append(c)
+    rng.shuffle(keep)
+    total = sum(CLAUDE_TRAIN_QUOTA.values()); n = min(total, len(keep))
+    quota = {w: int(q * n / total) for w, q in CLAUDE_TRAIN_QUOTA.items()}
+    stats['eligible'] = len(keep); stats['scaled_down'] = n < total
+    chosen, k = [], 0
+    for w in ('sonnet', 'opus', 'haiku'):
+        for i, c in enumerate(keep[k:k + quota[w]]):
+            c = dict(c, writer=w, edit_type=V1_MIX[i % len(V1_MIX)]); chosen.append(c)
+        k += quota[w]
+    with open(out / 'candidates-claude-v1.jsonl', 'w') as f:
+        for c in chosen:
+            f.write(json.dumps(c, ensure_ascii=False) + '\n')
+    dest.mkdir(parents=True, exist_ok=True)
+    for w in ('sonnet', 'opus', 'haiku'):
+        xs = [c for c in chosen if c['writer'] == w]
+        for b in range(0, len(xs), per_file):
+            with open(dest / f'{w}-{b // per_file + 1:03d}.jsonl', 'w') as f:
+                for c in xs[b:b + per_file]:
+                    sents = [f'[{i + 1}] ' + c['target'][x:y] for i, (x, y) in enumerate(sentences(c['target']))]
+                    f.write(json.dumps({'id': c['cand_id'], 'edit_type': c['edit_type'], 'instruction': claude_instruction(c),
+                                        'prev_context': c['before'], 'paragraph': c['target'], 'numbered_sentences': sents,
+                                        'next_context': c['after']}, ensure_ascii=False) + '\n')
+    stats = dict(stats); stats.update({'chosen': len(chosen), 'quota': quota, 'papers': len({c['paper_id'] for c in chosen}),
+                  'by_source': dict(Counter(c['source'] for c in chosen)),
+                  'by_writer_type': {w: dict(Counter(c['edit_type'] for c in chosen if c['writer'] == w)) for w in quota},
+                  'batch_files': {w: -(-quota[w] // per_file) for w in quota}})
+    (out / 'claude-train-prepare-stats.json').write_text(json.dumps(stats, indent=1)); print(json.dumps(stats, indent=1))
+
+
+CLAUDE_GEN = {'haiku': 'claude-haiku-4-5', 'sonnet': 'claude-sonnet-5-5', 'opus': 'claude-opus-5-5', 'fable': 'claude-fable-5-1'}
+
+
+def ingest_claude(out, writer, indir, split='heldout'):
+    """Align Claude writer outputs ({"id", "edited_paragraph"} JSONL files) with the originals; append accepted rows.
+    split='heldout' -> heldout-eval-v1.jsonl.gz (evaluation); split='train' -> llm-edits-claude-v1.jsonl.gz (training)."""
+    cfile = 'candidates-heldout.jsonl' if split == 'heldout' else 'candidates-claude-v1.jsonl'
+    cands = {c['cand_id']: c for c in map(json.loads, open(out / cfile)) if c['writer'] == writer}
     got, rejects = {}, Counter()
     for f in sorted(Path(indir).glob('*.jsonl')):
         for l in open(f):
@@ -434,24 +513,31 @@ def ingest_claude(out, writer, indir):
     rows = []
     for cid, edited in got.items():
         c = cands[cid]; rng = random.Random(cid); a, b = plan(c, rng)
-        edited = re.sub(r'\s+', ' ', edited or '').strip()
-        res, reason = align_edit(c['target'], edited, c['edit_type'])
+        res, reason = strict_edit(c['target'], edited, c['edit_type'], a, b)
         if not res:
             rejects[reason] += 1; continue
         row = make_row(c, a, b, *res, {'service_tier': None, 'cost_usd': None})
-        row['generator'] = CLAUDE_GEN[writer]; row['dataset'] = 'papers_llm_edit_heldout_eval'; row['eval_source'] = c['source']
+        row['generator'] = CLAUDE_GEN[writer]
+        if split == 'heldout':
+            row['dataset'] = 'papers_llm_edit_heldout_eval'; row['eval_source'] = c['source']
+        else:
+            row['source'] = c['source']
+            if never_train_hit(row):
+                rejects['never_train_hit'] += 1; continue
         row['id'] = f"{cid}/{writer}-{c['edit_type']}"
         rows.append(row)
-    path = out / 'heldout-eval-v1.jsonl.gz'
+    path = out / ('heldout-eval-v1.jsonl.gz' if split == 'heldout' else 'llm-edits-claude-v1.jsonl.gz')
     old = [json.loads(l) for l in gzip.open(path, 'rt')] if path.exists() else []
     old = [r for r in old if r['generator'] != CLAUDE_GEN[writer]]
     with gzip.open(path, 'wt') as f:
         for r in old + rows:
             f.write(json.dumps(r, ensure_ascii=False) + '\n')
     rep_ = {'writer': CLAUDE_GEN[writer], 'assigned': len(cands), 'returned': len(got), 'accepted': len(rows),
+            'acceptance_of_returned': round(len(rows) / max(1, len(got)), 3), 'acceptance_of_assigned': round(len(rows) / max(1, len(cands)), 3),
             'rejects': dict(rejects), 'by_edit_type': dict(Counter(r['edit_type'] for r in rows)),
             'ai_span_median': statistics.median([len(r['inserted_ai']) for r in rows]) if rows else None}
-    m = json.loads((out / 'manifest.json').read_text()); m.setdefault('heldout_eval_v1', {})[CLAUDE_GEN[writer]] = rep_
+    m = json.loads((out / 'manifest.json').read_text())
+    m.setdefault('heldout_eval_v1' if split == 'heldout' else 'claude_train_v1', {})[CLAUDE_GEN[writer]] = rep_
     (out / 'manifest.json').write_text(json.dumps(m, indent=1)); print(json.dumps(rep_, indent=1))
 
 
@@ -505,6 +591,46 @@ def align_edit(orig, edited, etype):
         o0, o1 = S[i0][0], S[i1 - 1][1]
     else:
         o0 = o1 = S[i0 - 1][1] if i0 > 0 else 0
+    return (o0, o1, new), None
+
+
+EXPECTED_SENTENCES = {'rewrite_one': 1, 'rewrite_two': 2, 'insert_one': 1, 'split_one': 2}
+
+
+def named_span(orig, etype, a, b):
+    """Character span of the sentence(s) named in the instruction (an insertion point for insert_one)."""
+    S = sentences(orig)
+    if etype == 'insert_one':
+        return S[a][1], S[a][1]
+    return S[a][0], S[b if etype == 'rewrite_two' else a][1]
+
+
+def strict_edit(orig, edited, etype, a, b):
+    """Strict check used by every Claude/OpenAI sentence-edit ingest and by selfcheck.py.
+
+    The edit must land on the NAMED sentence(s) (a, b from plan(), same numbering as numbered_sentences; for insert_one
+    the new sentence follows sentence a). Everything before and after that span must be byte-identical to the
+    original; only the whitespace directly adjacent to the edit may differ. The edited span must have the expected
+    sentence count and (for rewrites/splits) be noticeably reworded. Returns ((o0, o1, new), None) or (None, reason)."""
+    if etype not in EXPECTED_SENTENCES:
+        return None, f'unsupported edit type {etype}'
+    o0, o1 = named_span(orig, etype, a, b)
+    pre, suf, e = orig[:o0].rstrip(), orig[o1:].lstrip(), (edited or '').strip()
+    if not e.startswith(pre):
+        return None, 'text before the named sentence changed'
+    if len(e) < len(pre) + len(suf) or not e.endswith(suf):
+        return None, 'text after the named sentence changed'
+    raw = e[len(pre):len(e) - len(suf)]
+    if '\n' in raw.strip():
+        return None, 'line break inside the edit'
+    new = raw.strip()
+    if not new:
+        return None, 'named sentence deleted' if etype != 'insert_one' else 'nothing inserted'
+    n = len(sentences(new))
+    if n != EXPECTED_SENTENCES[etype]:
+        return None, f'{etype}: edit has {n} sentences, expected {EXPECTED_SENTENCES[etype]}'
+    if etype != 'insert_one' and sim(orig[o0:o1], new) > .9:
+        return None, 'too close to original'
     return (o0, o1, new), None
 
 
@@ -688,6 +814,79 @@ async def generate(out, target, max_calls, budget, conc=16, tag='pilot', passes=
     print(json.dumps(man, indent=1))
 
 
+FABLE_SCR = Path('/private/tmp/claude-501/-Users-alicerigg-codex-projects-pangram/9068b517-aff2-4d57-a59d-449fe67f2fd1/scratchpad/claude-fable')
+
+
+def prepare_heldout_fable(out, n=210):
+    """Held-out Fable writer set: n more paragraphs from held-out candidates not chosen for heldout-eval-v1 (same overlap
+    drops), one per paper first, spread over as many papers as possible. Appended to candidates-heldout.jsonl with
+    writer 'fable'; paragraph hashes/shingles added to heldout-eval-never-train.json."""
+    import hashlib
+    rng = random.Random(20261011)
+    raw = [json.loads(l) for l in open(out / 'candidates-heldout-raw.jsonl')]
+    chosen = [json.loads(l) for l in open(out / 'candidates-heldout.jsonl')]
+    if any(c['writer'] == 'fable' for c in chosen):
+        raise SystemExit('fable items already prepared')
+    hits = json.loads(Path('/private/tmp/claude-501/-Users-alicerigg-codex-projects-pangram/9068b517-aff2-4d57-a59d-449fe67f2fd1/scratchpad/llmedits/heldout-hits.json').read_text())
+    drop = set(hits['training']) | set(hits['selection_calibration']) | set(hits['sweep_eval_rows'])
+    seen = {norm_hash(c['target']) for c in chosen}; used_papers = Counter(c['paper_id'] for c in chosen)
+    by_paper = defaultdict(list)
+    for c in raw:
+        h = norm_hash(c['target'])
+        if c['cand_id'] in drop or h in seen or reference_like(c['target']) or mathy(c['target']):
+            continue
+        seen.add(h); by_paper[c['paper_id']].append(c)
+    papers = sorted(by_paper, key=lambda p: (used_papers[p], rng.random()))
+    for v in by_paper.values():
+        rng.shuffle(v)
+    picked, rnd = [], 0
+    while len(picked) < n and any(len(v) > rnd for v in by_paper.values()):
+        for pid in papers:
+            if len(by_paper[pid]) > rnd and len(picked) < n:
+                picked.append(by_paper[pid][rnd])
+        rnd += 1
+    for k, c in enumerate(picked):
+        c.update(writer='fable', edit_type=V1_MIX[k % len(V1_MIX)])
+    with open(out / 'candidates-heldout.jsonl', 'a') as f:
+        for c in picked:
+            f.write(json.dumps(c, ensure_ascii=False) + '\n')
+    d = json.loads(NEVER_TRAIN.read_text())
+    d['paper_ids'] = sorted(set(d['paper_ids']) | {c['paper_id'] for c in picked})
+    d['paragraph_sha256'] = sorted(set(d['paragraph_sha256']) | {norm_hash(c['target']) for c in picked})
+    d['paragraph_shingle_sha256_12'] = sorted(set(d['paragraph_shingle_sha256_12']) | {hashlib.sha256(n_[i:i + 60].encode()).hexdigest()[:12]
+                                              for c in picked for n_ in [re.sub(r'\W+', '', c['target'].lower())] for i in range(0, len(n_) - 59, 10)})
+    NEVER_TRAIN.write_text(json.dumps(d, separators=(',', ':')))
+    bd = FABLE_SCR / 'heldout'; bd.mkdir(parents=True, exist_ok=True)
+    for b in range(0, len(picked), 50):
+        with open(bd / f'fable-heldout-{b // 50 + 1:03d}.jsonl', 'w') as f:
+            for c in picked[b:b + 50]:
+                sents = [f'[{i + 1}] ' + c['target'][x:y] for i, (x, y) in enumerate(sentences(c['target']))]
+                f.write(json.dumps({'id': c['cand_id'], 'edit_type': c['edit_type'], 'instruction': claude_instruction(c),
+                                    'prev_context': c['before'], 'paragraph': c['target'], 'numbered_sentences': sents,
+                                    'next_context': c['after']}, ensure_ascii=False) + '\n')
+    print(json.dumps({'items': len(picked), 'papers': len({c['paper_id'] for c in picked}), 'by_source': dict(Counter(c['source'] for c in picked)),
+                      'by_type': dict(Counter(c['edit_type'] for c in picked)), 'new_papers_not_in_heldout_v1': sum(1 for c in picked if not used_papers[c['paper_id']])}, indent=1))
+
+
+def build_score_rows(out):
+    """heldout-score-rows.jsonl.gz from heldout-eval-v1 (every writer): one 'mixed' row per edit + one human control per
+    distinct original window. Same format as the rows built on Oct 5."""
+    cands = {c['cand_id']: c for c in map(json.loads, open(out / 'candidates-heldout.jsonl'))}
+    rows, controls = [], {}
+    for r in map(json.loads, gzip.open(out / 'heldout-eval-v1.jsonl.gz', 'rt')):
+        cid = r['id'].rsplit('/', 1)[0]; c = cands[cid]
+        w = r['generator'].split('/')[-1]
+        rows.append({'id': r['id'], 'text': r['text'], 'regions': r['regions'], 'slot': 'mixed', 'split': 'heldout', 'label': 'mixed',
+                     'condition': r['edit_type'], 'writer': w})
+        orig = c['before'] + '\n\n' + c['target'] + '\n\n' + c['after']
+        controls.setdefault(cid, {'id': f'{cid}/original', 'text': orig, 'regions': [{'start': 0, 'end': len(orig), 'label': 0}],
+                                  'slot': 'human_controls', 'split': 'heldout', 'label': 'human', 'condition': 'original', 'writer': 'human'})
+    with gzip.open(out / 'heldout-score-rows.jsonl.gz', 'wt') as f:
+        for x in rows + list(controls.values()):
+            f.write(json.dumps(x, ensure_ascii=False) + '\n')
+    print(json.dumps({'mixed': len(rows), 'human_controls': len(controls), 'by_writer': dict(Counter(x['writer'] for x in rows))}))
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(); sub = ap.add_subparsers(dest='cmd', required=True)
     p1 = sub.add_parser('prepare'); p1.add_argument('parquet'); p1.add_argument('out')
@@ -699,8 +898,12 @@ if __name__ == '__main__':
     p4 = sub.add_parser('prepare-heldout'); p4.add_argument('parquet'); p4.add_argument('out'); p4.add_argument('eval_ids')
     p4.add_argument('--overlap', default=None)
     p5 = sub.add_parser('claude-batches'); p5.add_argument('out'); p5.add_argument('dest')
-    p6 = sub.add_parser('ingest-claude'); p6.add_argument('--writer', required=True, choices=['haiku', 'sonnet', 'opus'])
+    p6 = sub.add_parser('ingest-claude'); p6.add_argument('--writer', required=True, choices=['haiku', 'sonnet', 'opus', 'fable'])
     p6.add_argument('--in', dest='indir', required=True); p6.add_argument('--out', default=str(Path(__file__).resolve().parent))
+    p6.add_argument('--split', choices=['heldout', 'train'], default='heldout')
+    p8 = sub.add_parser('heldout-fable'); p8.add_argument('--out', default=str(Path(__file__).resolve().parent))
+    p9 = sub.add_parser('score-rows'); p9.add_argument('--out', default=str(Path(__file__).resolve().parent))
+    p7 = sub.add_parser('claude-train-batches'); p7.add_argument('dest'); p7.add_argument('--out', default=str(Path(__file__).resolve().parent))
     a = ap.parse_args()
     if a.cmd == 'prepare':
         prepare(a.parquet, Path(a.out))
@@ -711,6 +914,12 @@ if __name__ == '__main__':
     elif a.cmd == 'claude-batches':
         write_claude_batches(Path(a.out), Path(a.dest))
     elif a.cmd == 'ingest-claude':
-        ingest_claude(Path(a.out), a.writer, a.indir)
+        ingest_claude(Path(a.out), a.writer, a.indir, a.split)
+    elif a.cmd == 'heldout-fable':
+        prepare_heldout_fable(Path(a.out))
+    elif a.cmd == 'score-rows':
+        build_score_rows(Path(a.out))
+    elif a.cmd == 'claude-train-batches':
+        prepare_claude_train(Path(a.out), Path(a.dest))
     else:
         asyncio.run(generate(Path(a.out), a.target, a.max_calls, a.budget, a.conc, a.tag, a.passes, a.pass_wait))
