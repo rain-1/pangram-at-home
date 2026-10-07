@@ -1,0 +1,13 @@
+{
+ "_notes": "Standard Ebooks mixed documents only (the source behind 100% human false positives)",
+ "pair_controls_with_mixed": false,
+ "stage1": {
+  "include": false
+ },
+ "hetero:mixed:standardebooks": {
+  "keep": true,
+  "max_windows_per_epoch": 500,
+  "dataset_name": "hetero_mixed",
+  "filters": {}
+ }
+}

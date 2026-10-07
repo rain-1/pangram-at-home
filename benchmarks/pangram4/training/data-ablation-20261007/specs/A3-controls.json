@@ -1,0 +1,31 @@
+{
+ "_notes": "human controls only (no AI): do the human fiction/JMLR negatives help or hurt",
+ "pair_controls_with_mixed": false,
+ "stage1": {
+  "include": false
+ },
+ "hetero:human_control:gutenberg_selected": {
+  "keep": true,
+  "max_windows_per_epoch": 1000,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "hetero:human_control:jmlr_pre2015": {
+  "keep": true,
+  "max_windows_per_epoch": 730,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "hetero:human_control:standardebooks": {
+  "keep": true,
+  "max_windows_per_epoch": 400,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ },
+ "hetero:human_control:hansard": {
+  "keep": true,
+  "max_windows_per_epoch": 5,
+  "dataset_name": "hetero_controls",
+  "filters": {}
+ }
+}

@@ -3,10 +3,10 @@
 # This loop (run on a machine logged in to the Hub) snapshots that database over `hf spaces ssh` and syncs it
 # to a private Trackio Space (created once with `trackio sync --private`). Usage: sync_trackio.sh [space_id] [interval_seconds, 0 = once]
 set -u
-PROJECT=pangram-hparam-sweep-20261006
+PROJECT=${PROJECT:-pangram-hparam-sweep-20261006}
 SPACE_ID=${1:-eac123/pangram-hparam-sweep-trackio}
 EVERY=${2:-600}
-REMOTE=/tmp/pangram-hparam-sweep-20261006/trackio
+REMOTE=${REMOTE:-/tmp/pangram-hparam-sweep-20261006/trackio}
 export TRACKIO_DIR=${TRACKIO_DIR:-$HOME/.cache/pangram-trackio}
 mkdir -p "$TRACKIO_DIR"
 SSH=$(hf spaces ssh --dry-run open-text-detector/training 2>/dev/null | tail -1)
