@@ -111,3 +111,23 @@ research/ngram-dashboard-*/ngrams-all.json
 
 # Omission-step eval flow: page images, paper text and judge outputs (third-party text)
 .claude/hillclimb/
+
+# Tonight's working copies (Oct 6): comparison-page data pulls, writer batches with third-party paper text
+research/evaluation/detector-comparison-20261006/h200/
+research/evaluation/detector-comparison-20261006/space/
+research/evaluation/detector-comparison-20261006/compare-data.json
+research/llm-sentence-edits-20261005/claude-writer/batches/
+research/llm-sentence-edits-20261005/claude-writer/outputs/
+research/llm-sentence-edits-20261005/claude-writer/train-outputs/
+research/claude-sections-20261006/writer-outputs/
+benchmarks/pangram4/training/splice-sweep-20261006/push_heldout.py
+research/claude-fullpapers-20261006/heldout-never-train.with-bodies.bak.json
+
+# OpenAI writer handoff: batch inputs and outputs quote third-party paper text
+research/openai-writer-handoff-*/batches/
+research/openai-writer-handoff-*/outputs/
+docs/pickup-notes.md
+research/evaluation/detector-comparison-20261006/river.json
+research/evaluation/detector-comparison-20261006/detector-comparison.html
+
+.DS_Store
