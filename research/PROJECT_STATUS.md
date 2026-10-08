@@ -243,7 +243,6 @@ Ages are as of 21:45 BST on 10-07.
 | Hard human negatives for long fiction | 10-07 15:4x | 6 h |
 | `pangram-at-home-eval/configs/models.yaml`: new MoE entries uncommitted | 10-07 21:20 | 0.5 h |
 | Trackio: ablation, EmbeddingGemma and MoE projects not synced | 10-07 14:42 | 7 h |
-| Upload the T2.1 + A2 Qwen MoE to the Hub | 10-07 19:43 | 2 h |
 | Talk to woog: GPU sharing, PEFT hazard, T2.1 typography cue, branch location | 10-06 12:02 | 34 h |
 | Score woog's `moe-A-s1` on v3 | 10-06 21:09 | 24.5 h |
 | Length-aware calibration in aidet_eval | 10-06 17:48 | 28 h |
@@ -253,7 +252,7 @@ Ages are as of 21:45 BST on 10-07.
 | Hetero batch 04 (1,000 documents) unreleased | 10-06 11:39 | 34 h |
 | Alpha 128 4B confirmation | 10-06 10:40 | 35 h |
 | Attribution heads on the best checkpoint | 10-06 10:30 | 35 h |
-| Integration branch unpushed; superseded merge branch not deleted | 10-06 08:40 | 37 h |
+| Superseded merge branch not deleted (integration branch pushed 10-07 22:0x) | 10-06 08:40 | 37 h |
 | Dataset upload questions (PERSUADE, Qwen2.5 licence) | 10-06 08:55 | 37 h |
 | pretraining-datawork: GrokSet text, NEWSROOM, licence questions | 10-06 16:43 | 29 h |
 | `main`: blind test groups, cluster CIs, larger attribution test, 300-article eval | 09-28 | 9 days |
@@ -276,6 +275,8 @@ Closed since the last snapshot: eval-repo commit (10-06 21:21), next mix iterati
 | 10-07 EmbeddingGemma runs | Space `/data/workspace/pangram-embgemma-20261007/` |
 | Nemotron weights | Space `/data/workspace/model-cache/nemotron35-lightning-30b-a3b` |
 | Published base MoE | HF `open-text-detector/moe-span-detector-base-20261006` (private) |
+| Published T2.1 + A2 MoE (10-08) | HF `open-text-detector/moe-span-detector-t21a2-20261007` (private; adapter sha256 `3d9f2543…`) |
+| Published T2.1 + A2 Qwen3.5-4B, seed 2 (10-08) | HF `open-text-detector/qwen35-4b-span-detector-t21a2-20261007` (private; adapter sha256 `722942b4…`) |
 | Heterogeneous data | HF `open-text-detector/heterogeneous-ai-spans` v1.4.0 (public) |
 | Training dashboard | Trackio Space `eac123/pangram-hparam-sweep-trackio` (private) |
 | Benchmark results | `pangram-at-home-eval/artifacts/runs/ai-detector-panels-v3__577af7a44f/report.md` |
