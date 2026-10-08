@@ -46,11 +46,24 @@ Outputs mirror to `/data/workspace/pangram-ablation-20261007` through her `persi
 | A5-jmlr | 3 | 0.789 | 0.489 | 0.793 | 0.799 | 0.738 (1.8%) | 0.587 (2.2%) | 0.815 (0.6%) |
 | A6-stdebooks | 3 | 0.776 | 0.458 | 0.770 | 0.789 | 0.740 (1.9%) | 0.587 (2.3%) | 0.930 (0.6%) |
 | A7-half | 3 | 0.779 | 0.471 | 0.733 | 0.772 | 0.754 (2.1%) | 0.608 (2.6%) | 0.977 (1.2%) |
-| A8-double | 2 | 0.796 | 0.513 | 0.782 | 0.786 | 0.774 (2.5%) | 0.660 (3.4%) | 0.990 (1.4%) |
+| A8-double | 3 | 0.788 | 0.480 | 0.783 | 0.806 | 0.763 (2.3%) | 0.640 (3.1%) | 0.989 (1.2%) |
+| A2T (A2 + `--typo-aug`) | 2 | 0.807 | 0.537 | 0.746 | 0.791 | 0.772 (2.4%) | 0.652 (3.2%) | 0.987 (1.1%) |
 
-- Every arm adds +0.01 to +0.06 on small edits over T2.1 alone; A2 and A8 are best overall.
+- Every arm adds +0.01 to +0.06 on small edits over T2.1 alone; A2 is best overall (A8's third seed brought it back to the pack).
 - Human controls alone (A3) cost paper_v3 recall and held-out writers; controls only help paired with their mixed documents.
 - Single-source arms (A4–A6) lose 0.04–0.06 on held-out writers; the full mixes do not.
 - The cost: false positives on untouched hetero test controls rise from 0.3–0.4% to 1.0–1.4%. Held-out FP rates do not move.
 - The hetero test column is in-distribution for every arm and is not evidence of generalisation.
-- A8 seed 3 and the typography arm (A2 + `--typo-aug`, `typo_aug.py`, `patch_typo.py`, `gate_typo.sh`) crashed out of memory at 19:44 BST on 10-07: woog's `score_moe.py` held six GPUs. Not yet rerun.
+- **Typography fix (A2T):** `--typo-aug` (`typo_aug.py`, `patch_typo.py`) costs nothing measurable. All edits +0.014, small edits +0.046, held-out writers +0.02, paper_v3 −0.027, false-positive rates unchanged. Every difference is within seed noise (about ±0.04 on small edits), so it is safe to use. It first crashed out of memory on 10-07 (woog's jobs held six GPUs) and was rerun on 10-08.
+
+### woog's mixA (10-08) at 4B scale
+
+`build_mixa_4b.py` splits her merged `moe-mixA-full` stage 2 back into its three shards. These runs use 10% length (about the same compute as the arms above), one seed.
+
+| Run | All | Small | paper_v3 | Standalone | Strict held-out (FP) | Held-out writers (FP) | Hetero test (control FP) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| mixA | 0.656 | 0.280 | 0.733 | 0.684 | 0.747 (2.2%) | 0.528 (2.0%) | 0.838 (0.6%) |
+| mixA + A2 | 0.692 | 0.300 | 0.663 | 0.684 | 0.678 (1.2%) | 0.435 (1.5%) | 0.968 (0.6%) |
+
+- At 4B scale and 10% length, mixA scores well below T2.1 on woog's paper-focused evaluation. Its edit data is diluted by about 28k mirrors and 10k generic human rows per shard.
+- Adding A2 to mixA raises all-edit recall but lowers held-out recall at the in-domain threshold, together with lower held-out FP. That is a threshold shift, not a clear gain. One seed, so treat as inconclusive; it does not support adding A2 to mixB without a full-length test.

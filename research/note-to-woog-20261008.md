@@ -14,7 +14,7 @@ Mostly the Luna mirrors (curly only, straight 0.0/10k) against the generic human
 Fix: `typo_aug.py` + `patch_typo.py` add `--typo-aug` to your train_sweep.py. Per row it renders every quote as all-straight or all-curly (50/50, seeded), the same for both labels. NBSP/thin spaces become spaces. Every substitution is one character for one, so offsets are untouched. Document-only rows are skipped, and a row that would exceed 510 tokens keeps its text.
 - Files: `/data/workspace/pangram-ablation-20261007/mix-inputs/`
 - Audit script: `research/data-mix-20261006/scripts/format_audit_t21.py PREPARED_DIR`
-- The 4B A/B (T2.1+A2 with and without --typo-aug, 2 seeds) is running now on GPUs 6-7. Results around 11:00 UTC.
+- 4B A/B result (T2.1+A2, 2 seeds with the fix vs 3 without): no measurable cost. All +0.014, small +0.046, paper_v3 −0.027, FP unchanged; all within seed noise. Safe to turn on.
 
 **2. rain1's heterogeneous-ai-spans helps on top of T2.1** (4B, T2.1 recipe, 3 seeds per arm, your full eval battery):
 
@@ -28,10 +28,20 @@ The cost: untouched hetero test controls are flagged 1.4% vs 0.4%. Held-out FP r
 - Builder: `setup_mix.py --spec specs/A2-neutral.json --additions additions-hetero-neutral.jsonl.gz --drops leakage-drop-ids.json --extra-held <your held-out score rows>`, same folder.
 - Results: `benchmarks/pangram4/training/data-ablation-20261007/README.md`
 
-mixA has none of it. Worth adding to mixB?
+mixA has none of it. We tested mixA ± A2 at 4B scale (10% length, 1 seed): all-edit +0.036, but held-out recall at the in-domain threshold fell (strict 0.747 → 0.678, writers 0.528 → 0.435) with lower FP. That's inconclusive, so we wouldn't add it to mixB without a full-length test.
 
 **3. Mix composition matters a lot on rain1's benchmark-v3.** A Qwen MoE on T2.1+A2 (20% length) beat the prepared-v2 MoE on your eval: small 0.49 vs about 0.25. But it lost a lot of AI recall on v3: Beemo AI 95.5 → 60.0, controlled replacement 69.9 → 32.5. In exchange, human false alarms fell 4-10x. Our guess is the cut in mirrors and generic human (6,000 → 1,400 / 1,700 per shard). mixA restores those, so it may get both.
 
-We're scoring your final-moe (`/tmp/final-20261007/runs-moe`, loaded with your vendor + peft 0.21.2) on benchmark-v3 now on GPU 4, done around 09:55 UTC, so you'll have a v3 comparison.
+Your final-moe (`/tmp/final-20261007/runs-moe`, loaded with your vendor + peft 0.21.2) on benchmark-v3, native protocol, mean score, 1% FPR:
 
-**GPU use right now (rain1):** GPUs 5-7 run 4B runs (about 12 GB each) until about 11:00 UTC. GPU 4 is scoring until about 09:55 UTC. GPUs 0-1 are left free for you. Last night (about 18:25 UTC) score_moe.py took 6 GPUs while our runs were queued and they crashed out of memory. Could we agree a way to claim GPUs, e.g. a `/tmp/GPU-CLAIMS` file?
+| | prepared-v2 base (50%) | T2.1+A2 (20%) | your final-moe (T2.1, full) |
+|---|---:|---:|---:|
+| fully-AI core recall | 88.6 | 82.6 | **90.3** |
+| controlled replacement recall | 69.9 | 32.5 | **75.2** |
+| Beemo AI / human-edited recall | **95.5 / 77.5** | 60.0 / 27.5 | 91.0 / 65.5 |
+| hetero human controls flagged | 31.3% | **7.7%** | 44.3% |
+| AITDNA humans flagged | 11.6% | **0.0%** | 9.5% |
+
+So full length restores the recall our 20% run lost, and brings back the long-document false alarms. Scores: `/data/workspace/pangram-nemotron-20261007/benchmark/scores/woog-final-moe*`.
+
+**GPU use (rain1, 10-08):** 4B runs on GPUs 0-1 and 5-7 and scoring on GPU 4, all finished by about 10:50 UTC. Last night (about 18:25 UTC) score_moe.py took 6 GPUs while our runs were queued and they crashed out of memory. Could we agree a way to claim GPUs, e.g. a `/tmp/GPU-CLAIMS` file?

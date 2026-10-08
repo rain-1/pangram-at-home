@@ -59,7 +59,9 @@ Status words used below:
 - T2.1 is built around edits to papers. It cuts fully-AI mirrors from 6,000 to 1,400 per shard and generic human text from 6,000 to 1,700.
   - The model gets precise on papers and on human text, but misses more AI text elsewhere.
   - The length difference (50% vs 20%) is a confound.
-- **Candidate next model:** a union mix (T2.1 edit sets + `prepared-v2` fully-AI/generic-human shares + A2) at 50% length. Not run.
+- **10-08 update:** woog's full-length T2.1 MoE recovers the v3 recall (fully-AI core 90.3, controlled replacement 75.2) but also the long-document false alarms (44%). So length, not T2.1, drove most of the trade-off. The typography fix costs nothing on the 4B (2 seeds). Results in `data-ablation-20261007/README.md` and `research/note-to-woog-20261008.md`.
+
+**Candidate next model:** a union mix (T2.1 edit sets + `prepared-v2` fully-AI/generic-human shares + A2) at 50% length. Not run.
 
 **Your heterogeneous data, after the 10-07 ablation** (Qwen3.5-4B on T2.1, 3 seeds per arm):
 - **Adds +0.01 to +0.06 small-edit recall** on top of T2.1. The layout-neutral view (A2) and double dose (A8) are best.
@@ -236,7 +238,6 @@ Ages are as of 21:45 BST on 10-07.
 
 | Thread | Last touched | Age |
 |---|---|---|
-| Typography test (A2 ± `--typo-aug`) and A8 seed 3 | 10-07 19:44 | 2 h |
 | Union-mix MoE at 50% length; T2.1 + A2 50% control | 10-07 21:30 | 0.3 h |
 | Full-length run of the final model | 10-07 15:4x | 6 h |
 | Sentence-scale edit pilot outside papers | 10-07 15:4x | 6 h |
@@ -244,7 +245,6 @@ Ages are as of 21:45 BST on 10-07.
 | `pangram-at-home-eval/configs/models.yaml`: new MoE entries uncommitted | 10-07 21:20 | 0.5 h |
 | Trackio: ablation, EmbeddingGemma and MoE projects not synced | 10-07 14:42 | 7 h |
 | Talk to woog: GPU sharing, PEFT hazard, T2.1 typography cue, branch location | 10-06 12:02 | 34 h |
-| Score woog's `moe-A-s1` on v3 | 10-06 21:09 | 24.5 h |
 | Length-aware calibration in aidet_eval | 10-06 17:48 | 28 h |
 | Line-break diagnostic on MoE models | 10-06 18:04 | 27.5 h |
 | `generate-heterogeneous` uncommitted: v1.4.0 formatting scripts, sparse pilot, prompt v4 | 10-06 18:46 | 27 h |
